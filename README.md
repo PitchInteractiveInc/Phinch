@@ -2,7 +2,7 @@
 
 ### About 
 
-Phinch is an open-source framework for visualizing biological data, funded by a grant from the Alfred P. Sloan foundation. This project represents an interdisciplinary collaboration between Pitch Interactive, a data visualization studio in Berkeley, CA, and biological researchers at UC Davis. </br></br>
+[Phinch](http://phinch.org/) is an open-source framework for visualizing biological data, funded by a grant from the [Alfred P. Sloan foundation](http://www.sloan.org/). This project represents an interdisciplinary collaboration between [Pitch Interactive](http://www.pitchinteractive.com/beta/index.php), a data visualization studio in Berkeley, CA, and biological researchers at [UC Davis](http://www.ucdavis.edu/). </br></br>
             
 Whether it's genes, proteins, or microbial species, Phinch provides an interactive visualization tool that allows users to explore and manipulate large biological datasets. Computer algorithms face significant difficulty in identifying simple data patterns; writing algorithms to tease out complex, subtle relationships (the type that exist in biological systems) is almost impossible. However, the human eye is adept at spotting visual patterns, able to quickly notice trends and outliers. It is this philosophy especially when presented with intuitive, well-designed software tools and user interfaces.</br></br>
             
@@ -12,11 +12,11 @@ Scientific visualization represents an innovative method towards tackling the cu
 
 ### Instruction
 
-Phinch is optimized for use in the Chrome browser.
+[Phinch](http://phinch.org/) is optimized for use in the Chrome browser.
 
 This visualization framework aims to address current bottlenecks in the analysis of large sequence datasets (rRNA amplicons, metagenomes), helping researchers analyze high-throughput datasets more efficiently. Phich takes advantage of standard outputs from computational pipelines in order to bridge the gap between biological software (e.g. QIIME) and existing data visualization capabilities (harnessing the scalability of WebGL and HTML5 in a browser-based tool). 
 
-Phinch currently supports downstream analyses of .biom files ([Biological Observation Matrix](http://biom-format.org/), a JSON-formatted file type typically used to represent marker gene OTUs or metagenomic data). All sample metadata and taxonomy/ontology information MUST be embedded in the .biom file before being uploaded into Phinch.
+[Phinch](http://phinch.org/) currently supports downstream analyses of .biom files ([Biological Observation Matrix](http://biom-format.org/), a JSON-formatted file type typically used to represent marker gene OTUs or metagenomic data). All sample metadata and taxonomy/ontology information MUST be embedded in the .biom file before being uploaded into [Phinch](http://phinch.org/).
 
 In QIIME (version 1.7 or later), users can prepare the .biom file by executing the following commands:
 
