@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>PHINCH</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="css/pinch.css">
+
+        <!--[if lt IE 9]>
+            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+            <script>window.html5 || document.write('<script src="lib/html5shiv.js"><\/script>')</script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+        <section id = "header">
+            <p id = "LOGO"><a href = "index.html">PHINCH</a></p>
+            <div id = "menu">
+                <p><a href="viz.html"><i class="icon-chevron-sign-left icon-large" style="display: none;"></i>&nbsp;&nbsp;&nbsp;</a><a href="about.html"><i class="icon-info-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="instruction.html"><i class="icon-question-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="https://github.com/shujianbu/pinch" target="_blank"><i class="icon-github icon-large"></i></a></p>
+            </div>
+        </section>
+
+        <section id = "up_sec" style="display:none;">
+            
+            <div id = "file_details">
+                <div id = "back_box">
+                    <p id = "box_title"> file details </p>
+                    <p id = "file_numbers"></p>
+                </div>
+            </div>
+
+
+            <div id = "graph_export">
+                <ul id="nav_graph">
+                    <li id="layer_2" class="loading_notes layer_change current_layer">Layer 2</li>
+                    <li id="layer_3" class="layer_change">Layer 3</li>
+                    <li id="layer_4" class="layer_change">Layer 4</li>
+                    <li id="layer_5" class="layer_change">Layer 5</li>
+                    <li id="layer_6" class="layer_change">Layer 6</li>
+                    <li id="layer_7" class="layer_change">Layer 7</li>
+                    <li id= "shareToOthers" ><a href="#">Share</a></li>
+                </ul> 
+            </div>
+
+            <div style="position: absolute; right: 30px; top: 60px;">
+                <select id = "attributes_dropdown" style="display: none;"></select>  
+            </div>
+
+        </section>
+
+        <section id="GraphGallery">
+            <h2>GRAPH GALLERY</h2>
+            <a href="preview.html"><button id="goBackFilter"> <&nbsp;&nbsp;FILTER DATA </button></a>
+            <!-- Graph 1 -->
+            <div class="col3"><img src="img/gallery_1.png">
+                <p class = "graphGalleryTitle"><span>Taxonomy Bar</span></p>
+            </div>
+             <!-- Graph 2 -->
+            <div class="col3"><img src="img/gallery_2.png">
+                <p class = "graphGalleryTitle"><span>Bubble Chart</span></p>
+            </div>
+            <!-- Graph 3 -->
+            <div class="col3"><img src="img/gallery_3.png">
+                <p class = "graphGalleryTitle"><span>Sankey Diagram</span></p>
+            </div>
+            <!-- Graph 4 -->
+            <div class="col3"><img src="img/gallery_4.png">
+                <p class = "graphGalleryTitle"><span>Donut Partition</span></p>
+            </div>
+            <!-- Graph 5 -->
+            <div class="col3"> <img src="img/gallery_5.png">
+                <p class = "graphGalleryTitle"><span>Attributes Column Chart</span></p>
+            </div>
+            <!-- Graph 6 -->
+            <div class="col3"><img src="img/gallery_TBD.png">
+                <p class = "graphGalleryTitle"><span>TBD</span></p>
+            </div>
+
+        </section>
+
+        <section id = "viz_container">
+            <div id="taxonomy_container"></div> 
+            <div id="viz_menu">
+                <ul>
+                    <!-- <li><i class="icon-zoom-out icon-large" id = "iconZoomOut"></i> &nbsp;&nbsp; <i class="icon-zoom-in icon-large" id = "iconZoomIn"></i></li> -->
+                    <li>Percent</li>
+                    <li class="current_layer">Values</li>
+
+                    <li><input type="text" name="search" placeholder="  search..." id = 'tags'></li>
+                </ul>
+            </div>
+            <div id = "autoCompleteList"></div>
+            <div id="fake_taxonomy_container"></div>
+            <!-- -->
+        </section>
+
+        <section class = "footer">
+            <p class = "footer_copyright">Copyright © 2013 Phinch</p>
+        </section>
+
+        <script src="lib/jquery-1.10.1.min.js"></script>
+        <script src="lib/jquery-ui-1.10.3.custom.min.js"></script>
+        <script src="lib/indexedDB.polyfill.js"></script>
+        <script src="lib/db.js"></script>
+        <script src="lib/d3.v3.min.js"></script>
+        <script src="lib/jquery.fracs-0.12.0.min.js"></script>
+        <script src="lib/jquery.outline-0.12.0.min.js"></script>
+        <script src="lib/sankey.js"></script>
+        <script src="lib/dat.gui.min.js"></script>
+        <script src="scripts/taxonomyViz.js"></script>
+
+
+        <script>
+            $(function() {
+                $( "#GraphGallery img" ).each( function(index) {
+                    $(this).click( function() {
+
+                        $('#GraphGallery').fadeOut(800, function(){ $('.icon-chevron-sign-left').show(); $('#up_sec').fadeIn(800); });
+                        var app = new taxonomyViz(index);                
+                    });
+                });
+            });
+        </script>
+
+    </body>
+</html>

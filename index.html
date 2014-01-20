@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>PHINCH</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+	<link rel="stylesheet" href="css/pinch.css">
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<script>window.html5 || document.write('<script src="lib/html5shiv.js"><\/script>')</script>
+	<![endif]-->
+</head>
+
+<body>
+	<!--[if lt IE 7]>
+		<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+	<![endif]-->
+	<section id = "top_sec">
+		<section id = "header">
+			<p id = "LOGO"><a href = "index.html">PHINCH</a></p>
+			<div id = "menu">
+				<p><a href="about.html"><i class="icon-info-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="instruction.html"><i class="icon-question-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="https://github.com/shujianbu/pinch" target="_blank"><i class="icon-github icon-large"></i></a></p>
+			</div>
+		</section>
+
+		<section id = "Page1">
+			<h1 class="with-bracket"><span>UPLOAD FILE</span></h1>
+			<div id = "frmUpload">
+				<!-- Real Input field, hidden--> 
+				<input type="file" id="files" name="myFile" onchange="$('#txtFakeText').val($('#files').val().replace('C:\\fakepath\\', '') ); " style="display: none" />
+				<input type="text" id="txtFakeText" name="txtFakeText" readonly="true">
+				<input type="button" id = "fakeBrowse" class="button" onclick="$('#files').click(); " value="BROWSE">
+			</div>
+
+			<div id = "fileDrag">DROP FILE HERE!</div>
+			<div id="progress_bar"><div class="percent"></div></div>
+			<button id="parse" class="button">UPLOAD</button>
+
+		</section>
+	</section>
+
+	<section id = "recent">
+		<br /> <br />
+		<h1>Recent Files</h1>
+	</section>
+
+	<section id="desc">
+		<br /><br />
+		<h1>About Phinch </h1>
+		<p>
+            Phinch is an open-source framework for visualizing biological data, funded by a grant from the Alfred P. Sloan foundation. This project represents an interdisciplinary collaboration between Pitch Interactive, a data visualization studio in Berkeley, CA, and biological researchers at UC Davis. </br></br>
+            
+            Whether it's genes, proteins, or microbial species, Phinch provides an interactive visualization tool that allows users to explore and manipulate large biological datasets. Computer algorithms face significant difficulty in identifying simple data patterns; writing algorithms to tease out complex, subtle relationships (the type that exist in biological systems) is almost impossible. However, the human eye is adept at spotting visual patterns, able to quickly notice trends and outliers. It is this philosophy especially when presented with intuitive, well-designed software tools and user interfaces.</br></br>
+            
+            The sheer volume of data produced from high-throughput sequencing technologies will require fundamentally different approaches and new paradigms for effective data analysis.</br></br>
+
+            Scientific visualization represents an innovative method towards tackling the current bottleneck in bioinformatics; in addition to giving researchers a unique approach for exploring large datasets, it stands to empower biologists with the ability to conduct powerful analyses without requiring a deep level of computational knowledge. 
+		</p>
+	</section>
+	
+	<section class = "footer">
+		<p class = "footer_copyright">Copyright © 2013 Phinch</p>
+	</section>
+
+	<script src="lib/jquery-1.10.1.min.js"></script>
+	<script src="lib/blob.js"></script>
+	<script src="lib/indexedDB.polyfill.js"></script>
+	<script src="lib/db.js"></script>
+	<script src="scripts/readFile.js"></script>
+	
+	<script>
+    if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+      alert('Please try Chrome, Firefox, or other modern browser!');
+    } else {
+    	app = new readFile();
+    }
+
+	</script>
+
+</body>
+</html>
