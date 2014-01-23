@@ -26,7 +26,7 @@
         <section id = "header">
             <p id = "LOGO"><a href = "index.html">PHINCH</a></p>
             <div id = "menu">
-                <p><a href="about.html"><i class="icon-info-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="instruction.html"><i class="icon-question-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="https://github.com/shujianbu/pinch" target="_blank"><i class="icon-github icon-large"></i></a></p>
+                <p><a href="about.html"><i class="icon-info-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="instruction.html"><i class="icon-question-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="https://github.com/shujianbu/pinch" target="_blank"><i class="icon-github icon-large"></i></a>&nbsp;&nbsp;&nbsp;<a href="https://wordpress.com" target="_blank"><i class="icon-file-text-o icon-large"></i></a></p>
             </div>
         </section>
 
@@ -39,27 +39,17 @@
                 </div>
             </div>
 
-            <div id = "graph_export" >
-                <ul id="nav_graph" style="display: block;">
-                    <li id= "resetButton" onclick="document.location.reload()"><a href="#">RESET</a></li>
-                    <li id= "jumpToGallery"> <a href="#">GRAPH</a></li> <!--  -->
-<!--                         <ul>
-                            <li id = "generateTaxonomyLink"><a href="">Taxonomy Bar</a></li>
-                            <li><a href="#">GRAPH 2</a></li>
-                            <li><a href="#">GRAPH 3</a></li>
-                            <li><a href="#">GRAPH 4</a></li>
-                        </ul> -->
-                                   
-                    <li id= "downloadPinchButton" ><a href="#export">EXPORT</a></li>
-                </ul> 
-            </div>
-
         </section>
 
+        <section id = "NotSupported">
+            <br /> <br />
+            <h1>Not Supported</h1>
+            <p>The browser you are using does not support <a href="https://developer.mozilla.org/en-US/docs/IndexedDB" target="_blank">IndexedDB</a>, which is required for the Phinch framework!</p>
+        </section>
+    
         <section id = "bottom_sec">
             
             <section id = "left_control_panel">
-                
                 <p class = "att_head" id = "att_head_dates">Dates</p>
                 <div id = "dates"></div>
                 <p class = "att_head" id = "att_head_numeric">Numeric Range</p>
@@ -78,7 +68,7 @@
         </section>
         
         <section class = "footer" style="position: relative; float:left;">
-            <p class = "footer_copyright">Copyright © 2013 Phinch</p>
+           <p class = "footer_copyright">Copyright © 2014 Phinch. This content is released under the <a href="http://opensource.org/licenses/MIT" target="_blank">MIT License.</p>
         </section>
         
         <script src="lib/jquery-1.10.1.min.js"></script>
@@ -89,13 +79,33 @@
         <script src="lib/FileSaver.js"></script>
         <script src="lib/moment.min.js"></script>
         <script src="lib/d3.v3.min.js"></script>
-
+        <script src="lib/dat.gui.min.js"></script>
         <script src="lib/jquery.dataTables.min.js"></script>
         <script src="lib/d3.v3.min.js"></script>
 
         <script src="scripts/filter.js"></script>
         <script>
+        if ( !( navigator.userAgent.match(/Chrome/i) || navigator.userAgent.match(/Firefox/i) ) || !window.File || !window.FileReader || !window.FileList || !window.Blob ){
+            alert('Please use Chrome or Firefox! Your browser does not support the Phinch framework!');
+            $('#up_sec').hide();
+            $('#bottom_sec').hide();
+            $('#NotSupported').show();
+            $('.footer').css("position", "fixed");
+        } else {
             app = new filter();
+
+            var FizzyText = function() {
+                this.Gallery = function() { app.jumpToGallery(); };
+                this.Export = function() { app.downloadPinch(); };
+                this.Reset = function() { document.location.reload(); };
+            };
+            var text = new FizzyText();
+            var gui = new dat.GUI();
+            gui.add(text, 'Reset')
+            gui.add(text, 'Export');
+            gui.add(text, 'Gallery');
+
+        }
         </script>
 
     </body>

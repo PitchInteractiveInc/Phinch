@@ -24,7 +24,7 @@
 		<section id = "header">
 			<p id = "LOGO"><a href = "index.html">PHINCH</a></p>
 			<div id = "menu">
-				<p><a href="about.html"><i class="icon-info-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="instruction.html"><i class="icon-question-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="https://github.com/shujianbu/pinch" target="_blank"><i class="icon-github icon-large"></i></a></p>
+				<p><a href="about.html"><i class="icon-info-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="instruction.html"><i class="icon-question-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="https://github.com/shujianbu/pinch" target="_blank"><i class="icon-github icon-large"></i></a>&nbsp;&nbsp;&nbsp;<a href="https://wordpress.com" target="_blank"><i class="icon-file-text-o icon-large"></i></a></p>
 			</div>
 		</section>
 
@@ -42,6 +42,12 @@
 			<button id="parse" class="button">UPLOAD</button>
 
 		</section>
+	</section>
+
+	<section id = "NotSupported">
+		<br /> <br />
+		<h1>Not Supported</h1>
+		<p>The browser you are using does not support <a href="https://developer.mozilla.org/en-US/docs/IndexedDB" target="_blank">IndexedDB</a>, which is required for the Phinch framework!</p>
 	</section>
 
 	<section id = "recent">
@@ -64,7 +70,7 @@
 	</section>
 	
 	<section class = "footer">
-		<p class = "footer_copyright">Copyright © 2013 Phinch</p>
+		<p class = "footer_copyright">Copyright © 2014 Phinch. This content is released under the <a href="http://opensource.org/licenses/MIT" target="_blank">MIT License.</p>
 	</section>
 
 	<script src="lib/jquery-1.10.1.min.js"></script>
@@ -74,9 +80,14 @@
 	<script src="scripts/readFile.js"></script>
 	
 	<script>
-    if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
-      alert('Please try Chrome, Firefox, or other modern browser!');
-    } else {
+    if ( !( navigator.userAgent.match(/Chrome/i) || navigator.userAgent.match(/Firefox/i) ) || !window.File || !window.FileReader || !window.FileList || !window.Blob ){
+    	alert('Please use Chrome or Firefox! Your browser does not support the Phinch framework!');
+    	$('#Page1').hide();
+    	$('#NotSupported').show();
+    	$('#top_sec').animate({height:50}, 200);
+    	$('#recent').hide();
+    }
+    else {         
     	app = new readFile();
     }
 

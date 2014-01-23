@@ -78,29 +78,23 @@
               $('.layer_change').click(function(evt) {
                 LayerID = parseInt(evt.currentTarget.id.replace("layer_", ""));
                 return $('#layer_' + LayerID).addClass("loading_notes").delay(800).queue(function(n) {
-                  if ($('#viz_menu .current_layer').html() === 'Percent') {
+                  if ($('#otherFuncs li:eq(1) .c option:selected').val() === 'Percent') {
                     percentage = true;
-                    _this.generateVizData();
-                  } else if ($('#viz_menu .current_layer').html() === 'Values') {
-                    _this.generateVizData();
+                  } else {
+                    percentage = false;
                   }
+                  _this.generateVizData();
                   return n();
                 });
               });
-              $('#viz_menu ul li').click(function(evt) {
-                if (evt.currentTarget.innerText === 'Percent') {
-                  $('#viz_menu ul li:eq(0)').addClass('current_layer');
-                  $('#viz_menu ul li:eq(1)').removeClass('current_layer');
-                  LayerID = parseInt($('.current_layer').attr('id').replace('layer_', ''));
+              $('#otherFuncs li:eq(1) .c select').change(function(evt) {
+                if (evt.currentTarget.value === 'Percent') {
                   percentage = true;
-                  return _this.generateVizData();
-                } else if (evt.currentTarget.innerText === 'Values') {
-                  $('#viz_menu ul li:eq(1)').addClass('current_layer');
-                  $('#viz_menu ul li:eq(0)').removeClass('current_layer');
-                  LayerID = parseInt($('.current_layer').attr('id').replace('layer_', ''));
+                } else {
                   percentage = false;
-                  return _this.generateVizData();
                 }
+                LayerID = parseInt($('.current_layer').attr('id').replace('layer_', ''));
+                return _this.generateVizData();
               });
               _this.prepareData();
               return _this.generateVizData();
@@ -290,26 +284,27 @@
     };
 
     taxonomyViz.prototype.drawD3Bar = function() {
-      var i, j, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3, _ref4;
+      var i, j, selectedSampleCopy, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3, _ref4;
+      selectedSampleCopy = this.selected_samples.slice(0);
       vizdata = null;
       vizdata = new Array(new_data_matrix_onLayer.length);
       sumEachTax = null;
       sumEachTax = new Array(new_data_matrix_onLayer.length);
       if (deleteSampleArr.length > 0) {
         for (i = _i = 0, _ref = deleteSampleArr.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-          this.selected_samples.splice(this.selected_samples.indexOf(deleteSampleArr[i]), 1);
+          selectedSampleCopy.splice(selectedSampleCopy.indexOf(deleteSampleArr[i]), 1);
         }
       }
       for (i = _j = 0, _ref1 = new_data_matrix_onLayer.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-        vizdata[i] = new Array(this.selected_samples.length);
+        vizdata[i] = new Array(selectedSampleCopy.length);
         sumEachTax[i] = 0;
-        for (j = _k = 0, _ref2 = this.selected_samples.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; j = 0 <= _ref2 ? ++_k : --_k) {
+        for (j = _k = 0, _ref2 = selectedSampleCopy.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; j = 0 <= _ref2 ? ++_k : --_k) {
           vizdata[i][j] = new Object();
-          vizdata[i][j].x = this.selected_samples[j];
+          vizdata[i][j].x = selectedSampleCopy[j];
           vizdata[i][j].i = i;
           if (deleteOTUArr.indexOf(i) === -1) {
-            vizdata[i][j].y = new_data_matrix_onLayer[i][this.selected_samples[j]];
-            sumEachTax[i] += new_data_matrix_onLayer[i][this.selected_samples[j]];
+            vizdata[i][j].y = new_data_matrix_onLayer[i][selectedSampleCopy[j]];
+            sumEachTax[i] += new_data_matrix_onLayer[i][selectedSampleCopy[j]];
           } else {
             vizdata[i][j].y = 0;
           }
@@ -317,14 +312,14 @@
         }
       }
       sumEachCol = null;
-      sumEachCol = new Array(this.selected_samples.length);
-      if (this.selected_samples.length > 0) {
-        for (i = _l = 0, _ref3 = this.selected_samples.length - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
+      sumEachCol = new Array(selectedSampleCopy.length);
+      if (selectedSampleCopy.length > 0) {
+        for (i = _l = 0, _ref3 = selectedSampleCopy.length - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
           sumEachCol[i] = 0;
           for (j = _m = 0, _ref4 = new_data_matrix_onLayer.length - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; j = 0 <= _ref4 ? ++_m : --_m) {
             vizdata[j][i].y0 = sumEachCol[i];
             if (deleteOTUArr.indexOf(j) === -1) {
-              sumEachCol[i] += new_data_matrix_onLayer[j][this.selected_samples[i]];
+              sumEachCol[i] += new_data_matrix_onLayer[j][selectedSampleCopy[i]];
             }
           }
         }
@@ -333,7 +328,7 @@
     };
 
     taxonomyViz.prototype.drawBasicBars = function() {
-      var divCont, h, i, infoPanel, label, margin, max_single, rect, rule, svg, taxonomy, that, w, x, y, _i, _j, _ref, _ref1;
+      var delePanel, divCont, h, i, infoPanel, label, margin, max_single, rect, rule, svg, taxonomy, that, w, x, y, _i, _j, _ref, _ref1;
       that = this;
       this.fadeInOutCtrl();
       w = 1200;
@@ -352,6 +347,7 @@
       format = d3.format(',d');
       svg = d3.select("#taxonomy_container").append("svg").attr("width", w).attr("height", h).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
       infoPanel = d3.select("#taxonomy_container").append("div").attr("class", "tooltipOverSmallThumb").style("visibility", "hidden");
+      delePanel = d3.select("#taxonomy_container").append("div").attr("class", "tooltipOverSmallThumb").style("visibility", "hidden");
       taxonomy = svg.selectAll('g.taxonomy').data(vizdata).enter().append('g').attr('class', 'taxonomy').style('fill', function(d, i) {
         return fillCol[i % 20];
       }).on('mouseover', function(d, i) {
@@ -405,13 +401,47 @@
           top: (d3.event.pageY - 10) + "px",
           left: (d3.event.pageX + 10) + "px"
         });
+      }).on('mouseout', function(d, i) {
+        return infoPanel.style({
+          "visibility": "hidden"
+        });
       }).on('click', function(d, i) {
-        var content;
-        content = '<b><i>Remove Sample?</i></b>&nbsp;&nbsp;<i class="icon-remove icon-large" id = "iconRemoverPanel"></i>';
-        infoPanel.html(content);
-        return $('#iconRemoverPanel').click(function() {
+        var content, k, _i, _ref;
+        content = '';
+        content = '<b><i>Remove sample ' + d.x + '?</i></b>&nbsp;&nbsp;<i class="icon-remove icon-large" id = "iconRemoverPanel"></i><div>';
+        if (deleteSampleArr.length > 0) {
+          content += '<br/>Deleted samples: <ul id = "deleteSampleArr">';
+          for (k = _i = 0, _ref = deleteSampleArr.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; k = 0 <= _ref ? ++_i : --_i) {
+            content += '<li><input type="checkbox" id="delete_' + deleteSampleArr[k] + '" checked /><label style="margin-top: 1px;" for="delete_' + deleteSampleArr[k] + '"></label>&nbsp;&nbsp;Sample ' + deleteSampleArr[k] + '</li>';
+          }
+          content += '</ul></div>';
+        }
+        delePanel.html(content);
+        delePanel.style({
+          "visibility": "visible",
+          top: (d3.event.pageY - 10) + "px",
+          left: (d3.event.pageX + 10) + "px"
+        });
+        infoPanel.style({
+          "visibility": "hidden"
+        });
+        $('#iconRemoverPanel').click(function() {
           deleteSampleArr.push(d.x);
           return that.drawD3Bar();
+        });
+        return $('#deleteSampleArr li').each(function(index) {
+          return $(this).click(function() {
+            var thisSampID;
+            thisSampID = parseInt($(this)[0].children[0].id.replace('delete_', ''));
+            if ($('#delete_' + thisSampID).is(':checked')) {
+              $('#delete_' + thisSampID).prop("checked", false);
+              deleteSampleArr.splice(deleteSampleArr.indexOf(thisSampID), 1);
+            } else {
+              $('#delete_' + thisSampID).prop("checked", true);
+              deleteSampleArr.push(thisSampID);
+            }
+            return that.drawD3Bar();
+          });
         });
       });
       label = svg.selectAll('text').data(x.domain()).enter().append('text').text(function(d, i) {
@@ -455,7 +485,7 @@
         }
       }
       $('#fake_taxonomy_container').html(divCont);
-      $('#viz_container').append('<canvas id="outline" width="200" height="' + (window.innerHeight - 280) + '"></canvas>');
+      $('#viz_container').append('<canvas id="outline" width="150" height="' + (window.innerHeight - 280) + '"></canvas>');
       if (this.selected_samples.length > 20) {
         return $('#outline').fracs('outline', {
           crop: true,
@@ -464,7 +494,7 @@
               selector: 'section',
               fillStyle: 'rgb(230,230,230)'
             }, {
-              selector: '#header, #file_details, #nav_graph, #viz_menu, #autoCompleteList',
+              selector: '#header, #file_details, #autoCompleteList',
               fillStyle: 'rgb(68,68,68)'
             }, {
               selector: '.fake',
@@ -531,14 +561,13 @@
                   $(this).find('span').css('background-color', '#aaa');
                   $(this).css('color', '#aaa');
                   deleteOTUArr.push(index);
-                  return that.drawD3Bar();
                 } else {
                   $('#search_' + index).prop("checked", true);
                   $(this).find('span').css('background-color', fillCol[index % 20]);
                   $(this).css('color', '#000');
                   deleteOTUArr.splice(deleteOTUArr.indexOf(index), 1);
-                  return that.drawD3Bar();
                 }
+                return that.drawD3Bar();
               });
             });
             $('#iconRemover').click(function() {
@@ -1090,20 +1119,20 @@
 
     taxonomyViz.prototype.fadeInOutCtrl = function() {
       $("#taxonomy_container").html("");
-      $('#nav_graph').fadeIn(500);
       return $('#layer_' + LayerID).delay(500).queue(function(n) {
         $('#footer').css("position", "relative");
         $('#taxonomy_container').fadeIn(500);
+        $('.dg').fadeIn(500);
         if (VizID === 0) {
-          $('#viz_menu').fadeIn(500);
           $('#outline').fadeIn(500);
+          $('#tags').fadeIn(500);
         }
         if (VizID === 2) {
           $('#layer_6').hide();
           $('#layer_7').hide();
         }
         $('#layer_' + LayerID).removeClass("loading_notes");
-        $('#nav_graph li').removeClass('current_layer');
+        $('#LayerFolder ul li .layer_change').removeClass('current_layer');
         $('#layer_' + LayerID).addClass('current_layer');
         return n();
       });

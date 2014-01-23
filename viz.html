@@ -25,36 +25,27 @@
         <section id = "header">
             <p id = "LOGO"><a href = "index.html">PHINCH</a></p>
             <div id = "menu">
-                <p><a href="viz.html"><i class="icon-chevron-sign-left icon-large" style="display: none;"></i>&nbsp;&nbsp;&nbsp;</a><a href="about.html"><i class="icon-info-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="instruction.html"><i class="icon-question-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="https://github.com/shujianbu/pinch" target="_blank"><i class="icon-github icon-large"></i></a></p>
+                <p><a href="viz.html"><i class="icon-chevron-sign-left icon-large" style="display: none;"></i>&nbsp;&nbsp;&nbsp;</a><a href="about.html"><i class="icon-info-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="instruction.html"><i class="icon-question-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="https://github.com/shujianbu/pinch" target="_blank"><i class="icon-github icon-large"></i></a>&nbsp;&nbsp;&nbsp;<a href="https://wordpress.com" target="_blank"><i class="icon-file-text-o icon-large"></i></a></p>
             </div>
         </section>
 
         <section id = "up_sec" style="display:none;">
-            
             <div id = "file_details">
                 <div id = "back_box">
                     <p id = "box_title"> file details </p>
                     <p id = "file_numbers"></p>
                 </div>
             </div>
-
-
-            <div id = "graph_export">
-                <ul id="nav_graph">
-                    <li id="layer_2" class="loading_notes layer_change current_layer">Layer 2</li>
-                    <li id="layer_3" class="layer_change">Layer 3</li>
-                    <li id="layer_4" class="layer_change">Layer 4</li>
-                    <li id="layer_5" class="layer_change">Layer 5</li>
-                    <li id="layer_6" class="layer_change">Layer 6</li>
-                    <li id="layer_7" class="layer_change">Layer 7</li>
-                    <li id= "shareToOthers" ><a href="#">Share</a></li>
-                </ul> 
-            </div>
-
             <div style="position: absolute; right: 30px; top: 60px;">
                 <select id = "attributes_dropdown" style="display: none;"></select>  
             </div>
 
+        </section>
+
+        <section id = "NotSupported">
+            <br /> <br />
+            <h1>Not Supported</h1>
+            <p>The browser you are using does not support <a href="https://developer.mozilla.org/en-US/docs/IndexedDB" target="_blank">IndexedDB</a>, which is required for the Phinch framework!</p>
         </section>
 
         <section id="GraphGallery">
@@ -89,22 +80,15 @@
 
         <section id = "viz_container">
             <div id="taxonomy_container"></div> 
-            <div id="viz_menu">
-                <ul>
-                    <!-- <li><i class="icon-zoom-out icon-large" id = "iconZoomOut"></i> &nbsp;&nbsp; <i class="icon-zoom-in icon-large" id = "iconZoomIn"></i></li> -->
-                    <li>Percent</li>
-                    <li class="current_layer">Values</li>
 
-                    <li><input type="text" name="search" placeholder="  search..." id = 'tags'></li>
-                </ul>
-            </div>
+            <input type="text" name="search" placeholder="  search..." id = 'tags'>
             <div id = "autoCompleteList"></div>
             <div id="fake_taxonomy_container"></div>
             <!-- -->
         </section>
 
         <section class = "footer">
-            <p class = "footer_copyright">Copyright © 2013 Phinch</p>
+            <p class = "footer_copyright">Copyright © 2014 Phinch. This content is released under the <a href="http://opensource.org/licenses/MIT" target="_blank">MIT License.</p>
         </section>
 
         <script src="lib/jquery-1.10.1.min.js"></script>
@@ -118,17 +102,50 @@
         <script src="lib/dat.gui.min.js"></script>
         <script src="scripts/taxonomyViz.js"></script>
 
-
         <script>
-            $(function() {
-                $( "#GraphGallery img" ).each( function(index) {
-                    $(this).click( function() {
+        if ( !( navigator.userAgent.match(/Chrome/i) || navigator.userAgent.match(/Firefox/i) ) || !window.File || !window.FileReader || !window.FileList || !window.Blob ){
+            alert('Please use Chrome or Firefox! Your browser does not support the Phinch framework!');
+            $('#up_sec').hide();
+            $('#GraphGallery').hide();
+            $('#NotSupported').show();
+            $('.footer').css("position", "fixed");
+        } else {
 
-                        $('#GraphGallery').fadeOut(800, function(){ $('.icon-chevron-sign-left').show(); $('#up_sec').fadeIn(800); });
-                        var app = new taxonomyViz(index);                
+
+            $( "#GraphGallery img" ).each( function(index) {
+                $(this).click( function() {
+                    $('#GraphGallery').fadeOut(800, function(){ 
+                        $('.icon-chevron-sign-left').show(); 
+                        $('#up_sec').fadeIn(800); 
+
+                        var FizzyText = function() {
+                            this.Layer2 = false; this.Layer3 = false; this.Layer4 = false; this.Layer5 = false; this.Layer6 = false; this.Layer7 = false;
+                            this.Display = 'Values'; this.Export = false; this.Share = false;
+                        };
+
+                        var text = new FizzyText();
+                        var gui = new dat.GUI();
+                        var f1 = gui.addFolder('Layers');
+                        f1.add(text, 'Layer2'); f1.add(text, 'Layer3'); f1.add(text, 'Layer4'); f1.add(text, 'Layer5'); f1.add(text, 'Layer6'); f1.add(text, 'Layer7');
+                        var f2 = gui.addFolder('Others');
+                        f2.add(text, 'Display', [ 'Values', 'Percent' ] );
+                        f2.add(text, 'Export'); f2.add(text, 'Share');  
+
+                        gui.domElement.childNodes[1].children[0].children[0].id = 'LayerFolder';
+                        gui.domElement.childNodes[1].children[1].children[0].children[0].id = 'otherFuncs';
+
+                        $('#LayerFolder ul li').each( function(index_layer) {
+                            d3.select(this).select('.property-name').attr('id', 'layer_' + (index_layer + 1) ).attr('class', 'layer_change');
+                            if (index_layer == 1) { d3.select(this).select('.property-name').attr('class', 'loading_notes').attr('class', 'current_layer'); }
+                        });
+
                     });
+
+                    var app = new taxonomyViz(index);
+                                      
                 });
             });
+        }
         </script>
 
     </body>

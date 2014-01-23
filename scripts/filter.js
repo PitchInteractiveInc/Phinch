@@ -4,6 +4,10 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   filter = (function() {
+    var filename;
+
+    filename = null;
+
     function filter() {
       this.drawBasicBars = __bind(this.drawBasicBars, this);
       var _this = this;
@@ -22,42 +26,14 @@
         return s.biom.query().all().execute().done(function(results) {
           var currentData, i, _i, _ref;
           currentData = results[results.length - 1];
+          filename = currentData.name;
           _this.biom = JSON.parse(currentData.data);
           _this.attr_length = _this.biom.shape[1] - 1;
           _this.generateColumns();
           _this.generateColumnsSummary();
           _this.generateColumnsValues();
           _this.generateDate();
-          $("#file_numbers").append("File: " + currentData.name + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation: " + _this.biom.shape[0] + ", Sample: " + _this.biom.shape[1]);
-          $('#downloadPinchButton').click(function() {
-            return _this.downloadPinch(currentData.name);
-          });
-          $('#jumpToGallery').click(function() {
-            return db.open({
-              server: "BiomSample",
-              version: 1,
-              schema: {
-                "biomSample": {
-                  key: {
-                    keyPath: 'id',
-                    autoIncrement: true
-                  }
-                }
-              }
-            }).done(function(s) {
-              var sampleToStore;
-              sampleToStore = {};
-              sampleToStore.name = currentData.name;
-              sampleToStore.type = 'sampleIDs';
-              sampleToStore.selected_sample = _this.selected_sample;
-              sampleToStore.groupable = _this.groupable_array;
-              sampleToStore.selected_groupable_array = _this.selected_groupable_array;
-              sampleToStore.selected_attributes_array = _this.selected_attributes_array;
-              return s.biomSample.add(sampleToStore).done(function(item) {
-                return setTimeout("window.location.href = 'viz.html'", 1000);
-              });
-            });
-          });
+          $("#file_numbers").append("File: " + filename + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation: " + _this.biom.shape[0] + ", Sample: " + _this.biom.shape[1]);
           _this.generateLeftDates();
           _this.generateLeftNumeric();
           _this.generateLeftNonNumeric();
@@ -74,6 +50,34 @@
         });
       });
     }
+
+    filter.prototype.jumpToGallery = function() {
+      var _this = this;
+      return db.open({
+        server: "BiomSample",
+        version: 1,
+        schema: {
+          "biomSample": {
+            key: {
+              keyPath: 'id',
+              autoIncrement: true
+            }
+          }
+        }
+      }).done(function(s) {
+        var sampleToStore;
+        sampleToStore = {};
+        sampleToStore.name = filename;
+        sampleToStore.type = 'sampleIDs';
+        sampleToStore.selected_sample = _this.selected_sample;
+        sampleToStore.groupable = _this.groupable_array;
+        sampleToStore.selected_groupable_array = _this.selected_groupable_array;
+        sampleToStore.selected_attributes_array = _this.selected_attributes_array;
+        return s.biomSample.add(sampleToStore).done(function(item) {
+          return setTimeout("window.location.href = 'viz.html'", 1000);
+        });
+      });
+    };
 
     filter.prototype.generateColumns = function() {
       var flag, i, idential_elements_in_array, idential_elements_in_array_flag, j, key, starting_flag, _i, _j, _k, _l, _ref, _ref1, _ref2, _ref3, _ref4, _results;
@@ -667,7 +671,7 @@
       return console.log('selected_sample: ' + this.selected_sample.length);
     };
 
-    filter.prototype.downloadPinch = function(filename) {
+    filter.prototype.downloadPinch = function() {
       var blob, flag, i, index, j, k, obj, pinch, pinch_data_matrix, sum_rows, valid_rows_count, _i, _j, _k, _l, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
       pinch = this.biom;
       pinch.generated_by = 'Phinch 1.0';
