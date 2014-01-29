@@ -12,7 +12,7 @@ The sheer volume of data produced from high-throughput sequencing technologies w
 
 Scientific visualization represents an innovative method towards tackling the current bottleneck in bioinformatics; in addition to giving researchers a unique approach for exploring large datasets, it stands to empower biologists with the ability to conduct powerful analyses without requiring a deep level of computational knowledge. 
 
-### Instruction
+### Instructions
 
 [Phinch](http://phinch.org/) is optimized for use in the Chrome browser.
 
