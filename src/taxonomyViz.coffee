@@ -187,7 +187,8 @@ class taxonomyViz
 				@drawTaxonomyDonuts( @groupable[0] )
 			else 
 				alert("Groupable chart not available for this dataset!")
-		else if VizID == 4 
+		else if VizID == 4
+			d3.select('#viz_container').append('div').attr('id', 'countResult');
 			if @selected_attributes_array.length > 0 
 				for i in [0..@selected_attributes_array.length-1]
 					$('#attributes_dropdown').append('<option>' + @selected_attributes_array[i] + '</option>');
@@ -948,43 +949,48 @@ class taxonomyViz
 	drawTaxonomyByAttributes : (cur_attribute) -> 
 
 		$('#attributes_dropdown').fadeIn(800)
+
 		selected_new_data_matrix_onLayer = new Array(new_data_matrix_onLayer.length) # only contains selected samples
 
 		# find all different values
 		attributes_array = []
+		countEmpty = []
 		for i in [0..@selected_samples.length-1]
-			if attributes_array.indexOf( parseInt( @biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) == -1 and @biom.columns[ @selected_samples[i] ].metadata[cur_attribute] != 'no_data'
-				attributes_array.push( parseInt( @biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) )
+			if attributes_array.indexOf( parseFloat( @biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) == -1 and @biom.columns[ @selected_samples[i] ].metadata[cur_attribute] != 'no_data'
+				attributes_array.push( parseFloat( @biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) )
 
 		attributes_array.sort(@numberSort)
 		count = new Array( attributes_array.length)
 		for i in [0..attributes_array.length-1]
-			count[i] = 0
+			count[i] = []
 		
 		for i in [0..new_data_matrix_onLayer.length-1]  # layer 2 - 68 
 			# 1 store only selected data
 			selected_new_data_matrix_onLayer[i] = new Array(attributes_array.length)
 			for j in [0..attributes_array.length-1]
-				selected_new_data_matrix_onLayer[i][j] = 0
+				selected_new_data_matrix_onLayer[i][j] = 0.0
 			for j in [0..@selected_samples.length-1]
-				arr_id = attributes_array.indexOf( parseInt( @biom.columns[ @selected_samples[j] ].metadata[cur_attribute].split(" ")[0]) )
+				arr_id = attributes_array.indexOf( parseFloat( @biom.columns[ @selected_samples[j] ].metadata[cur_attribute].split(" ")[0]) )
 				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][ @selected_samples[j] ] 
 
 		for i in [0..@selected_samples.length-1]
-			count[ attributes_array.indexOf( parseInt( @biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) ]++
+			if ! isNaN( parseFloat( @biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) )
+				count[ attributes_array.indexOf( parseFloat( @biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) ].push(@selected_samples[i])
+			else 
+				countEmpty.push(@selected_samples[i])
 
 		vizdata = new Array(selected_new_data_matrix_onLayer.length)
-		sumEachCol = new Array(count.length)
+		sumEachCol = new Array(attributes_array.length)
 
 		for i in [0..selected_new_data_matrix_onLayer.length-1]
-			vizdata[i] = new Array(count.length)
-			for j in [0..count.length-1]
+			vizdata[i] = new Array(attributes_array.length)
+			for j in [0..attributes_array.length-1]
 				vizdata[i][j] = new Object()
 				vizdata[i][j].x = j 
 				vizdata[i][j].y = selected_new_data_matrix_onLayer[i][j]
 				vizdata[i][j].name = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6] 
 
-		for i in [0..count.length-1]
+		for i in [0..attributes_array.length-1]
 			sumEachCol[i] = 0
 			for j in [0..selected_new_data_matrix_onLayer.length-1]
 				vizdata[j][i].y0 = sumEachCol[i]
@@ -992,12 +998,13 @@ class taxonomyViz
 
 		@drawBasicColumns(attributes_array)
 
-		# console.log selected_new_data_matrix_onLayer   # console.log attributes_array   # console.log 'count: ' + count
-	
+		# console.log selected_new_data_matrix_onLayer   # console.log attributes_array   
+		# console.log 'count: '  console.log count
+		$('#countResult').html(countEmpty)
+		
 	drawBasicColumns: (attributes_array) -> 
 
 		@fadeInOutCtrl()
-
         # 1 Plot     
 		w = if sumEachCol.length < 80 then 1500 else sumEachCol.length * 18 + 200
 		h = 800
@@ -1122,16 +1129,6 @@ class taxonomyViz
 					return Math.round( i / (y.ticks(10).length-1) * 100 ) + '%'
 			)
 
-		d3.select('#iconZoomOut').on('click', () -> 
-			console.log 'zoomOut'
-			svg.attr("transform", "translate(" + margin.left + "," + margin.top + ")scale(" + 1 + ")")
-		)
-
-		d3.select('#iconZoomIn').on('click', () -> 
-			g_scale *= 2
-			svg.attr("transform", "scale(" + g_scale + ")")
-		)
-
 	#####################################################################################################################         
 	###############################################   UTILITIES   #######################################################  
 	#####################################################################################################################  
@@ -1139,11 +1136,13 @@ class taxonomyViz
 	numberSort: (a,b) -> return a - b
 
 	fadeInOutCtrl: () -> 
+
 		$("#taxonomy_container").html("")
 		$('#layer_' + LayerID).delay(500).queue (n) -> 
-			$('#footer').css("position" ,"relative")
+			# $('#footer').css("position" ,"relative")
 			$('#taxonomy_container').fadeIn(500)
 			$('.dg').fadeIn(500)
+			# console.log $('#taxonomy_container')
 			if VizID == 0
 				$('#outline').fadeIn(500)
 				$('#tags').fadeIn(500)

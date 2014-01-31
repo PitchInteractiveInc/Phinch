@@ -263,6 +263,7 @@
           return alert("Groupable chart not available for this dataset!");
         }
       } else if (VizID === 4) {
+        d3.select('#viz_container').append('div').attr('id', 'countResult');
         if (this.selected_attributes_array.length > 0) {
           for (i = _q = 0, _ref8 = this.selected_attributes_array.length - 1; 0 <= _ref8 ? _q <= _ref8 : _q >= _ref8; i = 0 <= _ref8 ? ++_q : --_q) {
             $('#attributes_dropdown').append('<option>' + this.selected_attributes_array[i] + '</option>');
@@ -950,52 +951,58 @@
     };
 
     taxonomyViz.prototype.drawTaxonomyByAttributes = function(cur_attribute) {
-      var arr_id, attributes_array, count, i, j, selected_new_data_matrix_onLayer, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+      var arr_id, attributes_array, count, countEmpty, i, j, selected_new_data_matrix_onLayer, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
       $('#attributes_dropdown').fadeIn(800);
       selected_new_data_matrix_onLayer = new Array(new_data_matrix_onLayer.length);
       attributes_array = [];
+      countEmpty = [];
       for (i = _i = 0, _ref = this.selected_samples.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        if (attributes_array.indexOf(parseInt(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0])) === -1 && this.biom.columns[this.selected_samples[i]].metadata[cur_attribute] !== 'no_data') {
-          attributes_array.push(parseInt(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0]));
+        if (attributes_array.indexOf(parseFloat(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0])) === -1 && this.biom.columns[this.selected_samples[i]].metadata[cur_attribute] !== 'no_data') {
+          attributes_array.push(parseFloat(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0]));
         }
       }
       attributes_array.sort(this.numberSort);
       count = new Array(attributes_array.length);
       for (i = _j = 0, _ref1 = attributes_array.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-        count[i] = 0;
+        count[i] = [];
       }
       for (i = _k = 0, _ref2 = new_data_matrix_onLayer.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
         selected_new_data_matrix_onLayer[i] = new Array(attributes_array.length);
         for (j = _l = 0, _ref3 = attributes_array.length - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; j = 0 <= _ref3 ? ++_l : --_l) {
-          selected_new_data_matrix_onLayer[i][j] = 0;
+          selected_new_data_matrix_onLayer[i][j] = 0.0;
         }
         for (j = _m = 0, _ref4 = this.selected_samples.length - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; j = 0 <= _ref4 ? ++_m : --_m) {
-          arr_id = attributes_array.indexOf(parseInt(this.biom.columns[this.selected_samples[j]].metadata[cur_attribute].split(" ")[0]));
+          arr_id = attributes_array.indexOf(parseFloat(this.biom.columns[this.selected_samples[j]].metadata[cur_attribute].split(" ")[0]));
           selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][this.selected_samples[j]];
         }
       }
       for (i = _n = 0, _ref5 = this.selected_samples.length - 1; 0 <= _ref5 ? _n <= _ref5 : _n >= _ref5; i = 0 <= _ref5 ? ++_n : --_n) {
-        count[attributes_array.indexOf(parseInt(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0]))]++;
+        if (!isNaN(parseFloat(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0]))) {
+          count[attributes_array.indexOf(parseFloat(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0]))].push(this.selected_samples[i]);
+        } else {
+          countEmpty.push(this.selected_samples[i]);
+        }
       }
       vizdata = new Array(selected_new_data_matrix_onLayer.length);
-      sumEachCol = new Array(count.length);
+      sumEachCol = new Array(attributes_array.length);
       for (i = _o = 0, _ref6 = selected_new_data_matrix_onLayer.length - 1; 0 <= _ref6 ? _o <= _ref6 : _o >= _ref6; i = 0 <= _ref6 ? ++_o : --_o) {
-        vizdata[i] = new Array(count.length);
-        for (j = _p = 0, _ref7 = count.length - 1; 0 <= _ref7 ? _p <= _ref7 : _p >= _ref7; j = 0 <= _ref7 ? ++_p : --_p) {
+        vizdata[i] = new Array(attributes_array.length);
+        for (j = _p = 0, _ref7 = attributes_array.length - 1; 0 <= _ref7 ? _p <= _ref7 : _p >= _ref7; j = 0 <= _ref7 ? ++_p : --_p) {
           vizdata[i][j] = new Object();
           vizdata[i][j].x = j;
           vizdata[i][j].y = selected_new_data_matrix_onLayer[i][j];
           vizdata[i][j].name = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6];
         }
       }
-      for (i = _q = 0, _ref8 = count.length - 1; 0 <= _ref8 ? _q <= _ref8 : _q >= _ref8; i = 0 <= _ref8 ? ++_q : --_q) {
+      for (i = _q = 0, _ref8 = attributes_array.length - 1; 0 <= _ref8 ? _q <= _ref8 : _q >= _ref8; i = 0 <= _ref8 ? ++_q : --_q) {
         sumEachCol[i] = 0;
         for (j = _r = 0, _ref9 = selected_new_data_matrix_onLayer.length - 1; 0 <= _ref9 ? _r <= _ref9 : _r >= _ref9; j = 0 <= _ref9 ? ++_r : --_r) {
           vizdata[j][i].y0 = sumEachCol[i];
           sumEachCol[i] += selected_new_data_matrix_onLayer[j][i];
         }
       }
-      return this.drawBasicColumns(attributes_array);
+      this.drawBasicColumns(attributes_array);
+      return $('#countResult').html(countEmpty);
     };
 
     taxonomyViz.prototype.drawBasicColumns = function(attributes_array) {
@@ -1096,20 +1103,12 @@
           return null;
         }
       });
-      rule.append('text').attr('x', -25).attr("font-size", "9px").attr('text-anchor', 'end').attr('fill', '#444').text(function(d, i) {
+      return rule.append('text').attr('x', -25).attr("font-size", "9px").attr('text-anchor', 'end').attr('fill', '#444').text(function(d, i) {
         if (!percentage) {
           return format(d);
         } else {
           return Math.round(i / (y.ticks(10).length - 1) * 100) + '%';
         }
-      });
-      d3.select('#iconZoomOut').on('click', function() {
-        console.log('zoomOut');
-        return svg.attr("transform", "translate(" + margin.left + "," + margin.top + ")scale(" + 1 + ")");
-      });
-      return d3.select('#iconZoomIn').on('click', function() {
-        g_scale *= 2;
-        return svg.attr("transform", "scale(" + g_scale + ")");
       });
     };
 
@@ -1120,7 +1119,6 @@
     taxonomyViz.prototype.fadeInOutCtrl = function() {
       $("#taxonomy_container").html("");
       return $('#layer_' + LayerID).delay(500).queue(function(n) {
-        $('#footer').css("position", "relative");
         $('#taxonomy_container').fadeIn(500);
         $('.dg').fadeIn(500);
         if (VizID === 0) {

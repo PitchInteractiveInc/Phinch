@@ -152,7 +152,7 @@
             } else {
               content += '<tr class="recent_data"><td>';
             }
-            content += results[k].id + '</td><td>' + results[k].name.substring(0, 80) + '</td><td>' + (results[0].size / 1000000).toFixed(1) + "MB";
+            content += results[k].id + '</td><td>' + results[k].name.substring(0, 80) + '</td><td>' + (results[k].size / 1000000).toFixed(1) + " MB";
             content += '</td><td class="reload" id="reload_' + k + '"><center><i class="icon-upload-alt icon-large"></i></center>' + '</td><td class="del" id="del_' + k + '"><center><i class="icon-trash icon-large"></i></center></td></tr>';
           }
           content += "</table>";

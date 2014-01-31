@@ -50,6 +50,10 @@ input[type=checkbox]:checked + label:before {
     border: 1px #888 solid;
 }
 
+.descPara {
+	padding-bottom: 50px; 
+}
+
 #top_sec {
 	height: 400px;
 	background-color: #444; 
@@ -331,7 +335,6 @@ td { border-right: 1px #ccc solid;}
 }
 
 .dg {
-	display: none;
 	text-shadow: none !important;
 	font-size: 12px !important;
 }
@@ -627,6 +630,9 @@ td { border-right: 1px #ccc solid;}
 	display: none; 
 }
 
+#attributes_dropdown {
+	border: none;
+}
 .layer_change {
 	background: #444;
 	color: #fff;
@@ -878,6 +884,23 @@ rect.pane {
 	font-style: italic;
 }
 
+#countResult {
+	position: absolute;
+	width: 400px;
+	height: 200px;
+	right: 170px;
+	top: 90px;
+	font-size: 12px;
+	line-height: 16px;
+	border-radius: 3px;
+	background: rgba(255,255,255,0.9);
+	color: #000;
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	-moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	overflow-y: scroll;
+	max-height: 500px;
+	z-index: 1;
+}
 
 /* ==========================================================================
    Normalize
