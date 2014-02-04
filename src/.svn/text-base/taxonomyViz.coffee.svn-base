@@ -1,13 +1,6 @@
 class taxonomyViz
 
-	fillCol = ['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#e6550d', '#fd8d3c', '#fdae6b', '#fdd0a2', '#31a354', '#74c476', '#a1d99b', '#c7e9c0', '#756bb1', '#9e9ac8', '#bcbddc', '#dadaeb', '#636363', '#969696', '#bdbdbd', '#d9d9d9']
-	new_data_matrix = []
-	columns_sample_name_array = []
-	unique_taxonomy_comb = []
-
-	deleteOTUArr = []
-	deleteSampleArr = []
-	g_scale = 1
+	biom = null
 	percentage = false
 	LayerID = 2
 	VizID = null
@@ -17,6 +10,14 @@ class taxonomyViz
 	new_data_matrix_onLayer = null
 	unique_taxonomy_comb_onLayer = null
 	format = d3.format(',d')
+	fillCol = ['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#e6550d', '#fd8d3c', '#fdae6b', '#fdd0a2', '#31a354', '#74c476', '#a1d99b', '#c7e9c0', '#756bb1', '#9e9ac8', '#bcbddc', '#dadaeb', '#636363', '#969696', '#bdbdbd', '#d9d9d9']
+	deleteOTUArr = []
+	deleteSampleArr = []
+	new_data_matrix = []
+	unique_taxonomy_comb = []
+	columns_sample_name_array = []
+	map_array = []
+	unique_taxonomy_comb_count = []
 
 	constructor: (_VizID) -> 
 		VizID = _VizID
@@ -41,14 +42,14 @@ class taxonomyViz
 				).done (s) => 
 					s.biom.query().all().execute().done (results) => 
 						currentData = results[results.length-1]
-						@biom = JSON.parse(currentData.data)
+						biom = JSON.parse(currentData.data)
 
 						$("#file_numbers").html("");
-						$("#file_numbers").append("File: " + currentData.name + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br/>Observation: " + @biom.shape[0] + ", Selected sample: " + @selected_samples.length )
+						$("#file_numbers").append("File: " + currentData.name + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br/>Observation: " + biom.shape[0] + ", Selected sample: " + @selected_samples.length )
 
+						# 3 Click events 
 						$('.layer_change').click (evt) => 
 							LayerID = parseInt evt.currentTarget.id.replace("layer_","")
-
 							$('#layer_' + LayerID).addClass("loading_notes").delay(800).queue (n) =>
 								if $('#otherFuncs li:eq(1) .c option:selected').val() == 'Percent' 
 									percentage = true 
@@ -56,7 +57,8 @@ class taxonomyViz
 									percentage = false	
 								@generateVizData()
 								return n()
-						
+
+						# 4 Layer change 
 						$('#otherFuncs li:eq(1) .c select').change (evt) =>
 							if evt.currentTarget.value == 'Percent'
 								percentage = true
@@ -65,24 +67,23 @@ class taxonomyViz
 							LayerID = parseInt($('.current_layer').attr('id').replace('layer_',''))
 							@generateVizData()
 
+						if VizID == 5
+							LayerID = 7 
 						@prepareData()
 						@generateVizData()
 
 	prepareData: () ->
-		
-		unique_taxonomy_comb_count = []
-		map_array = [] 
 
 		# Calculate unique taxonomy combination
-		for i in [0..@biom.rows.length-1]
+		for i in [0..biom.rows.length-1]
 			flag = true
 			comp_i = new Array(7)
 			comb_len = unique_taxonomy_comb.length
 
-			if @biom.rows[i].metadata.taxonomy.indexOf(';') != -1
-				comp_i = @biom.rows[i].metadata.taxonomy.replace(/\s+/g, '').replace(/;/g,',').split(',')
+			if biom.rows[i].metadata.taxonomy.indexOf(';') != -1
+				comp_i = biom.rows[i].metadata.taxonomy.replace(/\s+/g, '').replace(/;/g,',').split(',')
 			else 
-				comp_i = @biom.rows[i].metadata.taxonomy
+				comp_i = biom.rows[i].metadata.taxonomy
 
 			if comp_i[0].indexOf('k__') == -1 
 				comp_i[0] = 'k__'
@@ -111,18 +112,18 @@ class taxonomyViz
 		# Create new data matrix 		
 		for i in [0..unique_taxonomy_comb.length-1]
 			new_data_matrix[i] = []
-			for j in [0..@biom.shape[1]-1]
+			for j in [0..biom.shape[1]-1]
 				new_data_matrix[i][j] = 0
-		for i in [0..@biom.data.length-1]
-			new_data_matrix[ map_array[@biom.data[i][0]] ][ @biom.data[i][1] ] += @biom.data[i][2]
+		for i in [0..biom.data.length-1]
+			new_data_matrix[ map_array[biom.data[i][0]] ][ biom.data[i][1] ] += biom.data[i][2]
 
-		for i in [0..@biom.shape[1]-1]
-			columns_sample_name_array.push(@biom.columns[i].id)
+		for i in [0..biom.shape[1]-1]
+			columns_sample_name_array.push(biom.columns[i].id)
 		
 	generateVizData: () ->
 		unique_taxonomy_comb_onLayer = [] 
 		new_data_matrix_onLayer = []
-		map_array = []
+		viz_map_array = []
 
 		if LayerID < 7
 			for i in [0..unique_taxonomy_comb.length-1]
@@ -135,11 +136,11 @@ class taxonomyViz
 							if comp_i[k] == unique_taxonomy_comb_onLayer[j][k]
 								flag_count++
 						if flag_count == LayerID
-							map_array[i] = j
+							viz_map_array[i] = j
 							flag = false
 							break
 				if flag
-					map_array[i] = unique_taxonomy_comb_onLayer.length 
+					viz_map_array[i] = unique_taxonomy_comb_onLayer.length 
 					switch LayerID 
 						when 6 then comp_i = [comp_i[0], comp_i[1], comp_i[2], comp_i[3], comp_i[4], comp_i[5], 's__']
 						when 5 then comp_i = [comp_i[0], comp_i[1], comp_i[2], comp_i[3], comp_i[4], 'g__', 's__']
@@ -155,7 +156,7 @@ class taxonomyViz
 					new_data_matrix_onLayer[i][j] = 0
 			for i in [0..new_data_matrix.length-1]
 				for j in [0..new_data_matrix[0].length-1]
-					new_data_matrix_onLayer[ map_array[i] ][j] += new_data_matrix[i][j]
+					new_data_matrix_onLayer[ viz_map_array[i] ][j] += new_data_matrix[i][j]
 		else
 			unique_taxonomy_comb_onLayer = unique_taxonomy_comb
 			new_data_matrix_onLayer = new_data_matrix
@@ -171,7 +172,6 @@ class taxonomyViz
 		else if VizID == 2 
 			@drawTaxonomySankey()
 		else if VizID == 3
-
 			if @groupable.length > 1 
 				for i in [0..@groupable.length-1]
 					$('#attributes_dropdown').append('<option>' + @groupable[i] + '</option>');
@@ -188,8 +188,8 @@ class taxonomyViz
 			else 
 				alert("Groupable chart not available for this dataset!")
 		else if VizID == 4
-			d3.select('#viz_container').append('div').attr('id', 'countResult');
 			if @selected_attributes_array.length > 0 
+				d3.select('#viz_container').append('div').attr('id', 'countResult');
 				for i in [0..@selected_attributes_array.length-1]
 					$('#attributes_dropdown').append('<option>' + @selected_attributes_array[i] + '</option>');
 				if $('#attributes_dropdown option:first').text() != undefined 
@@ -201,7 +201,7 @@ class taxonomyViz
 			else 
 				alert("Not supported!")
 		else if VizID == 5
-			alert("under construction!")
+			@drawOTUBubble()
 
 	#####################################################################################################################         
 	##############################################  Bar Chart & Filter ##################################################  
@@ -256,8 +256,7 @@ class taxonomyViz
 	drawBasicBars: () -> 
 
 		that = this
-		@fadeInOutCtrl() 
-
+		@fadeInOutCtrl()
         # clean canvas     
 		w = 1200 
 		h = sumEachCol.length * 14 + 200
@@ -449,8 +448,10 @@ class taxonomyViz
 		for i in [0..unique_taxonomy_comb_onLayer.length-1]  # layer 2 - 68 
 			availableTags[i] = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6]
 
+		$('#tags').keydown () -> if $('#tags').val().length < 4 then $('#autoCompleteList').fadeOut(200)
 		searchList = []
 		$('#autoCompleteList').fadeOut(800);
+
 		$( "#tags" ).autocomplete({ 
 			source: availableTags,
 			minLength: 3,
@@ -496,10 +497,8 @@ class taxonomyViz
 								deleteOTUArr.splice( deleteOTUArr.indexOf(index), 1)
 							that.drawD3Bar()
 
-					$('#iconRemover').click () ->  
-						$('#autoCompleteList').fadeOut(200)
+					$('#iconRemover').click () -> $('#autoCompleteList').fadeOut(200)
 					$('#autoCompleteList').show()
-
 				else
 					$('#autoCompleteList').html("")
 					$('#autoCompleteList').hide()
@@ -800,8 +799,8 @@ class taxonomyViz
         # 1 Prepare data - find different categories under this groupable attr   
 		groupable_array = []
 		for i in [0..@selected_samples.length-1]
-        	if groupable_array.indexOf( @biom.columns[ @selected_samples[i] ].metadata[cur_attribute] ) == -1 
-        		groupable_array.push( @biom.columns[ @selected_samples[i] ].metadata[cur_attribute] )
+        	if groupable_array.indexOf( biom.columns[ @selected_samples[i] ].metadata[cur_attribute] ) == -1 
+        		groupable_array.push( biom.columns[ @selected_samples[i] ].metadata[cur_attribute] )
 
 		count = new Array( groupable_array.length)
 		for i in [0..groupable_array.length-1]
@@ -814,12 +813,12 @@ class taxonomyViz
 			for j in [0..groupable_array.length-1]
 				selected_new_data_matrix_onLayer[i][j] = 0
 			for j in [0..@selected_samples.length-1]
-				arr_id = groupable_array.indexOf( @biom.columns[ @selected_samples[j] ].metadata[ cur_attribute ] )
+				arr_id = groupable_array.indexOf( biom.columns[ @selected_samples[j] ].metadata[ cur_attribute ] )
 				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][ @selected_samples[j] ] 
 
 		# 2 Store the sample IDs in the count 2D array 
 		for i in [0..@selected_samples.length-1]
-			count[ groupable_array.indexOf( @biom.columns[ @selected_samples[i] ].metadata[ cur_attribute ] ) ].push( @selected_samples[i] )
+			count[ groupable_array.indexOf( biom.columns[ @selected_samples[i] ].metadata[ cur_attribute ] ) ].push( @selected_samples[i] )
 
 		# 3 Plot Pie for each category 
 		d3.select('#taxonomy_container').attr("width", 1200).attr("height", 250 * groupable_array.length + 200)
@@ -949,15 +948,14 @@ class taxonomyViz
 	drawTaxonomyByAttributes : (cur_attribute) -> 
 
 		$('#attributes_dropdown').fadeIn(800)
-
 		selected_new_data_matrix_onLayer = new Array(new_data_matrix_onLayer.length) # only contains selected samples
 
-		# find all different values
+		# 1 find all different values
 		attributes_array = []
 		countEmpty = []
 		for i in [0..@selected_samples.length-1]
-			if attributes_array.indexOf( parseFloat( @biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) == -1 and @biom.columns[ @selected_samples[i] ].metadata[cur_attribute] != 'no_data'
-				attributes_array.push( parseFloat( @biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) )
+			if attributes_array.indexOf( parseFloat( biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) == -1 and biom.columns[ @selected_samples[i] ].metadata[cur_attribute] != 'no_data'
+				attributes_array.push( parseFloat( biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) )
 
 		attributes_array.sort(@numberSort)
 		count = new Array( attributes_array.length)
@@ -970,15 +968,16 @@ class taxonomyViz
 			for j in [0..attributes_array.length-1]
 				selected_new_data_matrix_onLayer[i][j] = 0.0
 			for j in [0..@selected_samples.length-1]
-				arr_id = attributes_array.indexOf( parseFloat( @biom.columns[ @selected_samples[j] ].metadata[cur_attribute].split(" ")[0]) )
+				arr_id = attributes_array.indexOf( parseFloat( biom.columns[ @selected_samples[j] ].metadata[cur_attribute].split(" ")[0]) )
 				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][ @selected_samples[j] ] 
 
 		for i in [0..@selected_samples.length-1]
-			if ! isNaN( parseFloat( @biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) )
-				count[ attributes_array.indexOf( parseFloat( @biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) ].push(@selected_samples[i])
+			if ! isNaN( parseFloat( biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) )
+				count[ attributes_array.indexOf( parseFloat( biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) ].push(@selected_samples[i])
 			else 
 				countEmpty.push(@selected_samples[i])
 
+		# 2 Build the viz data 		
 		vizdata = new Array(selected_new_data_matrix_onLayer.length)
 		sumEachCol = new Array(attributes_array.length)
 
@@ -998,10 +997,26 @@ class taxonomyViz
 
 		@drawBasicColumns(attributes_array)
 
-		# console.log selected_new_data_matrix_onLayer   # console.log attributes_array   
-		# console.log 'count: '  console.log count
-		$('#countResult').html(countEmpty)
-		
+		# console.log selected_new_data_matrix_onLayer   
+		content = ''
+		content += '<div>' + cur_attribute + '</div><div>'
+		if attributes_array.length > 0
+			for i in [0..attributes_array.length-1]
+				content += '<div>' + attributes_array[i] + ': ' 
+				if count[i].length > 0
+					for j in [0..count[i].length-1]
+						content += count[i][j] + ', '
+				else 
+					content += 'no samples'
+				content += '</div>'
+		if countEmpty.length > 0
+			content += '<div>NaN value samples: '
+			for i in [0..countEmpty.length-1]
+				content += countEmpty[i] + ', '
+			content += '</div>'
+		content += '</div>'
+		$('#countResult').html(content)
+
 	drawBasicColumns: (attributes_array) -> 
 
 		@fadeInOutCtrl()
@@ -1028,12 +1043,6 @@ class taxonomyViz
 			.append("div")
 			.attr("class", "tooltipOverSmallThumb")
 			.style("visibility", "hidden")
-
-		# zoom 
-		zoom = d3.behavior.zoom()
-			# .scaleExtent([1, 6])
-			.on "zoom", () -> 
-				svg.attr("transform", "translate(" + d3.event.translate[0] + ", 0)scale(" + g_scale + ")" ) # + ")scale(" + d3.event.scale + 
 
 		# add main viz svg
 		taxonomy = svg.selectAll('g.taxonomy')
@@ -1130,6 +1139,74 @@ class taxonomyViz
 			)
 
 	#####################################################################################################################         
+	############################################### Bubble by OTU #######################################################  
+	#####################################################################################################################  
+
+	drawOTUBubble: () -> 
+		@fadeInOutCtrl()
+		
+		# 0 Prepare the data 
+		data = new Object() 
+		data.name = 'BIOM'
+		data.children = new Array(unique_taxonomy_comb_onLayer.length)
+		for i in [0..unique_taxonomy_comb_onLayer.length-1]
+			data.children[i] = new Object()
+			data.children[i].name = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6]  
+			data.children[i].children = new Array(unique_taxonomy_comb_count[i])
+			data.children[i].counter = 0
+			for j in [0..unique_taxonomy_comb_count[i]-1]
+				data.children[i].children[j] = new Object()
+				data.children[i].children[j].id = undefined
+				data.children[i].children[j].size = 0
+		
+		for i in [0..biom.data.length-1]
+			flag = true
+			rowID = map_array[biom.data[i][0]]
+			for j in [0..unique_taxonomy_comb_count[rowID]-1]
+				if data.children[rowID].children[j].id == biom.data[i][0]
+					flag = false
+					data.children[rowID].children[j].size += biom.data[i][2]
+			if flag
+				data.children[rowID].children[data.children[rowID].counter].id = biom.data[i][0]
+				data.children[rowID].children[data.children[rowID].counter].size += biom.data[i][2]
+				data.children[rowID].counter += 1
+
+		# 1 Layout
+		w = 1280
+		h = 800
+		r = 720
+		x = d3.scale.linear().range([0, r])
+		y = d3.scale.linear().range([0, r])
+		node = null
+		root = null
+		pack = d3.layout.pack()
+			.size([r, r])
+			.value( (d) -> return d.size )
+
+		vis = d3.select("#taxonomy_container").append("svg:svg")
+			.attr("width", 1500)
+			.attr("height", 1200)
+			.append('svg:g')
+			.attr("transform", "translate(" + (w - r) / 2 + "," + (h - r) / 2 + ")")
+
+		node = data;
+		root = data;
+		nodes = pack.nodes(root);
+
+		vis.selectAll("circle").data(nodes)
+		.enter().append("svg:circle")
+			.attr("class", (d) -> 
+				if d.children != null
+					return 'parent'
+				else 
+					return 'child'
+			)		
+			.attr("cx", (d) -> return d.x)
+			.attr("cy", (d) -> return d.y)
+			.attr("r", (d) -> return d.r)
+			# .on("click", (d) -> return zoom(node == d ? root : d))
+			
+	#####################################################################################################################         
 	###############################################   UTILITIES   #######################################################  
 	#####################################################################################################################  
 
@@ -1138,21 +1215,34 @@ class taxonomyViz
 	fadeInOutCtrl: () -> 
 
 		$("#taxonomy_container").html("")
-		$('#layer_' + LayerID).delay(500).queue (n) -> 
-			# $('#footer').css("position" ,"relative")
-			$('#taxonomy_container').fadeIn(500)
-			$('.dg').fadeIn(500)
-			# console.log $('#taxonomy_container')
-			if VizID == 0
-				$('#outline').fadeIn(500)
-				$('#tags').fadeIn(500)
-			if VizID == 2
-				$('#layer_6').hide() 
-				$('#layer_7').hide()
-			$('#layer_' + LayerID).removeClass("loading_notes")
-			$('#LayerFolder ul li .layer_change').removeClass('current_layer');
-			$('#layer_' + LayerID).addClass('current_layer')
-			return n() 
+		$('#taxonomy_container').fadeIn(500)
+		$('.dg').fadeIn(500)
+		if VizID == 0
+			$('#outline').fadeIn(500)
+			$('#tags').fadeIn(500)
+		if VizID == 2
+			$('#layer_6').hide() 
+			$('#layer_7').hide()
+		$('#layer_' + LayerID).removeClass("loading_notes")
+		$('#LayerFolder ul li .layer_change').removeClass('current_layer');
+		$('#layer_' + LayerID).addClass('current_layer')
+
+
+		# $('#layer_' + LayerID).delay(500).queue (n) -> 
+		# 	$('#taxonomy_container').fadeIn(500)
+		# 	console.log 'wird'
+			
+		# 	# console.log $('#taxonomy_container')
+		# 	if VizID == 0
+		# 		$('#outline').fadeIn(500)
+		# 		$('#tags').fadeIn(500)
+		# 	if VizID == 2
+		# 		$('#layer_6').hide() 
+		# 		$('#layer_7').hide()
+		# 	$('#layer_' + LayerID).removeClass("loading_notes")
+		# 	$('#LayerFolder ul li .layer_change').removeClass('current_layer');
+		# 	$('#layer_' + LayerID).addClass('current_layer')
+		# 	return n() 
 
 
 window.taxonomyViz = taxonomyViz

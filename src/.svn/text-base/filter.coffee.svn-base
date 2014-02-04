@@ -1,6 +1,18 @@
 class filter
 
+	biom = null
 	filename = null
+	attr_length = null
+	date_array = []
+	no_data_attributes_array = []
+	unknown_array = []
+	attributes_array = []
+	attributes_array_units = []
+	groupable_array = []
+	groupable_array_content = []
+	columns_sample_name_array = [] # All sample names 
+	columns_sample_count_list = [] # Each sample count
+	columns_non_empty_sample_count = [] # Add up all columns 
 
 	constructor: () -> 
 		db.open(
@@ -11,17 +23,17 @@ class filter
 			s.biom.query().all().execute().done (results) => 
 				currentData = results[results.length-1]
 				filename = currentData.name
-				@biom = JSON.parse(currentData.data)
+				biom = JSON.parse(currentData.data)
 				
 				# Parse 		
-				@attr_length = @biom.shape[1]-1
+				attr_length = biom.shape[1]-1
 				@generateColumns()
 				@generateColumnsSummary()
 				@generateColumnsValues()
 				@generateDate()
 
 				# Build
-				$("#file_numbers").append( "File: " + filename + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation: " + @biom.shape[0] + ", Sample: " + @biom.shape[1] )
+				$("#file_numbers").append( "File: " + filename + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation: " + biom.shape[0] + ", Sample: " + biom.shape[1] )
 
 				@generateLeftDates()
 				@generateLeftNumeric()
@@ -29,10 +41,10 @@ class filter
 				@generateLeftGroupable()
 
 				# remove the numbers and leave the string values
-				if @groupable_array_content.length > 0
-					for i in [0..@groupable_array_content.length-1]
-						if typeof @groupable_array_content[i] == 'number'
-							@groupable_array_content.splice( @groupable_array_content.indexOf(@groupable_array_content[i]),1 )
+				if groupable_array_content.length > 0
+					for i in [0..groupable_array_content.length-1]
+						if typeof groupable_array_content[i] == 'number'
+							groupable_array_content.splice( groupable_array_content.indexOf(groupable_array_content[i]),1 )
 
 				@generateThumbnails()
 				@livePreview()
@@ -48,7 +60,7 @@ class filter
 			sampleToStore.name = filename
 			sampleToStore.type = 'sampleIDs'
 			sampleToStore.selected_sample = @selected_sample
-			sampleToStore.groupable = @groupable_array
+			sampleToStore.groupable = groupable_array
 			sampleToStore.selected_groupable_array = @selected_groupable_array
 			sampleToStore.selected_attributes_array = @selected_attributes_array
 			s.biomSample.add( sampleToStore ).done (item) -> 
@@ -57,112 +69,102 @@ class filter
 	# 1 Parse Data 
 
 	generateColumns: () ->
-		@date_array = []
-		@no_data_attributes_array = []
-		@attributes_array = []
-		@attributes_array_units = []
-		@groupable_array = []
-		@groupable_array_content = []
-		@unknown_array = []
 		
-		for key of @biom.columns[0].metadata
+		for key of biom.columns[0].metadata
 			if key.toLowerCase().indexOf("date") != -1
-				@date_array.push(key)
+				date_array.push(key)
 
 			else if (key.toLowerCase().indexOf("barcode") != -1) || (key.toLowerCase().indexOf("sequence") != -1) || (key.toLowerCase().indexOf("reverse") != -1) || (key.toLowerCase() == "internalcode") || (key.toLowerCase() == "description") || (key.toLowerCase().indexOf("adapter") !=-1)
-				@no_data_attributes_array.push(key)
+				no_data_attributes_array.push(key)
 		
-			else if !isNaN(@biom.columns[0].metadata[key].split(" ")[0].replace(",","")) || @biom.columns[0].metadata[key] == "no_data" 
+			else if !isNaN(biom.columns[0].metadata[key].split(" ")[0].replace(",","")) || biom.columns[0].metadata[key] == "no_data" 
 				idential_elements_in_array_flag = false
 
-				for i in [0..@attr_length]
-					if @biom.columns[i].metadata[key] != 'no_data'
-						idential_elements_in_array = @biom.columns[i].metadata[key]
+				for i in [0..attr_length]
+					if biom.columns[i].metadata[key] != 'no_data'
+						idential_elements_in_array = biom.columns[i].metadata[key]
 						break
 
-				for i in [0..@attr_length]
-					if @biom.columns[i].metadata[key] != idential_elements_in_array and @biom.columns[i].metadata[key] != 'no_data'
+				for i in [0..attr_length]
+					if biom.columns[i].metadata[key] != idential_elements_in_array and biom.columns[i].metadata[key] != 'no_data'
 						idential_elements_in_array_flag = true
 
 				if idential_elements_in_array_flag 
-					@attributes_array.push(key)
-					for i in [0..@attr_length]
-						if @biom.columns[i].metadata[key] != 'no_data'
-							@attributes_array_units.push(@biom.columns[i].metadata[key].split(" ")[1])
+					attributes_array.push(key)
+					for i in [0..attr_length]
+						if biom.columns[i].metadata[key] != 'no_data'
+							attributes_array_units.push(biom.columns[i].metadata[key].split(" ")[1])
 				else 
-					@no_data_attributes_array.push(key)
+					no_data_attributes_array.push(key)
 
 			else if typeof key == 'string'
-				@groupable_array.push(key)
-				starting_flag = @groupable_array_content.length
-				@groupable_array_content.push(starting_flag)
+				groupable_array.push(key)
+				starting_flag = groupable_array_content.length
+				groupable_array_content.push(starting_flag)
 
 
-				for i in [0..@attr_length]
+				for i in [0..attr_length]
 					flag = true
-					if @groupable_array_content.length > 0
-						for j in [(starting_flag+1)..@groupable_array_content.length-1]
-							if @biom.columns[i].metadata[key] == @groupable_array_content[j]
+					if groupable_array_content.length > 0
+						for j in [(starting_flag+1)..groupable_array_content.length-1]
+							if biom.columns[i].metadata[key] == groupable_array_content[j]
 								flag = false 
 								break
 						if flag 
-							@groupable_array_content.push(@biom.columns[i].metadata[key])
-				if @groupable_array_content.length - starting_flag == 2 
-					@no_data_attributes_array.push(key)
-					@groupable_array.splice(@groupable_array.length-1,1)
-					@groupable_array_content.splice(@groupable_array_content.length-2, 2)
+							groupable_array_content.push(biom.columns[i].metadata[key])
+				if groupable_array_content.length - starting_flag == 2 
+					no_data_attributes_array.push(key)
+					groupable_array.splice(groupable_array.length-1,1)
+					groupable_array_content.splice(groupable_array_content.length-2, 2)
 			else 
-				@unknown_array.push(key)
+				unknown_array.push(key)
 
 	generateColumnsSummary: () -> 
-		@columns_sample_name_array = [] # All sample names 
-		@columns_sample_count_list = [] # Each sample count
-		@columns_non_empty_sample_count = [] # Add up all columns 
-		@columns_sample_total_count = 0 # Non empty sample ids, for new pinch file
+		columns_sample_total_count = 0 # Non empty sample ids, for new pinch file
 
-		for i in [0..@attr_length]
-			@columns_sample_count_list[i] = 0
-			@columns_sample_name_array.push(@biom.columns[i].id)
+		for i in [0..attr_length]
+			columns_sample_count_list[i] = 0
+			columns_sample_name_array.push(biom.columns[i].id)
 
-		for i in [0..@biom.data.length-1] 
-			@columns_sample_total_count += @biom.data[i][2]
-			@columns_sample_count_list[@biom.data[i][1]] += @biom.data[i][2]
+		for i in [0..biom.data.length-1] 
+			columns_sample_total_count += biom.data[i][2]
+			columns_sample_count_list[biom.data[i][1]] += biom.data[i][2]
 
-		for i in [0..@attr_length]
-			if @columns_sample_count_list[i] > 0 
-				@columns_non_empty_sample_count.push(i)
+		for i in [0..attr_length]
+			if columns_sample_count_list[i] > 0 
+				columns_non_empty_sample_count.push(i)
 
 	generateColumnsValues: () ->
 		@columns_metadata_array = [] # All column data values 
-		@columns_metadata_array = new Array(@attributes_array.length)
+		@columns_metadata_array = new Array(attributes_array.length)
 
-		if @attributes_array.length > 0
-			for i in [0..@attributes_array.length-1]
-				@columns_metadata_array[i] = new Array(@attr_length+1) 
-			for i in [0..@attr_length]
-				for key of @biom.columns[i].metadata
-					for j in [0..@attributes_array.length-1]
-						if key == @attributes_array[j]
-							@columns_metadata_array[j][i] = parseFloat(@biom.columns[i].metadata[key].split(" ")[0].replace(",","")) # in case there is between thousands
+		if attributes_array.length > 0
+			for i in [0..attributes_array.length-1]
+				@columns_metadata_array[i] = new Array(attr_length+1) 
+			for i in [0..attr_length]
+				for key of biom.columns[i].metadata
+					for j in [0..attributes_array.length-1]
+						if key == attributes_array[j]
+							@columns_metadata_array[j][i] = parseFloat(biom.columns[i].metadata[key].split(" ")[0].replace(",","")) # in case there is between thousands
 							if isNaN(@columns_metadata_array[j][i]) 
 								@columns_metadata_array[j][i] = -99999
 
 	generateDate: () -> 
-		@formatted_date_array = new Array(@date_array.length)
-		@sorted_number_date_array_d = new Array(@date_array.length)
-		@sorted_number_date_array_freq = new Array(@date_array.length)
-		number_date_array = new Array(@date_array.length)
+		@formatted_date_array = new Array(date_array.length)
+		@sorted_number_date_array_d = new Array(date_array.length)
+		@sorted_number_date_array_freq = new Array(date_array.length)
+		number_date_array = new Array(date_array.length)
 
-		if @date_array.length > 0
-			for m in [0..@date_array.length-1]
+		if date_array.length > 0
+			for m in [0..date_array.length-1]
 				@formatted_date_array[m] = [] 
 				@sorted_number_date_array_d[m] = []
 				@sorted_number_date_array_freq[m] = []			
-				date_meta_key = @date_array[m] 
+				date_meta_key = date_array[m] 
 				number_date_array[m] = []
 
-				for i in [0..@attr_length]
-					ori_timestamp = @biom.columns[i].metadata[date_meta_key]
+				for i in [0..attr_length]
+					ori_timestamp = biom.columns[i].metadata[date_meta_key]
 					if ori_timestamp.length < 11 && ori_timestamp.indexOf(":") == -1 # No Hour Min Sec
 						@formatted_date_array[m].push(moment(ori_timestamp).format("YYYY-MM-DD"))
 						number_date_array[m].push(moment(ori_timestamp).format("YYYYMMDD"))
@@ -178,19 +180,19 @@ class filter
 	generateLeftDates: () -> 
 		content = "" 
 		@range_dates_array = []
-		if @date_array.length == 0 
+		if date_array.length == 0 
 			$('#att_head_dates').hide() 
 		else 
-			if @date_array.length > 0
-				for m in [0..@date_array.length-1] 
+			if date_array.length > 0
+				for m in [0..date_array.length-1] 
 					if @check_unique(@formatted_date_array[m]) 
-						$('#dates').append("<div class = 'biom_valid_attr'><p>" + @date_array[m] + ": " + @formatted_date_array[m][0] + "</p></div>")
+						$('#dates').append("<div class = 'biom_valid_attr'><p>" + date_array[m] + ": " + @formatted_date_array[m][0] + "</p></div>")
 						@range_dates_array[m] = new Array(2)
 						@range_dates_array[m][0] = moment(@formatted_date_array[m][0]).utc().format("X")
 						@range_dates_array[m][1] = moment(@formatted_date_array[m][0]).utc().format("X") 
 					else 
 						content += "<div class = 'biom_valid_attr_dates'>"
-						content +=  @date_array[m]
+						content +=  date_array[m]
 						content += "<div class = 'icon-expand-collapse-c' id= 'expend_collapse_dates_icon_" + (m + 1) + "'><i class='icon-expand-alt'></i></div>"
 
 						# display smaller dates 
@@ -251,17 +253,17 @@ class filter
 						})
 
 	generateLeftNumeric: () ->
-		if @attributes_array.length == 0 
+		if attributes_array.length == 0 
 			$('#att_head_numeric').hide()
 		else 
-			if @attributes_array.length > 0
-				for i in [0..@attributes_array.length-1]
+			if attributes_array.length > 0
+				for i in [0..attributes_array.length-1]
 					content = ""
 					content += "<input type='checkbox' name='numeric_check_group' id='numeric_check_" + (i+1) + "' checked='checked' /><label for='numeric_check_" + (i+1) + "'></label>"
-					content += "<span class = 'biom_valid_attr' id='att_" + (i+1) + "'>" + @attributes_array[i] + "</span>"
+					content += "<span class = 'biom_valid_attr' id='att_" + (i+1) + "'>" + attributes_array[i] + "</span>"
 					
-					if (typeof(@attributes_array_units[i]) != 'undefined' && @attributes_array_units[i] != null)
-						content += "<input type='text' class='biom_valid_attr_units' id='unit_" + (i+1) + "' placeholder='" + @attributes_array_units[i] + "'>"
+					if (typeof(attributes_array_units[i]) != 'undefined' && attributes_array_units[i] != null)
+						content += "<input type='text' class='biom_valid_attr_units' id='unit_" + (i+1) + "' placeholder='" + attributes_array_units[i] + "'>"
 
 					content += "<div class = 'icon-expand-collapse-c' id= 'expend_collapse_icon_" + (i+1) + "'><i class='icon-expand-alt'></i></div>" 
 					content += "<div class='biom_valid_att_thumbnail_sm' id='thumb_sm_" + (i+1) + "'></div>"
@@ -295,45 +297,45 @@ class filter
 					$('#numeric_check_' + (i+1) ).click () => @livePreview() 
 
 	generateLeftNonNumeric: () ->
-		if @no_data_attributes_array.length == 0
+		if no_data_attributes_array.length == 0
 			$('#att_head_descriptive').hide()
 		else 
-			if @no_data_attributes_array.length > 0
-				for i in [0..@no_data_attributes_array.length-1] 
+			if no_data_attributes_array.length > 0
+				for i in [0..no_data_attributes_array.length-1] 
 					content = ""
-					content += "<input type='checkbox' name='non_numeric_check_group' id='non_numeric_check_" + (i+1)  + "' /><label for='non_numeric_check_" + (i+1) + "'></label><span class = 'biom_valid_attr'>" + @no_data_attributes_array[i] + "</span>"
+					content += "<input type='checkbox' name='non_numeric_check_group' id='non_numeric_check_" + (i+1)  + "' /><label for='non_numeric_check_" + (i+1) + "'></label><span class = 'biom_valid_attr'>" + no_data_attributes_array[i] + "</span>"
 					$('#non_numeric_att').append("<div>" + content + "</div>")
 
 					$('#non_numeric_check_' + (i+1)).click () => @livePreview()
 
 	generateLeftGroupable: () ->
 		pointer_left = 1
-		pointer_right = @groupable_array_content.length-1
+		pointer_right = groupable_array_content.length-1
 		check_count = 1
 
-		if @groupable_array.length == 0	 
+		if groupable_array.length == 0	 
 			$('#att_head_groupable').hide()
 		else 
-			if @groupable_array.length > 0
-				for i in [0..@groupable_array.length-1] 
+			if groupable_array.length > 0
+				for i in [0..groupable_array.length-1] 
 					flag = true 
 					toprocess = []
 
 					content = "" 
-					content += "<span class = 'biom_valid_attr'>" + @groupable_array[_i] + "</span><br/>"
+					content += "<span class = 'biom_valid_attr'>" + groupable_array[_i] + "</span><br/>"
 
-					if @groupable_array_content.length > 0
-						for j in [pointer_left..@groupable_array_content.length-1]
-							if @groupable_array_content[j] == j 
+					if groupable_array_content.length > 0
+						for j in [pointer_left..groupable_array_content.length-1]
+							if groupable_array_content[j] == j 
 								pointer_right = j 
 								flag = false
 								break
 						if flag 
-							toprocess = @groupable_array_content.slice(pointer_left, @groupable_array_content.length)
+							toprocess = groupable_array_content.slice(pointer_left, groupable_array_content.length)
 						else 
-							toprocess = @groupable_array_content.slice(pointer_left, pointer_right)
+							toprocess = groupable_array_content.slice(pointer_left, pointer_right)
 							pointer_left = pointer_right + 1
-							pointer_right = @groupable_array_content.length-1
+							pointer_right = groupable_array_content.length-1
 
 						if toprocess.length > 0
 							for k in [0..toprocess.length-1]
@@ -410,26 +412,26 @@ class filter
 
 	# 3 Live Preview
 	livePreview: () -> 
+		@selected_sample = []
+		@selected_groupable_array = []
 		@selected_attributes_array = []
 		@selected_no_data_attributes_array = []
-		@selected_groupable_array = []
 		selected_range_array = []
-		@selected_sample = []
 
-		if @attributes_array.length > 0
-			for i in [1..@attributes_array.length]
+		if attributes_array.length > 0
+			for i in [1..attributes_array.length]
 				if $('#numeric_check_' + i).is(':checked') 
-					@selected_attributes_array.push(@attributes_array[i-1])
+					@selected_attributes_array.push(attributes_array[i-1])
 
-		if @no_data_attributes_array.length > 0
-			for i in [1..@no_data_attributes_array.length] 
+		if no_data_attributes_array.length > 0
+			for i in [1..no_data_attributes_array.length] 
 				if $('#non_numeric_check_' + i).is(':checked') 
-					@selected_no_data_attributes_array.push(@no_data_attributes_array[i-1])
+					@selected_no_data_attributes_array.push(no_data_attributes_array[i-1])
 
-		if @groupable_array_content.length > 0
-			for i in [1..@groupable_array_content.length]
+		if groupable_array_content.length > 0
+			for i in [1..groupable_array_content.length]
 				if $('#groupable_check_' + i).is(':checked')
-					@selected_groupable_array.push(@groupable_array_content[i-1])
+					@selected_groupable_array.push(groupable_array_content[i-1])
 
 		if @range_array.length > 0
 			for i in [1..@range_array.length] 
@@ -440,22 +442,22 @@ class filter
 		$('#right_live_panel').html("")
 
 		# Step 1
-		for i in [0..@biom.shape[1]-1] 
+		for i in [0..biom.shape[1]-1] 
 			@selected_sample.push(i)
 
 		if selected_range_array.length > 0
 			for i in [0..selected_range_array.length-1] 
 				key = @selected_attributes_array[i]
-				for r in [0..@biom.shape[1]-1]
-					if @biom.columns[r].metadata[key].split(" ")[0] < selected_range_array[i][0] || @biom.columns[r].metadata[key].split(" ")[0] > selected_range_array[i][1]
+				for r in [0..biom.shape[1]-1]
+					if biom.columns[r].metadata[key].split(" ")[0] < selected_range_array[i][0] || biom.columns[r].metadata[key].split(" ")[0] > selected_range_array[i][1]
 						delete_index = @selected_sample.indexOf(r) 
 						if delete_index != -1 then @selected_sample.splice(delete_index,1)
 		
-		if @date_array.length > 0
-			for i in [0..@date_array.length-1]
-				key = @date_array[i]
-				for r in [0..@biom.shape[1]-1]
-					current_timeStamp = @biom.columns[r].metadata[key]
+		if date_array.length > 0
+			for i in [0..date_array.length-1]
+				key = date_array[i]
+				for r in [0..biom.shape[1]-1]
+					current_timeStamp = biom.columns[r].metadata[key]
 					if current_timeStamp.length < 11 # and current_timeStamp.indexOf(":") != -1 
 						formatted_timeStamp = moment(current_timeStamp).utc().format("X")
 					else 
@@ -467,13 +469,13 @@ class filter
 							# console.log 'sample #' + delete_index + ' doesn't meet date range 
 
 		# Step 2 
-		if @groupable_array.length > 0
-			for i in [0..@groupable_array.length-1]
-				for k in [0..@biom.shape[1]-1]
+		if groupable_array.length > 0
+			for i in [0..groupable_array.length-1]
+				for k in [0..biom.shape[1]-1]
 					flag = true 
 					if @selected_groupable_array.length > 0
 						for r in [0..@selected_groupable_array.length-1] 
-							if @biom.columns[k].metadata[ @groupable_array[i] ] == @selected_groupable_array[r]
+							if biom.columns[k].metadata[ groupable_array[i] ] == @selected_groupable_array[r]
 								flag = false 
 								break 
 						if flag 
@@ -487,9 +489,9 @@ class filter
 		if @selected_sample.length > 0
 			for i in [0..@selected_sample.length-1]
 				flag = true 
-				if @columns_non_empty_sample_count.length > 1
-					for j in [0..@columns_non_empty_sample_count.length-1]
-						if @columns_non_empty_sample_count[j] == @selected_sample[i]
+				if columns_non_empty_sample_count.length > 1
+					for j in [0..columns_non_empty_sample_count.length-1]
+						if columns_non_empty_sample_count[j] == @selected_sample[i]
 							flag = false
 							break 
 					if flag 
@@ -504,7 +506,7 @@ class filter
 		content = "<table id='myTable'><thead><tr><th class = 'headerID myTableHeader'>ID</th><th class = 'headerID myTableHeader'>Sample ID" + "</th><th class='myTableHeader'>Sample Name</th><th class='headerCount myTableHeader'>Count</th></thead>"
 		if @selected_sample.length > 0
 			for i in [0..@selected_sample.length-1] 
-				content += '<tr><td>' +  i + '</td><td>' + @selected_sample[i] + '</td><td>' + @columns_sample_name_array[@selected_sample[i]] + '</td><td>' + @columns_sample_count_list[@selected_sample[i]] + '</td></tr>'
+				content += '<tr><td>' +  i + '</td><td>' + @selected_sample[i] + '</td><td>' + columns_sample_name_array[@selected_sample[i]] + '</td><td>' + columns_sample_count_list[@selected_sample[i]] + '</td></tr>'
 		content += "</table>"
 		$("#right_live_panel").append(content)
 
@@ -524,33 +526,33 @@ class filter
 
 	# 4 Download
 	downloadPinch: () ->
-		pinch = @biom
+		pinch = biom
 		pinch.generated_by = 'Phinch 1.0'
 		pinch.date = new Date() 
 
 		# Step 1 - get data matrix ready 
 
 		pinch_data_matrix = []
-		sum_rows = new Array(@biom.shape[0])
-		for i in [0..@biom.shape[0]-1] 
+		sum_rows = new Array(biom.shape[0])
+		for i in [0..biom.shape[0]-1] 
 			sum_rows[i] = 0 
 		index = 0 
-		for i in [0..@biom.data.length-1]
+		for i in [0..biom.data.length-1]
 			flag = false 
 			for j in [0..@selected_sample.length-1]
-				if @biom.data[i][1] == @selected_sample[j] # is selected 
+				if biom.data[i][1] == @selected_sample[j] # is selected 
 					flag = true 
 					break 
 			if flag 
 				pinch_data_matrix[index] = new Array(3) 
-				pinch_data_matrix[index] = [@biom.data[i][0], j ,@biom.data[i][2]] 
-				sum_rows[@biom.data[i][0]] += @biom.data[i][2]
+				pinch_data_matrix[index] = [biom.data[i][0], j ,biom.data[i][2]] 
+				sum_rows[biom.data[i][0]] += biom.data[i][2]
 				index++ 
 		pinch.data = pinch_data_matrix		
 
 		# Step 2 - get columns ready 
 
-		for i in [0..@biom.shape[1]-1]
+		for i in [0..biom.shape[1]-1]
 			# if @selected_sample.indexOf(i) == -1 # unselected samples 
 			# 	for key of pinch.columns[i].metadata
 			# 		if key.toLowerCase().indexOf("date") == -1 # exclude the date columns 
@@ -558,13 +560,13 @@ class filter
 		
 
 			# If this is a not selected descriptive attribute, delete it 
-			for j in [0..@no_data_attributes_array.length-1]
-				if @selected_no_data_attributes_array.indexOf(@no_data_attributes_array[j]) == -1 
-					@removeFromObjectByKey(pinch.columns[i].metadata, @no_data_attributes_array[j])
+			for j in [0..no_data_attributes_array.length-1]
+				if @selected_no_data_attributes_array.indexOf(no_data_attributes_array[j]) == -1 
+					@removeFromObjectByKey(pinch.columns[i].metadata, no_data_attributes_array[j])
 			# If this is not a selected attributes, delete it 
-			for k in [0..@attributes_array.length-1]
-				if @selected_attributes_array.indexOf(@attributes_array[k]) == -1 
-					@removeFromObjectByKey(pinch.columns[i].metadata, @attributes_array[k])
+			for k in [0..attributes_array.length-1]
+				if @selected_attributes_array.indexOf(attributes_array[k]) == -1 
+					@removeFromObjectByKey(pinch.columns[i].metadata, attributes_array[k])
 
 		# Step 3 - get rows ready 
 		valid_rows_count = 0 

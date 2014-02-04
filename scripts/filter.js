@@ -4,9 +4,33 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   filter = (function() {
-    var filename;
+    var attr_length, attributes_array, attributes_array_units, biom, columns_non_empty_sample_count, columns_sample_count_list, columns_sample_name_array, date_array, filename, groupable_array, groupable_array_content, no_data_attributes_array, unknown_array;
+
+    biom = null;
 
     filename = null;
+
+    attr_length = null;
+
+    date_array = [];
+
+    no_data_attributes_array = [];
+
+    unknown_array = [];
+
+    attributes_array = [];
+
+    attributes_array_units = [];
+
+    groupable_array = [];
+
+    groupable_array_content = [];
+
+    columns_sample_name_array = [];
+
+    columns_sample_count_list = [];
+
+    columns_non_empty_sample_count = [];
 
     function filter() {
       this.drawBasicBars = __bind(this.drawBasicBars, this);
@@ -27,21 +51,21 @@
           var currentData, i, _i, _ref;
           currentData = results[results.length - 1];
           filename = currentData.name;
-          _this.biom = JSON.parse(currentData.data);
-          _this.attr_length = _this.biom.shape[1] - 1;
+          biom = JSON.parse(currentData.data);
+          attr_length = biom.shape[1] - 1;
           _this.generateColumns();
           _this.generateColumnsSummary();
           _this.generateColumnsValues();
           _this.generateDate();
-          $("#file_numbers").append("File: " + filename + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation: " + _this.biom.shape[0] + ", Sample: " + _this.biom.shape[1]);
+          $("#file_numbers").append("File: " + filename + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation: " + biom.shape[0] + ", Sample: " + biom.shape[1]);
           _this.generateLeftDates();
           _this.generateLeftNumeric();
           _this.generateLeftNonNumeric();
           _this.generateLeftGroupable();
-          if (_this.groupable_array_content.length > 0) {
-            for (i = _i = 0, _ref = _this.groupable_array_content.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-              if (typeof _this.groupable_array_content[i] === 'number') {
-                _this.groupable_array_content.splice(_this.groupable_array_content.indexOf(_this.groupable_array_content[i]), 1);
+          if (groupable_array_content.length > 0) {
+            for (i = _i = 0, _ref = groupable_array_content.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+              if (typeof groupable_array_content[i] === 'number') {
+                groupable_array_content.splice(groupable_array_content.indexOf(groupable_array_content[i]), 1);
               }
             }
           }
@@ -70,7 +94,7 @@
         sampleToStore.name = filename;
         sampleToStore.type = 'sampleIDs';
         sampleToStore.selected_sample = _this.selected_sample;
-        sampleToStore.groupable = _this.groupable_array;
+        sampleToStore.groupable = groupable_array;
         sampleToStore.selected_groupable_array = _this.selected_groupable_array;
         sampleToStore.selected_attributes_array = _this.selected_attributes_array;
         return s.biomSample.add(sampleToStore).done(function(item) {
@@ -80,100 +104,90 @@
     };
 
     filter.prototype.generateColumns = function() {
-      var flag, i, idential_elements_in_array, idential_elements_in_array_flag, j, key, starting_flag, _i, _j, _k, _l, _ref, _ref1, _ref2, _ref3, _ref4, _results;
-      this.date_array = [];
-      this.no_data_attributes_array = [];
-      this.attributes_array = [];
-      this.attributes_array_units = [];
-      this.groupable_array = [];
-      this.groupable_array_content = [];
-      this.unknown_array = [];
+      var flag, i, idential_elements_in_array, idential_elements_in_array_flag, j, key, starting_flag, _i, _j, _k, _l, _ref, _ref1, _results;
       _results = [];
-      for (key in this.biom.columns[0].metadata) {
+      for (key in biom.columns[0].metadata) {
         if (key.toLowerCase().indexOf("date") !== -1) {
-          _results.push(this.date_array.push(key));
+          _results.push(date_array.push(key));
         } else if ((key.toLowerCase().indexOf("barcode") !== -1) || (key.toLowerCase().indexOf("sequence") !== -1) || (key.toLowerCase().indexOf("reverse") !== -1) || (key.toLowerCase() === "internalcode") || (key.toLowerCase() === "description") || (key.toLowerCase().indexOf("adapter") !== -1)) {
-          _results.push(this.no_data_attributes_array.push(key));
-        } else if (!isNaN(this.biom.columns[0].metadata[key].split(" ")[0].replace(",", "")) || this.biom.columns[0].metadata[key] === "no_data") {
+          _results.push(no_data_attributes_array.push(key));
+        } else if (!isNaN(biom.columns[0].metadata[key].split(" ")[0].replace(",", "")) || biom.columns[0].metadata[key] === "no_data") {
           idential_elements_in_array_flag = false;
-          for (i = _i = 0, _ref = this.attr_length; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-            if (this.biom.columns[i].metadata[key] !== 'no_data') {
-              idential_elements_in_array = this.biom.columns[i].metadata[key];
+          for (i = _i = 0; 0 <= attr_length ? _i <= attr_length : _i >= attr_length; i = 0 <= attr_length ? ++_i : --_i) {
+            if (biom.columns[i].metadata[key] !== 'no_data') {
+              idential_elements_in_array = biom.columns[i].metadata[key];
               break;
             }
           }
-          for (i = _j = 0, _ref1 = this.attr_length; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-            if (this.biom.columns[i].metadata[key] !== idential_elements_in_array && this.biom.columns[i].metadata[key] !== 'no_data') {
+          for (i = _j = 0; 0 <= attr_length ? _j <= attr_length : _j >= attr_length; i = 0 <= attr_length ? ++_j : --_j) {
+            if (biom.columns[i].metadata[key] !== idential_elements_in_array && biom.columns[i].metadata[key] !== 'no_data') {
               idential_elements_in_array_flag = true;
             }
           }
           if (idential_elements_in_array_flag) {
-            this.attributes_array.push(key);
+            attributes_array.push(key);
             _results.push((function() {
-              var _k, _ref2, _results1;
+              var _k, _results1;
               _results1 = [];
-              for (i = _k = 0, _ref2 = this.attr_length; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
-                if (this.biom.columns[i].metadata[key] !== 'no_data') {
-                  _results1.push(this.attributes_array_units.push(this.biom.columns[i].metadata[key].split(" ")[1]));
+              for (i = _k = 0; 0 <= attr_length ? _k <= attr_length : _k >= attr_length; i = 0 <= attr_length ? ++_k : --_k) {
+                if (biom.columns[i].metadata[key] !== 'no_data') {
+                  _results1.push(attributes_array_units.push(biom.columns[i].metadata[key].split(" ")[1]));
                 } else {
                   _results1.push(void 0);
                 }
               }
               return _results1;
-            }).call(this));
+            })());
           } else {
-            _results.push(this.no_data_attributes_array.push(key));
+            _results.push(no_data_attributes_array.push(key));
           }
         } else if (typeof key === 'string') {
-          this.groupable_array.push(key);
-          starting_flag = this.groupable_array_content.length;
-          this.groupable_array_content.push(starting_flag);
-          for (i = _k = 0, _ref2 = this.attr_length; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
+          groupable_array.push(key);
+          starting_flag = groupable_array_content.length;
+          groupable_array_content.push(starting_flag);
+          for (i = _k = 0; 0 <= attr_length ? _k <= attr_length : _k >= attr_length; i = 0 <= attr_length ? ++_k : --_k) {
             flag = true;
-            if (this.groupable_array_content.length > 0) {
-              for (j = _l = _ref3 = starting_flag + 1, _ref4 = this.groupable_array_content.length - 1; _ref3 <= _ref4 ? _l <= _ref4 : _l >= _ref4; j = _ref3 <= _ref4 ? ++_l : --_l) {
-                if (this.biom.columns[i].metadata[key] === this.groupable_array_content[j]) {
+            if (groupable_array_content.length > 0) {
+              for (j = _l = _ref = starting_flag + 1, _ref1 = groupable_array_content.length - 1; _ref <= _ref1 ? _l <= _ref1 : _l >= _ref1; j = _ref <= _ref1 ? ++_l : --_l) {
+                if (biom.columns[i].metadata[key] === groupable_array_content[j]) {
                   flag = false;
                   break;
                 }
               }
               if (flag) {
-                this.groupable_array_content.push(this.biom.columns[i].metadata[key]);
+                groupable_array_content.push(biom.columns[i].metadata[key]);
               }
             }
           }
-          if (this.groupable_array_content.length - starting_flag === 2) {
-            this.no_data_attributes_array.push(key);
-            this.groupable_array.splice(this.groupable_array.length - 1, 1);
-            _results.push(this.groupable_array_content.splice(this.groupable_array_content.length - 2, 2));
+          if (groupable_array_content.length - starting_flag === 2) {
+            no_data_attributes_array.push(key);
+            groupable_array.splice(groupable_array.length - 1, 1);
+            _results.push(groupable_array_content.splice(groupable_array_content.length - 2, 2));
           } else {
             _results.push(void 0);
           }
         } else {
-          _results.push(this.unknown_array.push(key));
+          _results.push(unknown_array.push(key));
         }
       }
       return _results;
     };
 
     filter.prototype.generateColumnsSummary = function() {
-      var i, _i, _j, _k, _ref, _ref1, _ref2, _results;
-      this.columns_sample_name_array = [];
-      this.columns_sample_count_list = [];
-      this.columns_non_empty_sample_count = [];
-      this.columns_sample_total_count = 0;
-      for (i = _i = 0, _ref = this.attr_length; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        this.columns_sample_count_list[i] = 0;
-        this.columns_sample_name_array.push(this.biom.columns[i].id);
+      var columns_sample_total_count, i, _i, _j, _k, _ref, _results;
+      columns_sample_total_count = 0;
+      for (i = _i = 0; 0 <= attr_length ? _i <= attr_length : _i >= attr_length; i = 0 <= attr_length ? ++_i : --_i) {
+        columns_sample_count_list[i] = 0;
+        columns_sample_name_array.push(biom.columns[i].id);
       }
-      for (i = _j = 0, _ref1 = this.biom.data.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-        this.columns_sample_total_count += this.biom.data[i][2];
-        this.columns_sample_count_list[this.biom.data[i][1]] += this.biom.data[i][2];
+      for (i = _j = 0, _ref = biom.data.length - 1; 0 <= _ref ? _j <= _ref : _j >= _ref; i = 0 <= _ref ? ++_j : --_j) {
+        columns_sample_total_count += biom.data[i][2];
+        columns_sample_count_list[biom.data[i][1]] += biom.data[i][2];
       }
       _results = [];
-      for (i = _k = 0, _ref2 = this.attr_length; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
-        if (this.columns_sample_count_list[i] > 0) {
-          _results.push(this.columns_non_empty_sample_count.push(i));
+      for (i = _k = 0; 0 <= attr_length ? _k <= attr_length : _k >= attr_length; i = 0 <= attr_length ? ++_k : --_k) {
+        if (columns_sample_count_list[i] > 0) {
+          _results.push(columns_non_empty_sample_count.push(i));
         } else {
           _results.push(void 0);
         }
@@ -182,25 +196,25 @@
     };
 
     filter.prototype.generateColumnsValues = function() {
-      var i, j, key, _i, _j, _ref, _ref1, _results;
+      var i, j, key, _i, _j, _ref, _results;
       this.columns_metadata_array = [];
-      this.columns_metadata_array = new Array(this.attributes_array.length);
-      if (this.attributes_array.length > 0) {
-        for (i = _i = 0, _ref = this.attributes_array.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-          this.columns_metadata_array[i] = new Array(this.attr_length + 1);
+      this.columns_metadata_array = new Array(attributes_array.length);
+      if (attributes_array.length > 0) {
+        for (i = _i = 0, _ref = attributes_array.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          this.columns_metadata_array[i] = new Array(attr_length + 1);
         }
         _results = [];
-        for (i = _j = 0, _ref1 = this.attr_length; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+        for (i = _j = 0; 0 <= attr_length ? _j <= attr_length : _j >= attr_length; i = 0 <= attr_length ? ++_j : --_j) {
           _results.push((function() {
             var _results1;
             _results1 = [];
-            for (key in this.biom.columns[i].metadata) {
+            for (key in biom.columns[i].metadata) {
               _results1.push((function() {
-                var _k, _ref2, _results2;
+                var _k, _ref1, _results2;
                 _results2 = [];
-                for (j = _k = 0, _ref2 = this.attributes_array.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; j = 0 <= _ref2 ? ++_k : --_k) {
-                  if (key === this.attributes_array[j]) {
-                    this.columns_metadata_array[j][i] = parseFloat(this.biom.columns[i].metadata[key].split(" ")[0].replace(",", ""));
+                for (j = _k = 0, _ref1 = attributes_array.length - 1; 0 <= _ref1 ? _k <= _ref1 : _k >= _ref1; j = 0 <= _ref1 ? ++_k : --_k) {
+                  if (key === attributes_array[j]) {
+                    this.columns_metadata_array[j][i] = parseFloat(biom.columns[i].metadata[key].split(" ")[0].replace(",", ""));
                     if (isNaN(this.columns_metadata_array[j][i])) {
                       _results2.push(this.columns_metadata_array[j][i] = -99999);
                     } else {
@@ -221,21 +235,21 @@
     };
 
     filter.prototype.generateDate = function() {
-      var date_meta_key, i, m, number_date_array, ori_timestamp, _i, _j, _ref, _ref1, _results;
-      this.formatted_date_array = new Array(this.date_array.length);
-      this.sorted_number_date_array_d = new Array(this.date_array.length);
-      this.sorted_number_date_array_freq = new Array(this.date_array.length);
-      number_date_array = new Array(this.date_array.length);
-      if (this.date_array.length > 0) {
+      var date_meta_key, i, m, number_date_array, ori_timestamp, _i, _j, _ref, _results;
+      this.formatted_date_array = new Array(date_array.length);
+      this.sorted_number_date_array_d = new Array(date_array.length);
+      this.sorted_number_date_array_freq = new Array(date_array.length);
+      number_date_array = new Array(date_array.length);
+      if (date_array.length > 0) {
         _results = [];
-        for (m = _i = 0, _ref = this.date_array.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; m = 0 <= _ref ? ++_i : --_i) {
+        for (m = _i = 0, _ref = date_array.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; m = 0 <= _ref ? ++_i : --_i) {
           this.formatted_date_array[m] = [];
           this.sorted_number_date_array_d[m] = [];
           this.sorted_number_date_array_freq[m] = [];
-          date_meta_key = this.date_array[m];
+          date_meta_key = date_array[m];
           number_date_array[m] = [];
-          for (i = _j = 0, _ref1 = this.attr_length; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
-            ori_timestamp = this.biom.columns[i].metadata[date_meta_key];
+          for (i = _j = 0; 0 <= attr_length ? _j <= attr_length : _j >= attr_length; i = 0 <= attr_length ? ++_j : --_j) {
+            ori_timestamp = biom.columns[i].metadata[date_meta_key];
             if (ori_timestamp.length < 11 && ori_timestamp.indexOf(":") === -1) {
               this.formatted_date_array[m].push(moment(ori_timestamp).format("YYYY-MM-DD"));
               number_date_array[m].push(moment(ori_timestamp).format("YYYYMMDD"));
@@ -256,20 +270,20 @@
         _this = this;
       content = "";
       this.range_dates_array = [];
-      if (this.date_array.length === 0) {
+      if (date_array.length === 0) {
         return $('#att_head_dates').hide();
       } else {
-        if (this.date_array.length > 0) {
+        if (date_array.length > 0) {
           _results = [];
-          for (m = _i = 0, _ref = this.date_array.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; m = 0 <= _ref ? ++_i : --_i) {
+          for (m = _i = 0, _ref = date_array.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; m = 0 <= _ref ? ++_i : --_i) {
             if (this.check_unique(this.formatted_date_array[m])) {
-              $('#dates').append("<div class = 'biom_valid_attr'><p>" + this.date_array[m] + ": " + this.formatted_date_array[m][0] + "</p></div>");
+              $('#dates').append("<div class = 'biom_valid_attr'><p>" + date_array[m] + ": " + this.formatted_date_array[m][0] + "</p></div>");
               this.range_dates_array[m] = new Array(2);
               this.range_dates_array[m][0] = moment(this.formatted_date_array[m][0]).utc().format("X");
               _results.push(this.range_dates_array[m][1] = moment(this.formatted_date_array[m][0]).utc().format("X"));
             } else {
               content += "<div class = 'biom_valid_attr_dates'>";
-              content += this.date_array[m];
+              content += date_array[m];
               content += "<div class = 'icon-expand-collapse-c' id= 'expend_collapse_dates_icon_" + (m + 1) + "'><i class='icon-expand-alt'></i></div>";
               if (this.sorted_number_date_array_d[m][0].length < 9) {
                 content += "<p class='range_new_dates' id='range_dates_" + (m + 1) + "_new'>" + moment(this.sorted_number_date_array_d[m][0], "YYYYMMDD").format("MM/DD/YY") + " - " + moment(this.sorted_number_date_array_d[m][this.sorted_number_date_array_d[m].length - 1], "YYYYMMDD").format("MM/DD/YY") + "</p>";
@@ -337,17 +351,17 @@
     filter.prototype.generateLeftNumeric = function() {
       var content, i, _i, _ref, _results,
         _this = this;
-      if (this.attributes_array.length === 0) {
+      if (attributes_array.length === 0) {
         return $('#att_head_numeric').hide();
       } else {
-        if (this.attributes_array.length > 0) {
+        if (attributes_array.length > 0) {
           _results = [];
-          for (i = _i = 0, _ref = this.attributes_array.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          for (i = _i = 0, _ref = attributes_array.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
             content = "";
             content += "<input type='checkbox' name='numeric_check_group' id='numeric_check_" + (i + 1) + "' checked='checked' /><label for='numeric_check_" + (i + 1) + "'></label>";
-            content += "<span class = 'biom_valid_attr' id='att_" + (i + 1) + "'>" + this.attributes_array[i] + "</span>";
-            if (typeof this.attributes_array_units[i] !== 'undefined' && this.attributes_array_units[i] !== null) {
-              content += "<input type='text' class='biom_valid_attr_units' id='unit_" + (i + 1) + "' placeholder='" + this.attributes_array_units[i] + "'>";
+            content += "<span class = 'biom_valid_attr' id='att_" + (i + 1) + "'>" + attributes_array[i] + "</span>";
+            if (typeof attributes_array_units[i] !== 'undefined' && attributes_array_units[i] !== null) {
+              content += "<input type='text' class='biom_valid_attr_units' id='unit_" + (i + 1) + "' placeholder='" + attributes_array_units[i] + "'>";
             }
             content += "<div class = 'icon-expand-collapse-c' id= 'expend_collapse_icon_" + (i + 1) + "'><i class='icon-expand-alt'></i></div>";
             content += "<div class='biom_valid_att_thumbnail_sm' id='thumb_sm_" + (i + 1) + "'></div>";
@@ -390,14 +404,14 @@
     filter.prototype.generateLeftNonNumeric = function() {
       var content, i, _i, _ref, _results,
         _this = this;
-      if (this.no_data_attributes_array.length === 0) {
+      if (no_data_attributes_array.length === 0) {
         return $('#att_head_descriptive').hide();
       } else {
-        if (this.no_data_attributes_array.length > 0) {
+        if (no_data_attributes_array.length > 0) {
           _results = [];
-          for (i = _i = 0, _ref = this.no_data_attributes_array.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          for (i = _i = 0, _ref = no_data_attributes_array.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
             content = "";
-            content += "<input type='checkbox' name='non_numeric_check_group' id='non_numeric_check_" + (i + 1) + "' /><label for='non_numeric_check_" + (i + 1) + "'></label><span class = 'biom_valid_attr'>" + this.no_data_attributes_array[i] + "</span>";
+            content += "<input type='checkbox' name='non_numeric_check_group' id='non_numeric_check_" + (i + 1) + "' /><label for='non_numeric_check_" + (i + 1) + "'></label><span class = 'biom_valid_attr'>" + no_data_attributes_array[i] + "</span>";
             $('#non_numeric_att').append("<div>" + content + "</div>");
             _results.push($('#non_numeric_check_' + (i + 1)).click(function() {
               return _this.livePreview();
@@ -411,32 +425,32 @@
     filter.prototype.generateLeftGroupable = function() {
       var check_count, content, flag, i, j, k, pointer_left, pointer_right, toprocess, _i, _j, _k, _ref, _ref1, _ref2, _results;
       pointer_left = 1;
-      pointer_right = this.groupable_array_content.length - 1;
+      pointer_right = groupable_array_content.length - 1;
       check_count = 1;
-      if (this.groupable_array.length === 0) {
+      if (groupable_array.length === 0) {
         return $('#att_head_groupable').hide();
       } else {
-        if (this.groupable_array.length > 0) {
+        if (groupable_array.length > 0) {
           _results = [];
-          for (i = _i = 0, _ref = this.groupable_array.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          for (i = _i = 0, _ref = groupable_array.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
             flag = true;
             toprocess = [];
             content = "";
-            content += "<span class = 'biom_valid_attr'>" + this.groupable_array[_i] + "</span><br/>";
-            if (this.groupable_array_content.length > 0) {
-              for (j = _j = pointer_left, _ref1 = this.groupable_array_content.length - 1; pointer_left <= _ref1 ? _j <= _ref1 : _j >= _ref1; j = pointer_left <= _ref1 ? ++_j : --_j) {
-                if (this.groupable_array_content[j] === j) {
+            content += "<span class = 'biom_valid_attr'>" + groupable_array[_i] + "</span><br/>";
+            if (groupable_array_content.length > 0) {
+              for (j = _j = pointer_left, _ref1 = groupable_array_content.length - 1; pointer_left <= _ref1 ? _j <= _ref1 : _j >= _ref1; j = pointer_left <= _ref1 ? ++_j : --_j) {
+                if (groupable_array_content[j] === j) {
                   pointer_right = j;
                   flag = false;
                   break;
                 }
               }
               if (flag) {
-                toprocess = this.groupable_array_content.slice(pointer_left, this.groupable_array_content.length);
+                toprocess = groupable_array_content.slice(pointer_left, groupable_array_content.length);
               } else {
-                toprocess = this.groupable_array_content.slice(pointer_left, pointer_right);
+                toprocess = groupable_array_content.slice(pointer_left, pointer_right);
                 pointer_left = pointer_right + 1;
-                pointer_right = this.groupable_array_content.length - 1;
+                pointer_right = groupable_array_content.length - 1;
               }
               if (toprocess.length > 0) {
                 for (k = _k = 0, _ref2 = toprocess.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; k = 0 <= _ref2 ? ++_k : --_k) {
@@ -535,29 +549,29 @@
 
     filter.prototype.livePreview = function() {
       var content, current_timeStamp, delete_index, flag, formatted_timeStamp, i, j, k, key, r, selected_range_array, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref15, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _s, _t, _u, _v, _w, _x;
+      this.selected_sample = [];
+      this.selected_groupable_array = [];
       this.selected_attributes_array = [];
       this.selected_no_data_attributes_array = [];
-      this.selected_groupable_array = [];
       selected_range_array = [];
-      this.selected_sample = [];
-      if (this.attributes_array.length > 0) {
-        for (i = _i = 1, _ref = this.attributes_array.length; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
+      if (attributes_array.length > 0) {
+        for (i = _i = 1, _ref = attributes_array.length; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
           if ($('#numeric_check_' + i).is(':checked')) {
-            this.selected_attributes_array.push(this.attributes_array[i - 1]);
+            this.selected_attributes_array.push(attributes_array[i - 1]);
           }
         }
       }
-      if (this.no_data_attributes_array.length > 0) {
-        for (i = _j = 1, _ref1 = this.no_data_attributes_array.length; 1 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 1 <= _ref1 ? ++_j : --_j) {
+      if (no_data_attributes_array.length > 0) {
+        for (i = _j = 1, _ref1 = no_data_attributes_array.length; 1 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 1 <= _ref1 ? ++_j : --_j) {
           if ($('#non_numeric_check_' + i).is(':checked')) {
-            this.selected_no_data_attributes_array.push(this.no_data_attributes_array[i - 1]);
+            this.selected_no_data_attributes_array.push(no_data_attributes_array[i - 1]);
           }
         }
       }
-      if (this.groupable_array_content.length > 0) {
-        for (i = _k = 1, _ref2 = this.groupable_array_content.length; 1 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 1 <= _ref2 ? ++_k : --_k) {
+      if (groupable_array_content.length > 0) {
+        for (i = _k = 1, _ref2 = groupable_array_content.length; 1 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 1 <= _ref2 ? ++_k : --_k) {
           if ($('#groupable_check_' + i).is(':checked')) {
-            this.selected_groupable_array.push(this.groupable_array_content[i - 1]);
+            this.selected_groupable_array.push(groupable_array_content[i - 1]);
           }
         }
       }
@@ -569,14 +583,14 @@
         }
       }
       $('#right_live_panel').html("");
-      for (i = _m = 0, _ref4 = this.biom.shape[1] - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; i = 0 <= _ref4 ? ++_m : --_m) {
+      for (i = _m = 0, _ref4 = biom.shape[1] - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; i = 0 <= _ref4 ? ++_m : --_m) {
         this.selected_sample.push(i);
       }
       if (selected_range_array.length > 0) {
         for (i = _n = 0, _ref5 = selected_range_array.length - 1; 0 <= _ref5 ? _n <= _ref5 : _n >= _ref5; i = 0 <= _ref5 ? ++_n : --_n) {
           key = this.selected_attributes_array[i];
-          for (r = _o = 0, _ref6 = this.biom.shape[1] - 1; 0 <= _ref6 ? _o <= _ref6 : _o >= _ref6; r = 0 <= _ref6 ? ++_o : --_o) {
-            if (this.biom.columns[r].metadata[key].split(" ")[0] < selected_range_array[i][0] || this.biom.columns[r].metadata[key].split(" ")[0] > selected_range_array[i][1]) {
+          for (r = _o = 0, _ref6 = biom.shape[1] - 1; 0 <= _ref6 ? _o <= _ref6 : _o >= _ref6; r = 0 <= _ref6 ? ++_o : --_o) {
+            if (biom.columns[r].metadata[key].split(" ")[0] < selected_range_array[i][0] || biom.columns[r].metadata[key].split(" ")[0] > selected_range_array[i][1]) {
               delete_index = this.selected_sample.indexOf(r);
               if (delete_index !== -1) {
                 this.selected_sample.splice(delete_index, 1);
@@ -585,11 +599,11 @@
           }
         }
       }
-      if (this.date_array.length > 0) {
-        for (i = _p = 0, _ref7 = this.date_array.length - 1; 0 <= _ref7 ? _p <= _ref7 : _p >= _ref7; i = 0 <= _ref7 ? ++_p : --_p) {
-          key = this.date_array[i];
-          for (r = _q = 0, _ref8 = this.biom.shape[1] - 1; 0 <= _ref8 ? _q <= _ref8 : _q >= _ref8; r = 0 <= _ref8 ? ++_q : --_q) {
-            current_timeStamp = this.biom.columns[r].metadata[key];
+      if (date_array.length > 0) {
+        for (i = _p = 0, _ref7 = date_array.length - 1; 0 <= _ref7 ? _p <= _ref7 : _p >= _ref7; i = 0 <= _ref7 ? ++_p : --_p) {
+          key = date_array[i];
+          for (r = _q = 0, _ref8 = biom.shape[1] - 1; 0 <= _ref8 ? _q <= _ref8 : _q >= _ref8; r = 0 <= _ref8 ? ++_q : --_q) {
+            current_timeStamp = biom.columns[r].metadata[key];
             if (current_timeStamp.length < 11) {
               formatted_timeStamp = moment(current_timeStamp).utc().format("X");
             } else {
@@ -604,13 +618,13 @@
           }
         }
       }
-      if (this.groupable_array.length > 0) {
-        for (i = _r = 0, _ref9 = this.groupable_array.length - 1; 0 <= _ref9 ? _r <= _ref9 : _r >= _ref9; i = 0 <= _ref9 ? ++_r : --_r) {
-          for (k = _s = 0, _ref10 = this.biom.shape[1] - 1; 0 <= _ref10 ? _s <= _ref10 : _s >= _ref10; k = 0 <= _ref10 ? ++_s : --_s) {
+      if (groupable_array.length > 0) {
+        for (i = _r = 0, _ref9 = groupable_array.length - 1; 0 <= _ref9 ? _r <= _ref9 : _r >= _ref9; i = 0 <= _ref9 ? ++_r : --_r) {
+          for (k = _s = 0, _ref10 = biom.shape[1] - 1; 0 <= _ref10 ? _s <= _ref10 : _s >= _ref10; k = 0 <= _ref10 ? ++_s : --_s) {
             flag = true;
             if (this.selected_groupable_array.length > 0) {
               for (r = _t = 0, _ref11 = this.selected_groupable_array.length - 1; 0 <= _ref11 ? _t <= _ref11 : _t >= _ref11; r = 0 <= _ref11 ? ++_t : --_t) {
-                if (this.biom.columns[k].metadata[this.groupable_array[i]] === this.selected_groupable_array[r]) {
+                if (biom.columns[k].metadata[groupable_array[i]] === this.selected_groupable_array[r]) {
                   flag = false;
                   break;
                 }
@@ -631,9 +645,9 @@
       if (this.selected_sample.length > 0) {
         for (i = _u = 0, _ref12 = this.selected_sample.length - 1; 0 <= _ref12 ? _u <= _ref12 : _u >= _ref12; i = 0 <= _ref12 ? ++_u : --_u) {
           flag = true;
-          if (this.columns_non_empty_sample_count.length > 1) {
-            for (j = _v = 0, _ref13 = this.columns_non_empty_sample_count.length - 1; 0 <= _ref13 ? _v <= _ref13 : _v >= _ref13; j = 0 <= _ref13 ? ++_v : --_v) {
-              if (this.columns_non_empty_sample_count[j] === this.selected_sample[i]) {
+          if (columns_non_empty_sample_count.length > 1) {
+            for (j = _v = 0, _ref13 = columns_non_empty_sample_count.length - 1; 0 <= _ref13 ? _v <= _ref13 : _v >= _ref13; j = 0 <= _ref13 ? ++_v : --_v) {
+              if (columns_non_empty_sample_count[j] === this.selected_sample[i]) {
                 flag = false;
                 break;
               }
@@ -653,7 +667,7 @@
       content = "<table id='myTable'><thead><tr><th class = 'headerID myTableHeader'>ID</th><th class = 'headerID myTableHeader'>Sample ID" + "</th><th class='myTableHeader'>Sample Name</th><th class='headerCount myTableHeader'>Count</th></thead>";
       if (this.selected_sample.length > 0) {
         for (i = _x = 0, _ref15 = this.selected_sample.length - 1; 0 <= _ref15 ? _x <= _ref15 : _x >= _ref15; i = 0 <= _ref15 ? ++_x : --_x) {
-          content += '<tr><td>' + i + '</td><td>' + this.selected_sample[i] + '</td><td>' + this.columns_sample_name_array[this.selected_sample[i]] + '</td><td>' + this.columns_sample_count_list[this.selected_sample[i]] + '</td></tr>';
+          content += '<tr><td>' + i + '</td><td>' + this.selected_sample[i] + '</td><td>' + columns_sample_name_array[this.selected_sample[i]] + '</td><td>' + columns_sample_count_list[this.selected_sample[i]] + '</td></tr>';
         }
       }
       content += "</table>";
@@ -673,40 +687,40 @@
 
     filter.prototype.downloadPinch = function() {
       var blob, flag, i, index, j, k, obj, pinch, pinch_data_matrix, sum_rows, valid_rows_count, _i, _j, _k, _l, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
-      pinch = this.biom;
+      pinch = biom;
       pinch.generated_by = 'Phinch 1.0';
       pinch.date = new Date();
       pinch_data_matrix = [];
-      sum_rows = new Array(this.biom.shape[0]);
-      for (i = _i = 0, _ref = this.biom.shape[0] - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      sum_rows = new Array(biom.shape[0]);
+      for (i = _i = 0, _ref = biom.shape[0] - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
         sum_rows[i] = 0;
       }
       index = 0;
-      for (i = _j = 0, _ref1 = this.biom.data.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+      for (i = _j = 0, _ref1 = biom.data.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
         flag = false;
         for (j = _k = 0, _ref2 = this.selected_sample.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; j = 0 <= _ref2 ? ++_k : --_k) {
-          if (this.biom.data[i][1] === this.selected_sample[j]) {
+          if (biom.data[i][1] === this.selected_sample[j]) {
             flag = true;
             break;
           }
         }
         if (flag) {
           pinch_data_matrix[index] = new Array(3);
-          pinch_data_matrix[index] = [this.biom.data[i][0], j, this.biom.data[i][2]];
-          sum_rows[this.biom.data[i][0]] += this.biom.data[i][2];
+          pinch_data_matrix[index] = [biom.data[i][0], j, biom.data[i][2]];
+          sum_rows[biom.data[i][0]] += biom.data[i][2];
           index++;
         }
       }
       pinch.data = pinch_data_matrix;
-      for (i = _l = 0, _ref3 = this.biom.shape[1] - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
-        for (j = _m = 0, _ref4 = this.no_data_attributes_array.length - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; j = 0 <= _ref4 ? ++_m : --_m) {
-          if (this.selected_no_data_attributes_array.indexOf(this.no_data_attributes_array[j]) === -1) {
-            this.removeFromObjectByKey(pinch.columns[i].metadata, this.no_data_attributes_array[j]);
+      for (i = _l = 0, _ref3 = biom.shape[1] - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
+        for (j = _m = 0, _ref4 = no_data_attributes_array.length - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; j = 0 <= _ref4 ? ++_m : --_m) {
+          if (this.selected_no_data_attributes_array.indexOf(no_data_attributes_array[j]) === -1) {
+            this.removeFromObjectByKey(pinch.columns[i].metadata, no_data_attributes_array[j]);
           }
         }
-        for (k = _n = 0, _ref5 = this.attributes_array.length - 1; 0 <= _ref5 ? _n <= _ref5 : _n >= _ref5; k = 0 <= _ref5 ? ++_n : --_n) {
-          if (this.selected_attributes_array.indexOf(this.attributes_array[k]) === -1) {
-            this.removeFromObjectByKey(pinch.columns[i].metadata, this.attributes_array[k]);
+        for (k = _n = 0, _ref5 = attributes_array.length - 1; 0 <= _ref5 ? _n <= _ref5 : _n >= _ref5; k = 0 <= _ref5 ? ++_n : --_n) {
+          if (this.selected_attributes_array.indexOf(attributes_array[k]) === -1) {
+            this.removeFromObjectByKey(pinch.columns[i].metadata, attributes_array[k]);
           }
         }
       }

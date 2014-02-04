@@ -3,21 +3,9 @@
   var taxonomyViz;
 
   taxonomyViz = (function() {
-    var LayerID, VizID, columns_sample_name_array, deleteOTUArr, deleteSampleArr, fillCol, format, g_scale, new_data_matrix, new_data_matrix_onLayer, percentage, sumEachCol, sumEachTax, unique_taxonomy_comb, unique_taxonomy_comb_onLayer, vizdata;
+    var LayerID, VizID, biom, columns_sample_name_array, deleteOTUArr, deleteSampleArr, fillCol, format, map_array, new_data_matrix, new_data_matrix_onLayer, percentage, sumEachCol, sumEachTax, unique_taxonomy_comb, unique_taxonomy_comb_count, unique_taxonomy_comb_onLayer, vizdata;
 
-    fillCol = ['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#e6550d', '#fd8d3c', '#fdae6b', '#fdd0a2', '#31a354', '#74c476', '#a1d99b', '#c7e9c0', '#756bb1', '#9e9ac8', '#bcbddc', '#dadaeb', '#636363', '#969696', '#bdbdbd', '#d9d9d9'];
-
-    new_data_matrix = [];
-
-    columns_sample_name_array = [];
-
-    unique_taxonomy_comb = [];
-
-    deleteOTUArr = [];
-
-    deleteSampleArr = [];
-
-    g_scale = 1;
+    biom = null;
 
     percentage = false;
 
@@ -36,6 +24,22 @@
     unique_taxonomy_comb_onLayer = null;
 
     format = d3.format(',d');
+
+    fillCol = ['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#e6550d', '#fd8d3c', '#fdae6b', '#fdd0a2', '#31a354', '#74c476', '#a1d99b', '#c7e9c0', '#756bb1', '#9e9ac8', '#bcbddc', '#dadaeb', '#636363', '#969696', '#bdbdbd', '#d9d9d9'];
+
+    deleteOTUArr = [];
+
+    deleteSampleArr = [];
+
+    new_data_matrix = [];
+
+    unique_taxonomy_comb = [];
+
+    columns_sample_name_array = [];
+
+    map_array = [];
+
+    unique_taxonomy_comb_count = [];
 
     function taxonomyViz(_VizID) {
       var _this = this;
@@ -72,9 +76,9 @@
             return s.biom.query().all().execute().done(function(results) {
               var currentData;
               currentData = results[results.length - 1];
-              _this.biom = JSON.parse(currentData.data);
+              biom = JSON.parse(currentData.data);
               $("#file_numbers").html("");
-              $("#file_numbers").append("File: " + currentData.name + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br/>Observation: " + _this.biom.shape[0] + ", Selected sample: " + _this.selected_samples.length);
+              $("#file_numbers").append("File: " + currentData.name + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br/>Observation: " + biom.shape[0] + ", Selected sample: " + _this.selected_samples.length);
               $('.layer_change').click(function(evt) {
                 LayerID = parseInt(evt.currentTarget.id.replace("layer_", ""));
                 return $('#layer_' + LayerID).addClass("loading_notes").delay(800).queue(function(n) {
@@ -96,6 +100,9 @@
                 LayerID = parseInt($('.current_layer').attr('id').replace('layer_', ''));
                 return _this.generateVizData();
               });
+              if (VizID === 5) {
+                LayerID = 7;
+              }
               _this.prepareData();
               return _this.generateVizData();
             });
@@ -105,17 +112,15 @@
     }
 
     taxonomyViz.prototype.prepareData = function() {
-      var comb_len, comp_i, flag, i, j, map_array, unique_taxonomy_comb_count, _i, _j, _k, _l, _m, _n, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _results;
-      unique_taxonomy_comb_count = [];
-      map_array = [];
-      for (i = _i = 0, _ref = this.biom.rows.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      var comb_len, comp_i, flag, i, j, _i, _j, _k, _l, _m, _n, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _results;
+      for (i = _i = 0, _ref = biom.rows.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
         flag = true;
         comp_i = new Array(7);
         comb_len = unique_taxonomy_comb.length;
-        if (this.biom.rows[i].metadata.taxonomy.indexOf(';') !== -1) {
-          comp_i = this.biom.rows[i].metadata.taxonomy.replace(/\s+/g, '').replace(/;/g, ',').split(',');
+        if (biom.rows[i].metadata.taxonomy.indexOf(';') !== -1) {
+          comp_i = biom.rows[i].metadata.taxonomy.replace(/\s+/g, '').replace(/;/g, ',').split(',');
         } else {
-          comp_i = this.biom.rows[i].metadata.taxonomy;
+          comp_i = biom.rows[i].metadata.taxonomy;
         }
         if (comp_i[0].indexOf('k__') === -1) {
           comp_i[0] = 'k__';
@@ -160,26 +165,26 @@
       }
       for (i = _k = 0, _ref2 = unique_taxonomy_comb.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
         new_data_matrix[i] = [];
-        for (j = _l = 0, _ref3 = this.biom.shape[1] - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; j = 0 <= _ref3 ? ++_l : --_l) {
+        for (j = _l = 0, _ref3 = biom.shape[1] - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; j = 0 <= _ref3 ? ++_l : --_l) {
           new_data_matrix[i][j] = 0;
         }
       }
-      for (i = _m = 0, _ref4 = this.biom.data.length - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; i = 0 <= _ref4 ? ++_m : --_m) {
-        new_data_matrix[map_array[this.biom.data[i][0]]][this.biom.data[i][1]] += this.biom.data[i][2];
+      for (i = _m = 0, _ref4 = biom.data.length - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; i = 0 <= _ref4 ? ++_m : --_m) {
+        new_data_matrix[map_array[biom.data[i][0]]][biom.data[i][1]] += biom.data[i][2];
       }
       _results = [];
-      for (i = _n = 0, _ref5 = this.biom.shape[1] - 1; 0 <= _ref5 ? _n <= _ref5 : _n >= _ref5; i = 0 <= _ref5 ? ++_n : --_n) {
-        _results.push(columns_sample_name_array.push(this.biom.columns[i].id));
+      for (i = _n = 0, _ref5 = biom.shape[1] - 1; 0 <= _ref5 ? _n <= _ref5 : _n >= _ref5; i = 0 <= _ref5 ? ++_n : --_n) {
+        _results.push(columns_sample_name_array.push(biom.columns[i].id));
       }
       return _results;
     };
 
     taxonomyViz.prototype.generateVizData = function() {
-      var comp_i, flag, flag_count, i, j, k, map_array, _i, _j, _k, _l, _m, _n, _o, _p, _q, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8,
+      var comp_i, flag, flag_count, i, j, k, viz_map_array, _i, _j, _k, _l, _m, _n, _o, _p, _q, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8,
         _this = this;
       unique_taxonomy_comb_onLayer = [];
       new_data_matrix_onLayer = [];
-      map_array = [];
+      viz_map_array = [];
       if (LayerID < 7) {
         for (i = _i = 0, _ref = unique_taxonomy_comb.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
           comp_i = unique_taxonomy_comb[i];
@@ -193,14 +198,14 @@
                 }
               }
               if (flag_count === LayerID) {
-                map_array[i] = j;
+                viz_map_array[i] = j;
                 flag = false;
                 break;
               }
             }
           }
           if (flag) {
-            map_array[i] = unique_taxonomy_comb_onLayer.length;
+            viz_map_array[i] = unique_taxonomy_comb_onLayer.length;
             switch (LayerID) {
               case 6:
                 comp_i = [comp_i[0], comp_i[1], comp_i[2], comp_i[3], comp_i[4], comp_i[5], 's__'];
@@ -228,7 +233,7 @@
         }
         for (i = _n = 0, _ref5 = new_data_matrix.length - 1; 0 <= _ref5 ? _n <= _ref5 : _n >= _ref5; i = 0 <= _ref5 ? ++_n : --_n) {
           for (j = _o = 0, _ref6 = new_data_matrix[0].length - 1; 0 <= _ref6 ? _o <= _ref6 : _o >= _ref6; j = 0 <= _ref6 ? ++_o : --_o) {
-            new_data_matrix_onLayer[map_array[i]][j] += new_data_matrix[i][j];
+            new_data_matrix_onLayer[viz_map_array[i]][j] += new_data_matrix[i][j];
           }
         }
       } else {
@@ -263,8 +268,8 @@
           return alert("Groupable chart not available for this dataset!");
         }
       } else if (VizID === 4) {
-        d3.select('#viz_container').append('div').attr('id', 'countResult');
         if (this.selected_attributes_array.length > 0) {
+          d3.select('#viz_container').append('div').attr('id', 'countResult');
           for (i = _q = 0, _ref8 = this.selected_attributes_array.length - 1; 0 <= _ref8 ? _q <= _ref8 : _q >= _ref8; i = 0 <= _ref8 ? ++_q : --_q) {
             $('#attributes_dropdown').append('<option>' + this.selected_attributes_array[i] + '</option>');
           }
@@ -280,7 +285,7 @@
           return alert("Not supported!");
         }
       } else if (VizID === 5) {
-        return alert("under construction!");
+        return this.drawOTUBubble();
       }
     };
 
@@ -519,6 +524,11 @@
       for (i = _i = 0, _ref = unique_taxonomy_comb_onLayer.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
         availableTags[i] = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6];
       }
+      $('#tags').keydown(function() {
+        if ($('#tags').val().length < 4) {
+          return $('#autoCompleteList').fadeOut(200);
+        }
+      });
       searchList = [];
       $('#autoCompleteList').fadeOut(800);
       return $("#tags").autocomplete({
@@ -835,8 +845,8 @@
       this.fadeInOutCtrl();
       groupable_array = [];
       for (i = _i = 0, _ref = this.selected_samples.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        if (groupable_array.indexOf(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute]) === -1) {
-          groupable_array.push(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute]);
+        if (groupable_array.indexOf(biom.columns[this.selected_samples[i]].metadata[cur_attribute]) === -1) {
+          groupable_array.push(biom.columns[this.selected_samples[i]].metadata[cur_attribute]);
         }
       }
       count = new Array(groupable_array.length);
@@ -850,12 +860,12 @@
           selected_new_data_matrix_onLayer[i][j] = 0;
         }
         for (j = _m = 0, _ref4 = this.selected_samples.length - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; j = 0 <= _ref4 ? ++_m : --_m) {
-          arr_id = groupable_array.indexOf(this.biom.columns[this.selected_samples[j]].metadata[cur_attribute]);
+          arr_id = groupable_array.indexOf(biom.columns[this.selected_samples[j]].metadata[cur_attribute]);
           selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][this.selected_samples[j]];
         }
       }
       for (i = _n = 0, _ref5 = this.selected_samples.length - 1; 0 <= _ref5 ? _n <= _ref5 : _n >= _ref5; i = 0 <= _ref5 ? ++_n : --_n) {
-        count[groupable_array.indexOf(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute])].push(this.selected_samples[i]);
+        count[groupable_array.indexOf(biom.columns[this.selected_samples[i]].metadata[cur_attribute])].push(this.selected_samples[i]);
       }
       d3.select('#taxonomy_container').attr("width", 1200).attr("height", 250 * groupable_array.length + 200);
       _results = [];
@@ -951,14 +961,14 @@
     };
 
     taxonomyViz.prototype.drawTaxonomyByAttributes = function(cur_attribute) {
-      var arr_id, attributes_array, count, countEmpty, i, j, selected_new_data_matrix_onLayer, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+      var arr_id, attributes_array, content, count, countEmpty, i, j, selected_new_data_matrix_onLayer, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _ref, _ref1, _ref10, _ref11, _ref12, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _s, _t, _u;
       $('#attributes_dropdown').fadeIn(800);
       selected_new_data_matrix_onLayer = new Array(new_data_matrix_onLayer.length);
       attributes_array = [];
       countEmpty = [];
       for (i = _i = 0, _ref = this.selected_samples.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-        if (attributes_array.indexOf(parseFloat(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0])) === -1 && this.biom.columns[this.selected_samples[i]].metadata[cur_attribute] !== 'no_data') {
-          attributes_array.push(parseFloat(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0]));
+        if (attributes_array.indexOf(parseFloat(biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0])) === -1 && biom.columns[this.selected_samples[i]].metadata[cur_attribute] !== 'no_data') {
+          attributes_array.push(parseFloat(biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0]));
         }
       }
       attributes_array.sort(this.numberSort);
@@ -972,13 +982,13 @@
           selected_new_data_matrix_onLayer[i][j] = 0.0;
         }
         for (j = _m = 0, _ref4 = this.selected_samples.length - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; j = 0 <= _ref4 ? ++_m : --_m) {
-          arr_id = attributes_array.indexOf(parseFloat(this.biom.columns[this.selected_samples[j]].metadata[cur_attribute].split(" ")[0]));
+          arr_id = attributes_array.indexOf(parseFloat(biom.columns[this.selected_samples[j]].metadata[cur_attribute].split(" ")[0]));
           selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][this.selected_samples[j]];
         }
       }
       for (i = _n = 0, _ref5 = this.selected_samples.length - 1; 0 <= _ref5 ? _n <= _ref5 : _n >= _ref5; i = 0 <= _ref5 ? ++_n : --_n) {
-        if (!isNaN(parseFloat(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0]))) {
-          count[attributes_array.indexOf(parseFloat(this.biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0]))].push(this.selected_samples[i]);
+        if (!isNaN(parseFloat(biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0]))) {
+          count[attributes_array.indexOf(parseFloat(biom.columns[this.selected_samples[i]].metadata[cur_attribute].split(" ")[0]))].push(this.selected_samples[i]);
         } else {
           countEmpty.push(this.selected_samples[i]);
         }
@@ -1002,11 +1012,34 @@
         }
       }
       this.drawBasicColumns(attributes_array);
-      return $('#countResult').html(countEmpty);
+      content = '';
+      content += '<div>' + cur_attribute + '</div><div>';
+      if (attributes_array.length > 0) {
+        for (i = _s = 0, _ref10 = attributes_array.length - 1; 0 <= _ref10 ? _s <= _ref10 : _s >= _ref10; i = 0 <= _ref10 ? ++_s : --_s) {
+          content += '<div>' + attributes_array[i] + ': ';
+          if (count[i].length > 0) {
+            for (j = _t = 0, _ref11 = count[i].length - 1; 0 <= _ref11 ? _t <= _ref11 : _t >= _ref11; j = 0 <= _ref11 ? ++_t : --_t) {
+              content += count[i][j] + ', ';
+            }
+          } else {
+            content += 'no samples';
+          }
+          content += '</div>';
+        }
+      }
+      if (countEmpty.length > 0) {
+        content += '<div>NaN value samples: ';
+        for (i = _u = 0, _ref12 = countEmpty.length - 1; 0 <= _ref12 ? _u <= _ref12 : _u >= _ref12; i = 0 <= _ref12 ? ++_u : --_u) {
+          content += countEmpty[i] + ', ';
+        }
+        content += '</div>';
+      }
+      content += '</div>';
+      return $('#countResult').html(content);
     };
 
     taxonomyViz.prototype.drawBasicColumns = function(attributes_array) {
-      var h, label, margin, max_single, rect, rule, svg, taxonomy, tooltip, w, x, y, zoom;
+      var h, label, margin, max_single, rect, rule, svg, taxonomy, tooltip, w, x, y;
       this.fadeInOutCtrl();
       w = sumEachCol.length < 80 ? 1500 : sumEachCol.length * 18 + 200;
       h = 800;
@@ -1023,9 +1056,6 @@
       y = d3.scale.linear().domain([0, max_single]).range([0, h - margin.top - margin.bottom]);
       svg = d3.select("#taxonomy_container").append("svg").attr("width", w).attr("height", h + 100).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
       tooltip = d3.select("#taxonomy_container").append("div").attr("class", "tooltipOverSmallThumb").style("visibility", "hidden");
-      zoom = d3.behavior.zoom().on("zoom", function() {
-        return svg.attr("transform", "translate(" + d3.event.translate[0] + ", 0)scale(" + g_scale + ")");
-      });
       taxonomy = svg.selectAll('g.taxonomy').data(vizdata).enter().append('g').attr('class', 'taxonomy').style('fill', function(d, i) {
         return fillCol[i % 20];
       }).on('mouseover', function(d, i) {
@@ -1112,28 +1142,86 @@
       });
     };
 
+    taxonomyViz.prototype.drawOTUBubble = function() {
+      var data, flag, h, i, j, node, nodes, pack, r, root, rowID, vis, w, x, y, _i, _j, _k, _l, _ref, _ref1, _ref2, _ref3;
+      this.fadeInOutCtrl();
+      data = new Object();
+      data.name = 'BIOM';
+      data.children = new Array(unique_taxonomy_comb_onLayer.length);
+      for (i = _i = 0, _ref = unique_taxonomy_comb_onLayer.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        data.children[i] = new Object();
+        data.children[i].name = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6];
+        data.children[i].children = new Array(unique_taxonomy_comb_count[i]);
+        data.children[i].counter = 0;
+        for (j = _j = 0, _ref1 = unique_taxonomy_comb_count[i] - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; j = 0 <= _ref1 ? ++_j : --_j) {
+          data.children[i].children[j] = new Object();
+          data.children[i].children[j].id = void 0;
+          data.children[i].children[j].size = 0;
+        }
+      }
+      for (i = _k = 0, _ref2 = biom.data.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
+        flag = true;
+        rowID = map_array[biom.data[i][0]];
+        for (j = _l = 0, _ref3 = unique_taxonomy_comb_count[rowID] - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; j = 0 <= _ref3 ? ++_l : --_l) {
+          if (data.children[rowID].children[j].id === biom.data[i][0]) {
+            flag = false;
+            data.children[rowID].children[j].size += biom.data[i][2];
+          }
+        }
+        if (flag) {
+          data.children[rowID].children[data.children[rowID].counter].id = biom.data[i][0];
+          data.children[rowID].children[data.children[rowID].counter].size += biom.data[i][2];
+          data.children[rowID].counter += 1;
+        }
+      }
+      w = 1200;
+      h = 1100;
+      r = 1000;
+      x = d3.scale.linear().range([5, r]);
+      y = d3.scale.linear().range([5, r]);
+      node = null;
+      root = null;
+      pack = d3.layout.pack().size([r, r]).value(function(d) {
+        return d.size;
+      });
+      vis = d3.select("#taxonomy_container").append("svg:svg").attr("width", 1200).attr("height", 1100).append('svg:g').attr("transform", "translate(" + (w - r) / 2 + ", 10)");
+      node = data;
+      root = data;
+      nodes = pack.nodes(root);
+      return vis.selectAll("circle").data(nodes).enter().append("svg:circle").attr("class", function(d) {
+        if (d.children !== null) {
+          return 'parent';
+        } else {
+          return 'child';
+        }
+      }).attr("cx", function(d) {
+        return d.x;
+      }).attr("cy", function(d) {
+        return d.y;
+      }).attr("r", function(d) {
+        return d.r;
+      });
+    };
+
     taxonomyViz.prototype.numberSort = function(a, b) {
       return a - b;
     };
 
     taxonomyViz.prototype.fadeInOutCtrl = function() {
       $("#taxonomy_container").html("");
-      return $('#layer_' + LayerID).delay(500).queue(function(n) {
-        $('#taxonomy_container').fadeIn(500);
-        $('.dg').fadeIn(500);
-        if (VizID === 0) {
-          $('#outline').fadeIn(500);
-          $('#tags').fadeIn(500);
-        }
-        if (VizID === 2) {
-          $('#layer_6').hide();
-          $('#layer_7').hide();
-        }
-        $('#layer_' + LayerID).removeClass("loading_notes");
-        $('#LayerFolder ul li .layer_change').removeClass('current_layer');
-        $('#layer_' + LayerID).addClass('current_layer');
-        return n();
-      });
+      $('#taxonomy_container').fadeIn(500);
+      $('.dg').fadeIn(500);
+      if (VizID === 0) {
+        $('#outline').fadeIn(500);
+        $('#tags').fadeIn(500);
+      }
+      if (VizID === 2) {
+        $('#layer_6').hide();
+        $('#layer_7').hide();
+      }
+      $('#layer_' + LayerID).removeClass("loading_notes");
+      $('#LayerFolder ul li .layer_change').removeClass('current_layer');
+      return $('#layer_' + LayerID).addClass('current_layer');
     };
 
     return taxonomyViz;
