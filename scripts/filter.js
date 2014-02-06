@@ -4,9 +4,11 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   filter = (function() {
-    var attr_length, attributes_array, attributes_array_units, biom, columns_non_empty_sample_count, columns_sample_count_list, columns_sample_name_array, date_array, filename, groupable_array, groupable_array_content, no_data_attributes_array, unknown_array;
+    var attr_length, attributes_array, attributes_array_units, biom, columns_non_empty_sample_count, columns_sample_count_list, columns_sample_name_array, date_array, filename, groupable_array, groupable_array_content, no_data_attributes_array, pinch, unknown_array;
 
     biom = null;
+
+    pinch = null;
 
     filename = null;
 
@@ -52,6 +54,7 @@
           currentData = results[results.length - 1];
           filename = currentData.name;
           biom = JSON.parse(currentData.data);
+          pinch = JSON.parse(currentData.data);
           attr_length = biom.shape[1] - 1;
           _this.generateColumns();
           _this.generateColumnsSummary();
@@ -528,7 +531,7 @@
                 $("#range_" + id + "_left").text(leftValue).css('margin-left', Math.max(event.clientX - 40, 20));
                 $("#range_" + id + "_new").text("range: [" + leftValue + " — " + _this.range_array[id - 1][1] + "]");
               } else {
-                order = Math.floor((ui.values[1] - _this.lines_array[id - 1][0][0]) / step[id - 1]) - 1;
+                order = Math.round((ui.values[1] - _this.lines_array[id - 1][0][0]) / step[id - 1]) - 1;
                 rightValue = _this.lines_array[id - 1][0][order];
                 _this.range_array[id - 1][1] = rightValue;
                 $("#range_" + id + "_right").text(rightValue).css('margin-left', Math.min(event.clientX - 40, 270));
@@ -686,8 +689,7 @@
     };
 
     filter.prototype.downloadPinch = function() {
-      var blob, flag, i, index, j, k, obj, pinch, pinch_data_matrix, sum_rows, valid_rows_count, _i, _j, _k, _l, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
-      pinch = biom;
+      var blob, flag, i, index, j, k, obj, pinch_data_matrix, sum_rows, valid_rows_count, _i, _j, _k, _l, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
       pinch.generated_by = 'Phinch 1.0';
       pinch.date = new Date();
       pinch_data_matrix = [];
@@ -786,7 +788,7 @@
       tempViz = d3.select(div).append("svg").attr("width", size[0]).attr("height", size[1]);
       return tempBar = tempViz.selectAll('rect').data(each_numeric_linechart1).enter().append("rect").attr('height', function(d) {
         return y(d);
-      }).attr('width', eachBarWidth + 'px').attr('x', function(d, i) {
+      }).attr('width', Math.max(0.1, eachBarWidth) + 'px').attr('x', function(d, i) {
         return i * (eachBarWidth + 2);
       }).attr('y', function(d, i) {
         return size[1] - y(d);

@@ -18,6 +18,9 @@ class taxonomyViz
 	columns_sample_name_array = []
 	map_array = []
 	unique_taxonomy_comb_count = []
+	selected_samples = [] 
+	groupable = []
+	selected_attributes_array = []
 
 	constructor: (_VizID) -> 
 		VizID = _VizID
@@ -29,10 +32,10 @@ class taxonomyViz
 			s.biomSample.query().all().execute().done (results) =>
 				
 				# 1 get selected samples first 
-				@selected_samples = results[results.length-1].selected_sample
-				@groupable = results[results.length-1].groupable
-				@selected_groupable_array = results[results.length-1].selected_groupable_array
-				@selected_attributes_array = results[results.length-1].selected_attributes_array
+				selected_samples = results[results.length-1].selected_sample
+				groupable = results[results.length-1].groupable
+				selected_groupable_array = results[results.length-1].selected_groupable_array
+				selected_attributes_array = results[results.length-1].selected_attributes_array
 
 				# 2 open the biom file 
 				db.open(
@@ -45,7 +48,7 @@ class taxonomyViz
 						biom = JSON.parse(currentData.data)
 
 						$("#file_numbers").html("");
-						$("#file_numbers").append("File: " + currentData.name + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br/>Observation: " + biom.shape[0] + ", Selected sample: " + @selected_samples.length )
+						$("#file_numbers").append("File: " + currentData.name + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br/>Observation: " + biom.shape[0] + ", Selected sample: " + selected_samples.length )
 
 						# 3 Click events 
 						$('.layer_change').click (evt) => 
@@ -172,30 +175,30 @@ class taxonomyViz
 		else if VizID == 2 
 			@drawTaxonomySankey()
 		else if VizID == 3
-			if @groupable.length > 1 
-				for i in [0..@groupable.length-1]
-					$('#attributes_dropdown').append('<option>' + @groupable[i] + '</option>');
+			if groupable.length > 1 
+				for i in [0..groupable.length-1]
+					$('#attributes_dropdown').append('<option>' + groupable[i] + '</option>');
 				if $('#attributes_dropdown option:first').text() != undefined 
 					@drawTaxonomyDonuts( $('#attributes_dropdown').find(":selected").text() )
 				else
-					@drawTaxonomyDonuts( @groupable[0] )
+					@drawTaxonomyDonuts( groupable[0] )
 				$('#attributes_dropdown').fadeIn(800)
 				$('#attributes_dropdown').change (evt) =>
 					@drawTaxonomyDonuts(evt.currentTarget.value)
-			else if @groupable.length == 1
+			else if groupable.length == 1
 				$('#attributes_dropdown').hide()
-				@drawTaxonomyDonuts( @groupable[0] )
+				@drawTaxonomyDonuts( groupable[0] )
 			else 
 				alert("Groupable chart not available for this dataset!")
 		else if VizID == 4
-			if @selected_attributes_array.length > 0 
+			if selected_attributes_array.length > 0 
 				d3.select('#viz_container').append('div').attr('id', 'countResult');
-				for i in [0..@selected_attributes_array.length-1]
-					$('#attributes_dropdown').append('<option>' + @selected_attributes_array[i] + '</option>');
+				for i in [0..selected_attributes_array.length-1]
+					$('#attributes_dropdown').append('<option>' + selected_attributes_array[i] + '</option>');
 				if $('#attributes_dropdown option:first').text() != undefined 
 					@drawTaxonomyByAttributes($('#attributes_dropdown').find(":selected").text() )
 				else
-					@drawTaxonomyByAttributes(@selected_attributes_array[0] )
+					@drawTaxonomyByAttributes(selected_attributes_array[0] )
 				$('#attributes_dropdown').change (evt) =>
 					@drawTaxonomyByAttributes(evt.currentTarget.value)
 			else 
@@ -210,7 +213,7 @@ class taxonomyViz
 	drawD3Bar: () ->
 
 		# 0 Clone the @selected_sample array, in case delete the elements from selected samples 
-		selectedSampleCopy = @selected_samples.slice(0); 
+		selectedSampleCopy = selected_samples.slice(0); 
 
 		# 1 Prepare Data  &&  2 - get the sum of each row, i.e. one taxonomy total over all samples 
 		vizdata = null
@@ -416,7 +419,7 @@ class taxonomyViz
 		$('#viz_container').append('<canvas id="outline" width="150" height="' + (window.innerHeight - 280) + '"></canvas>')
 
 		# create a minimap
-		if @selected_samples.length > 20 
+		if selected_samples.length > 20 
 			$('#outline').fracs('outline', {
 				crop: true,
 				styles: [
@@ -519,15 +522,15 @@ class taxonomyViz
 
 		for i in [0..unique_taxonomy_comb_onLayer.length-1]
 			vizdata[i] = 0
-			viz_series[i] = new Array(@selected_samples.length)
+			viz_series[i] = new Array(selected_samples.length)
 			comb_name_list[i] = []
 
 		for i in [0..new_data_matrix_onLayer.length-1]  # layer 2 - 68
 			
 			# 1 add up only selected samples
-			for j in [0..@selected_samples.length-1]
-				vizdata[i] += new_data_matrix_onLayer[i][ @selected_samples[j] ]
-				viz_series[i][j] = new_data_matrix_onLayer[i][ @selected_samples[j] ]
+			for j in [0..selected_samples.length-1]
+				vizdata[i] += new_data_matrix_onLayer[i][ selected_samples[j] ]
+				viz_series[i][j] = new_data_matrix_onLayer[i][ selected_samples[j] ]
 				if viz_series[i][j] > max_single 
 					max_single = viz_series[i][j]
 			# 2 store comb name
@@ -591,7 +594,7 @@ class taxonomyViz
 		removePanel.append('i').attr('class', 'icon-remove icon-large')
 
 		y = d3.scale.linear().domain([0, max_single]).range([1,100])
-		xAxisLabels = @selected_samples
+		xAxisLabels = selected_samples
 
 		node = vis.selectAll(".node")
 			.data(nodes)
@@ -690,8 +693,8 @@ class taxonomyViz
 		if unique_taxonomy_comb_onLayer.length > 0
 			for i in [0..unique_taxonomy_comb_onLayer.length-1]
 				sumEachTax[i] = 0 
-				for j in [0..@selected_samples.length-1]
-					sumEachTax[i] += new_data_matrix_onLayer[i][@selected_samples[j]]
+				for j in [0..selected_samples.length-1]
+					sumEachTax[i] += new_data_matrix_onLayer[i][selected_samples[j]]
 			
 			max_single = d3.max( sumEachTax )
 			yScale = d3.scale.pow().exponent(.2).domain([0, max_single]).range([0, 10])
@@ -798,9 +801,9 @@ class taxonomyViz
 
         # 1 Prepare data - find different categories under this groupable attr   
 		groupable_array = []
-		for i in [0..@selected_samples.length-1]
-        	if groupable_array.indexOf( biom.columns[ @selected_samples[i] ].metadata[cur_attribute] ) == -1 
-        		groupable_array.push( biom.columns[ @selected_samples[i] ].metadata[cur_attribute] )
+		for i in [0..selected_samples.length-1]
+        	if groupable_array.indexOf( biom.columns[ selected_samples[i] ].metadata[cur_attribute] ) == -1 
+        		groupable_array.push( biom.columns[ selected_samples[i] ].metadata[cur_attribute] )
 
 		count = new Array( groupable_array.length)
 		for i in [0..groupable_array.length-1]
@@ -812,13 +815,13 @@ class taxonomyViz
 			selected_new_data_matrix_onLayer[i] = new Array(groupable_array.length)
 			for j in [0..groupable_array.length-1]
 				selected_new_data_matrix_onLayer[i][j] = 0
-			for j in [0..@selected_samples.length-1]
-				arr_id = groupable_array.indexOf( biom.columns[ @selected_samples[j] ].metadata[ cur_attribute ] )
-				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][ @selected_samples[j] ] 
+			for j in [0..selected_samples.length-1]
+				arr_id = groupable_array.indexOf( biom.columns[ selected_samples[j] ].metadata[ cur_attribute ] )
+				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][ selected_samples[j] ] 
 
 		# 2 Store the sample IDs in the count 2D array 
-		for i in [0..@selected_samples.length-1]
-			count[ groupable_array.indexOf( biom.columns[ @selected_samples[i] ].metadata[ cur_attribute ] ) ].push( @selected_samples[i] )
+		for i in [0..selected_samples.length-1]
+			count[ groupable_array.indexOf( biom.columns[ selected_samples[i] ].metadata[ cur_attribute ] ) ].push( selected_samples[i] )
 
 		# 3 Plot Pie for each category 
 		d3.select('#taxonomy_container').attr("width", 1200).attr("height", 250 * groupable_array.length + 200)
@@ -917,8 +920,8 @@ class taxonomyViz
 			d3.select('#containedTaxonomy_' + donutID).html( 'Taxonomy:  ' + thisTaxonomyName )
 
 		# 3 draw each column chart 
-		yScale = d3.scale.pow().exponent(.5).domain([0, d3.max(rectArr)]).range([2, 170])
-		eachBarWidth = 860 / containedSamp.length
+		yScale = d3.scale.pow().exponent(.5).domain([0, d3.max(rectArr)]).range([2, 195])
+		eachBarWidth = 800 / containedSamp.length
 		if eachBarWidth < 10 # too many samples contained, too narrow 
 			d3.select('#selectedColumn_' + donutID).html("Too many samples!" + containedSamp) 
 		else 
@@ -927,19 +930,36 @@ class taxonomyViz
 			rectContainedSamp.selectAll('rect').data(rectArr).enter().append('rect')
 				.attr('height', (d) -> return yScale(d))
 				.attr('width', eachBarWidth - 3 )
-				.attr("x", (d,i) -> return eachBarWidth * i + 10 )
-				.attr("y", (d,i) -> return 185 - yScale(d))
+				.attr("x", (d,i) -> return eachBarWidth * i + 50 )
+				.attr("y", (d,i) -> return 200 - yScale(d))
 				.style("fill", (d,i) -> if totalFlag then return '#efc14f' else return fillCol[selectedTaxnomy%20] )
 			rectContainedSamp.selectAll('text')
 				.data(containedSamp)
 			.enter().append('text')
 				.text( (d,i) -> return d )
-				.attr('x', (d,i) -> return eachBarWidth * (i + 0.5) + 10 )
-				.attr('y', 200)
+				.attr('x', (d,i) -> return eachBarWidth * (i + 0.5) + 50 )
+				.attr('y', 210)
 				.attr('width', eachBarWidth )
 				.attr('text-anchor', 'middle')
 				.attr("font-size", "9px")
 				.attr('fill', '#444')
+
+			rule = rectContainedSamp.selectAll('g.rule')
+				.data(yScale.ticks(10))
+			.enter().append('g')
+				.attr('class','rule')
+				.attr('transform', (d) -> return "translate(0," + ( 202 - yScale(d) ) + ")" )	
+			rule.append('line')
+				.attr('x1', 45)
+				.attr('x2', 870)
+				.style("stroke", (d) -> return if d then "#eee" else "#444" )
+				.style("stroke-opacity", (d) -> return if d then 0.7 else null )
+			rule.append('text')
+				.attr('x', 40)
+				.attr("font-size", "9px")
+				.attr('text-anchor', 'end')
+				.attr('fill', '#444')
+				.text( (d,i) -> return format(d) )
 
 	#####################################################################################################################  
 	#############################################  Bars By Attributes  ##################################################  
@@ -953,9 +973,9 @@ class taxonomyViz
 		# 1 find all different values
 		attributes_array = []
 		countEmpty = []
-		for i in [0..@selected_samples.length-1]
-			if attributes_array.indexOf( parseFloat( biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) == -1 and biom.columns[ @selected_samples[i] ].metadata[cur_attribute] != 'no_data'
-				attributes_array.push( parseFloat( biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) )
+		for i in [0..selected_samples.length-1]
+			if attributes_array.indexOf( parseFloat( biom.columns[ selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) == -1 and biom.columns[ selected_samples[i] ].metadata[cur_attribute] != 'no_data'
+				attributes_array.push( parseFloat( biom.columns[ selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) )
 
 		attributes_array.sort(@numberSort)
 		count = new Array( attributes_array.length)
@@ -967,15 +987,15 @@ class taxonomyViz
 			selected_new_data_matrix_onLayer[i] = new Array(attributes_array.length)
 			for j in [0..attributes_array.length-1]
 				selected_new_data_matrix_onLayer[i][j] = 0.0
-			for j in [0..@selected_samples.length-1]
-				arr_id = attributes_array.indexOf( parseFloat( biom.columns[ @selected_samples[j] ].metadata[cur_attribute].split(" ")[0]) )
-				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][ @selected_samples[j] ] 
+			for j in [0..selected_samples.length-1]
+				arr_id = attributes_array.indexOf( parseFloat( biom.columns[ selected_samples[j] ].metadata[cur_attribute].split(" ")[0]) )
+				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][ selected_samples[j] ] 
 
-		for i in [0..@selected_samples.length-1]
-			if ! isNaN( parseFloat( biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) )
-				count[ attributes_array.indexOf( parseFloat( biom.columns[ @selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) ].push(@selected_samples[i])
+		for i in [0..selected_samples.length-1]
+			if ! isNaN( parseFloat( biom.columns[ selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) )
+				count[ attributes_array.indexOf( parseFloat( biom.columns[ selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) ].push(selected_samples[i])
 			else 
-				countEmpty.push(@selected_samples[i])
+				countEmpty.push(selected_samples[i])
 
 		# 2 Build the viz data 		
 		vizdata = new Array(selected_new_data_matrix_onLayer.length)
@@ -1177,30 +1197,63 @@ class taxonomyViz
 		r = 1000
 		x = d3.scale.linear().range([5, r])
 		y = d3.scale.linear().range([5, r])
+		fontScale = d3.scale.linear().domain([0, 0.5]).range([10, 20])
 		node = null
 		root = null
-		pack = d3.layout.pack()
-			.size([r, r])
-			.value( (d) -> return d.size )
-
+		pack = d3.layout.pack().size([r, r]).value( (d) -> return Math.sqrt(d.size) )  ## return d.size ## but too many small ones 
+ 
 		vis = d3.select("#taxonomy_container").append("svg:svg")
 			.attr("width", 1200)
 			.attr("height", 1100)
 			.append('svg:g')
 			.attr("transform", "translate(" + (w - r) / 2 + ", 10)")
 
+		console.log data; 
 		node = data;
 		root = data;
 		nodes = pack.nodes(root);
-
+		that = this
 		vis.selectAll("circle").data(nodes)
-		.enter().append("svg:circle")
-			.attr("class", (d) -> if d.children != null then return 'parent'else return 'child' )		
+			.enter().append("svg:circle")
+			.attr("class", (d) -> if d.children != null then return 'parent' else return 'child' )		
 			.attr("cx", (d) -> return d.x)
 			.attr("cy", (d) -> return d.y)
 			.attr("r", (d) -> return d.r)
-			# .on("click", (d) -> return zoom(node == d ? root : d))
-			
+			# .on "click", (d) -> if node == d then return that.zoomBubble(vis, root) else return that.zoomBubble(vis, d)
+		vis.selectAll("text").data(nodes)
+			.enter().append("svg:text")
+			.attr("class", (d) -> if d.children != null then return 'parent' else return 'child' )
+			.attr("x", (d) -> return d.x )
+			.attr("y", (d) -> d.y += d.r * (Math.random() - 0.5); return d.y )  ## return d.y ## but d.y could be the same in most cases, so give it a random y position
+			.attr("font-size", (d) -> return fontScale( d.r / r) + "px")
+			.attr("text-anchor", "middle")
+			.style("opacity", (d) -> if d.r > 50 then return 0.8 else return 0 )
+			.text((d) -> return d.name )
+
+		d3.select(window).on("click", () -> that.zoomBubble(vis, root) )
+
+	zoomBubble: (vis, d) -> 
+		r = 1000
+		k = r / d.r / 2;
+		x = d3.scale.linear().range([5, r])
+		y = d3.scale.linear().range([5, r])
+		x.domain([d.x - d.r, d.x + d.r])
+		y.domain([d.y - d.r, d.y + d.r])
+		t = vis.transition().duration( () -> if d3.event.altKey? then return 750 else return 500)
+
+		t.selectAll("circle")
+			.attr("cx", (d) -> return x(d.x) )
+			.attr("cy", (d) -> return y(d.y) )
+			.attr("r", (d) -> return k * d.r )
+
+		t.selectAll("text")
+			.attr("x", (d) -> return x(d.x) )
+			.attr("y", (d) -> return y(d.y) )
+			.style("opacity", (d) -> return k * d.r > 20 ? 1 : 0)
+
+		node = d
+		d3.event.stopPropagation()
+
 	#####################################################################################################################         
 	###############################################   UTILITIES   #######################################################  
 	#####################################################################################################################  

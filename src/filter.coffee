@@ -1,6 +1,7 @@
 class filter
 
 	biom = null
+	pinch = null
 	filename = null
 	attr_length = null
 	date_array = []
@@ -24,7 +25,7 @@ class filter
 				currentData = results[results.length-1]
 				filename = currentData.name
 				biom = JSON.parse(currentData.data)
-				
+				pinch = JSON.parse(currentData.data)
 				# Parse 		
 				attr_length = biom.shape[1]-1
 				@generateColumns()
@@ -50,6 +51,7 @@ class filter
 				@livePreview()
 
 	# 0 Jump to Gallery 
+
 	jumpToGallery: () -> 
 		db.open(
 			server: "BiomSample", version: 1,
@@ -395,7 +397,7 @@ class filter
 							$("#range_" + id + "_left").text(  leftValue ).css('margin-left', Math.max( event.clientX - 40, 20) )
 							$("#range_" + id + "_new").text( "range: [" + leftValue + " — " + @range_array[id-1][1] + "]")
 						else
-							order = Math.floor( ( ui.values[ 1 ] - @lines_array[id-1][0][0]) / step[id-1] ) - 1
+							order = Math.round( ( ui.values[ 1 ] - @lines_array[id-1][0][0]) / step[id-1] ) - 1
 							rightValue = @lines_array[id-1][0][order]
 							@range_array[id-1][1] = rightValue # ui.values[1]
 							$("#range_" + id + "_right").text( rightValue ).css('margin-left', Math.min( event.clientX - 40, 270) )
@@ -437,7 +439,6 @@ class filter
 			for i in [1..@range_array.length] 
 				if $('#numeric_check_' + i).is(':checked')
 					selected_range_array.push(@range_array[i-1])
-
 
 		$('#right_live_panel').html("")
 
@@ -526,7 +527,7 @@ class filter
 
 	# 4 Download
 	downloadPinch: () ->
-		pinch = biom
+		
 		pinch.generated_by = 'Phinch 1.0'
 		pinch.date = new Date() 
 
@@ -563,6 +564,7 @@ class filter
 			for j in [0..no_data_attributes_array.length-1]
 				if @selected_no_data_attributes_array.indexOf(no_data_attributes_array[j]) == -1 
 					@removeFromObjectByKey(pinch.columns[i].metadata, no_data_attributes_array[j])
+
 			# If this is not a selected attributes, delete it 
 			for k in [0..attributes_array.length-1]
 				if @selected_attributes_array.indexOf(attributes_array[k]) == -1 
@@ -624,7 +626,7 @@ class filter
 		tempBar = tempViz.selectAll('rect').data(each_numeric_linechart1)
 			.enter().append("rect")
 			.attr('height', (d) -> return y(d) )
-			.attr('width', eachBarWidth + 'px')
+			.attr('width', Math.max(0.1, eachBarWidth) + 'px')
 			.attr('x',  (d,i) -> return i * (eachBarWidth  + 2) )
 			.attr('y', (d,i) -> return size[1] - y(d) )
 			.attr('fill', (d,i) ->
