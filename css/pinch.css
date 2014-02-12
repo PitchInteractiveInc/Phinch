@@ -840,6 +840,9 @@ rect.pane {
 	cursor: default !important;
 }
 
+.nullnode {
+	display: none;
+}
 .node rect {
   fill-opacity: .8;
   shape-rendering: crispEdges;
@@ -855,7 +858,7 @@ rect.pane {
   stroke-opacity: .2;
 }
 .link:hover {
-  stroke-opacity: .5;
+  stroke-opacity: .8;
 }
 
 .donutDiv {

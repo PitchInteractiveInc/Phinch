@@ -18,11 +18,11 @@ class taxonomyViz
 	columns_sample_name_array = []
 	map_array = []
 	unique_taxonomy_comb_count = []
-	selected_samples = [] 
+	selected_samples = []
 	groupable = []
 	selected_attributes_array = []
 
-	constructor: (_VizID) -> 
+	constructor: (_VizID) ->
 		VizID = _VizID
 		db.open(
 			server: "BiomSample", version: 1,
@@ -543,20 +543,25 @@ class taxonomyViz
 		nodes = []
 		color = d3.scale.category10()
 		max_amount = d3.max(vizdata)
-		radius_scale = d3.scale.pow().exponent(0.5).domain([0, max_amount]).range([3, 50])
+		
+		# adjust min max should later be input field 
+		adjust_min = 100
+		adjust_max = max_amount + 1
+		radius_scale = d3.scale.pow().exponent(0.25).domain([adjust_min, adjust_max]).range([3, 50])
 
-		for i in [0..new_data_matrix_onLayer.length-1]	
-			node = {
-				id: i
-				radius: 100 * radius_scale( vizdata[i] ) # Math.log( Math.sqrt( vizdata[i] / max_amount ) + 1 ) * 10000
-				value: vizdata[i]
-				name: comb_name_list[i]
-				group: "medium" # 
-				x: Math.random() * 1000
-				y: Math.random() * 600
-			}
-			nodes.push node
-		# nodes.sort (a,b) -> b.value - a.value
+		for i in [0..new_data_matrix_onLayer.length-1]
+			if vizdata[i] > adjust_min and vizdata[i] < max_amount
+				node = {
+					id: i
+					radius: 100 * radius_scale( vizdata[i] ) # Math.log( Math.sqrt( vizdata[i] / max_amount ) + 1 ) * 10000
+					value: vizdata[i]
+					name: comb_name_list[i]
+					group: "medium" # 
+					x: Math.random() * 1000
+					y: Math.random() * 600
+				}
+				nodes.push node
+				# nodes.sort (a,b) -> b.value - a.value
 
 		force = d3.layout.force()
 			.gravity(0.025 * LayerID)
@@ -716,8 +721,6 @@ class taxonomyViz
 						tempLink.value = yScale(sumEachTax[i])
 						tempLink.absValue = sumEachTax[i]
 						taxonomySankey.links.push( tempLink )
-		
-		console.log taxonomySankey
 
         # clean canvas
 		width = 1500
@@ -753,7 +756,7 @@ class taxonomyViz
 			.attr("class", "link")
 			.attr("d", path)
 			.style('stroke', (d,i) -> return color(d.target.name) )
-			.style("stroke-width", (d) -> return Math.max(1, d.dy) )
+			.style("stroke-width", (d) -> return Math.max(0, d.dy) )
 			.sort( (a, b) -> return b.dy - a.dy )
 			.on "mouseover", (d,i) -> 
 				infoPanel.html(d.source.name + " → " + d.target.name + ': ' + d.absValue)
@@ -764,8 +767,8 @@ class taxonomyViz
 		node = svg.append("g").selectAll(".node")
 			.data(taxonomySankey.nodes)
 		.enter().append("g")
-			.attr("class", "node")
-			.attr "transform", (d) -> return "translate(" + d.x + "," + d.y + ")"
+			.attr("class", (d) -> if isNaN(d.y) then return 'nullnode' else return 'node')
+			.attr("transform", (d) -> if !isNaN(d.y) then return "translate(" + d.x + "," + d.y + ")" )
 
 		node.append("rect")
 			.attr("height",  (d) -> if d.dy < 1 then return 1 else return d.dy )
@@ -1274,24 +1277,6 @@ class taxonomyViz
 		$('#layer_' + LayerID).removeClass("loading_notes")
 		$('#LayerFolder ul li .layer_change').removeClass('current_layer');
 		$('#layer_' + LayerID).addClass('current_layer')
-
-
-		# $('#layer_' + LayerID).delay(500).queue (n) -> 
-		# 	$('#taxonomy_container').fadeIn(500)
-		# 	console.log 'wird'
-			
-		# 	# console.log $('#taxonomy_container')
-		# 	if VizID == 0
-		# 		$('#outline').fadeIn(500)
-		# 		$('#tags').fadeIn(500)
-		# 	if VizID == 2
-		# 		$('#layer_6').hide() 
-		# 		$('#layer_7').hide()
-		# 	$('#layer_' + LayerID).removeClass("loading_notes")
-		# 	$('#LayerFolder ul li .layer_change').removeClass('current_layer');
-		# 	$('#layer_' + LayerID).addClass('current_layer')
-		# 	return n() 
-
 
 window.taxonomyViz = taxonomyViz
 

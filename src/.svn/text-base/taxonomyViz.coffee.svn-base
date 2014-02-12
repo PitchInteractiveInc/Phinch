@@ -18,11 +18,11 @@ class taxonomyViz
 	columns_sample_name_array = []
 	map_array = []
 	unique_taxonomy_comb_count = []
-	selected_samples = [] 
+	selected_samples = []
 	groupable = []
 	selected_attributes_array = []
-	
-	constructor: (_VizID) -> 
+
+	constructor: (_VizID) ->
 		VizID = _VizID
 		db.open(
 			server: "BiomSample", version: 1,
@@ -543,20 +543,25 @@ class taxonomyViz
 		nodes = []
 		color = d3.scale.category10()
 		max_amount = d3.max(vizdata)
-		radius_scale = d3.scale.pow().exponent(0.5).domain([0, max_amount]).range([3, 50])
+		
+		# adjust min max should later be input field 
+		adjust_min = 100
+		adjust_max = max_amount + 1
+		radius_scale = d3.scale.pow().exponent(0.25).domain([adjust_min, adjust_max]).range([3, 50])
 
-		for i in [0..new_data_matrix_onLayer.length-1]	
-			node = {
-				id: i
-				radius: 100 * radius_scale( vizdata[i] ) # Math.log( Math.sqrt( vizdata[i] / max_amount ) + 1 ) * 10000
-				value: vizdata[i]
-				name: comb_name_list[i]
-				group: "medium" # 
-				x: Math.random() * 1000
-				y: Math.random() * 600
-			}
-			nodes.push node
-		# nodes.sort (a,b) -> b.value - a.value
+		for i in [0..new_data_matrix_onLayer.length-1]
+			if vizdata[i] > adjust_min and vizdata[i] < max_amount
+				node = {
+					id: i
+					radius: 100 * radius_scale( vizdata[i] ) # Math.log( Math.sqrt( vizdata[i] / max_amount ) + 1 ) * 10000
+					value: vizdata[i]
+					name: comb_name_list[i]
+					group: "medium" # 
+					x: Math.random() * 1000
+					y: Math.random() * 600
+				}
+				nodes.push node
+				# nodes.sort (a,b) -> b.value - a.value
 
 		force = d3.layout.force()
 			.gravity(0.025 * LayerID)
@@ -716,8 +721,6 @@ class taxonomyViz
 						tempLink.value = yScale(sumEachTax[i])
 						tempLink.absValue = sumEachTax[i]
 						taxonomySankey.links.push( tempLink )
-		
-		console.log taxonomySankey
 
         # clean canvas
 		width = 1500
@@ -753,7 +756,7 @@ class taxonomyViz
 			.attr("class", "link")
 			.attr("d", path)
 			.style('stroke', (d,i) -> return color(d.target.name) )
-			.style("stroke-width", (d) -> return Math.max(1, d.dy) )
+			.style("stroke-width", (d) -> return Math.max(0, d.dy) )
 			.sort( (a, b) -> return b.dy - a.dy )
 			.on "mouseover", (d,i) -> 
 				infoPanel.html(d.source.name + " → " + d.target.name + ': ' + d.absValue)
@@ -764,8 +767,8 @@ class taxonomyViz
 		node = svg.append("g").selectAll(".node")
 			.data(taxonomySankey.nodes)
 		.enter().append("g")
-			.attr("class", "node")
-			.attr "transform", (d) -> return "translate(" + d.x + "," + d.y + ")"
+			.attr("class", (d) -> if isNaN(d.y) then return 'nullnode' else return 'node')
+			.attr("transform", (d) -> if !isNaN(d.y) then return "translate(" + d.x + "," + d.y + ")" )
 
 		node.append("rect")
 			.attr("height",  (d) -> if d.dy < 1 then return 1 else return d.dy )
@@ -920,8 +923,8 @@ class taxonomyViz
 			d3.select('#containedTaxonomy_' + donutID).html( 'Taxonomy:  ' + thisTaxonomyName )
 
 		# 3 draw each column chart 
-		yScale = d3.scale.pow().exponent(.5).domain([0, d3.max(rectArr)]).range([2, 170])
-		eachBarWidth = 860 / containedSamp.length
+		yScale = d3.scale.pow().exponent(.5).domain([0, d3.max(rectArr)]).range([2, 195])
+		eachBarWidth = 800 / containedSamp.length
 		if eachBarWidth < 10 # too many samples contained, too narrow 
 			d3.select('#selectedColumn_' + donutID).html("Too many samples!" + containedSamp) 
 		else 
@@ -930,19 +933,36 @@ class taxonomyViz
 			rectContainedSamp.selectAll('rect').data(rectArr).enter().append('rect')
 				.attr('height', (d) -> return yScale(d))
 				.attr('width', eachBarWidth - 3 )
-				.attr("x", (d,i) -> return eachBarWidth * i + 10 )
-				.attr("y", (d,i) -> return 185 - yScale(d))
+				.attr("x", (d,i) -> return eachBarWidth * i + 50 )
+				.attr("y", (d,i) -> return 200 - yScale(d))
 				.style("fill", (d,i) -> if totalFlag then return '#efc14f' else return fillCol[selectedTaxnomy%20] )
 			rectContainedSamp.selectAll('text')
 				.data(containedSamp)
 			.enter().append('text')
 				.text( (d,i) -> return d )
-				.attr('x', (d,i) -> return eachBarWidth * (i + 0.5) + 10 )
-				.attr('y', 200)
+				.attr('x', (d,i) -> return eachBarWidth * (i + 0.5) + 50 )
+				.attr('y', 210)
 				.attr('width', eachBarWidth )
 				.attr('text-anchor', 'middle')
 				.attr("font-size", "9px")
 				.attr('fill', '#444')
+
+			rule = rectContainedSamp.selectAll('g.rule')
+				.data(yScale.ticks(10))
+			.enter().append('g')
+				.attr('class','rule')
+				.attr('transform', (d) -> return "translate(0," + ( 202 - yScale(d) ) + ")" )	
+			rule.append('line')
+				.attr('x1', 45)
+				.attr('x2', 870)
+				.style("stroke", (d) -> return if d then "#eee" else "#444" )
+				.style("stroke-opacity", (d) -> return if d then 0.7 else null )
+			rule.append('text')
+				.attr('x', 40)
+				.attr("font-size", "9px")
+				.attr('text-anchor', 'end')
+				.attr('fill', '#444')
+				.text( (d,i) -> return format(d) )
 
 	#####################################################################################################################  
 	#############################################  Bars By Attributes  ##################################################  
@@ -1180,30 +1200,63 @@ class taxonomyViz
 		r = 1000
 		x = d3.scale.linear().range([5, r])
 		y = d3.scale.linear().range([5, r])
+		fontScale = d3.scale.linear().domain([0, 0.5]).range([10, 20])
 		node = null
 		root = null
-		pack = d3.layout.pack()
-			.size([r, r])
-			.value( (d) -> return d.size )
-
+		pack = d3.layout.pack().size([r, r]).value( (d) -> return Math.sqrt(d.size) )  ## return d.size ## but too many small ones 
+ 
 		vis = d3.select("#taxonomy_container").append("svg:svg")
 			.attr("width", 1200)
 			.attr("height", 1100)
 			.append('svg:g')
 			.attr("transform", "translate(" + (w - r) / 2 + ", 10)")
 
+		console.log data; 
 		node = data;
 		root = data;
 		nodes = pack.nodes(root);
-
+		that = this
 		vis.selectAll("circle").data(nodes)
-		.enter().append("svg:circle")
-			.attr("class", (d) -> if d.children != null then return 'parent'else return 'child' )		
+			.enter().append("svg:circle")
+			.attr("class", (d) -> if d.children != null then return 'parent' else return 'child' )		
 			.attr("cx", (d) -> return d.x)
 			.attr("cy", (d) -> return d.y)
 			.attr("r", (d) -> return d.r)
-			# .on("click", (d) -> return zoom(node == d ? root : d))
-			
+			# .on "click", (d) -> if node == d then return that.zoomBubble(vis, root) else return that.zoomBubble(vis, d)
+		vis.selectAll("text").data(nodes)
+			.enter().append("svg:text")
+			.attr("class", (d) -> if d.children != null then return 'parent' else return 'child' )
+			.attr("x", (d) -> return d.x )
+			.attr("y", (d) -> d.y += d.r * (Math.random() - 0.5); return d.y )  ## return d.y ## but d.y could be the same in most cases, so give it a random y position
+			.attr("font-size", (d) -> return fontScale( d.r / r) + "px")
+			.attr("text-anchor", "middle")
+			.style("opacity", (d) -> if d.r > 50 then return 0.8 else return 0 )
+			.text((d) -> return d.name )
+
+		d3.select(window).on("click", () -> that.zoomBubble(vis, root) )
+
+	zoomBubble: (vis, d) -> 
+		r = 1000
+		k = r / d.r / 2;
+		x = d3.scale.linear().range([5, r])
+		y = d3.scale.linear().range([5, r])
+		x.domain([d.x - d.r, d.x + d.r])
+		y.domain([d.y - d.r, d.y + d.r])
+		t = vis.transition().duration( () -> if d3.event.altKey? then return 750 else return 500)
+
+		t.selectAll("circle")
+			.attr("cx", (d) -> return x(d.x) )
+			.attr("cy", (d) -> return y(d.y) )
+			.attr("r", (d) -> return k * d.r )
+
+		t.selectAll("text")
+			.attr("x", (d) -> return x(d.x) )
+			.attr("y", (d) -> return y(d.y) )
+			.style("opacity", (d) -> return k * d.r > 20 ? 1 : 0)
+
+		node = d
+		d3.event.stopPropagation()
+
 	#####################################################################################################################         
 	###############################################   UTILITIES   #######################################################  
 	#####################################################################################################################  
@@ -1224,24 +1277,6 @@ class taxonomyViz
 		$('#layer_' + LayerID).removeClass("loading_notes")
 		$('#LayerFolder ul li .layer_change').removeClass('current_layer');
 		$('#layer_' + LayerID).addClass('current_layer')
-
-
-		# $('#layer_' + LayerID).delay(500).queue (n) -> 
-		# 	$('#taxonomy_container').fadeIn(500)
-		# 	console.log 'wird'
-			
-		# 	# console.log $('#taxonomy_container')
-		# 	if VizID == 0
-		# 		$('#outline').fadeIn(500)
-		# 		$('#tags').fadeIn(500)
-		# 	if VizID == 2
-		# 		$('#layer_6').hide() 
-		# 		$('#layer_7').hide()
-		# 	$('#layer_' + LayerID).removeClass("loading_notes")
-		# 	$('#LayerFolder ul li .layer_change').removeClass('current_layer');
-		# 	$('#layer_' + LayerID).addClass('current_layer')
-		# 	return n() 
-
 
 window.taxonomyViz = taxonomyViz
 

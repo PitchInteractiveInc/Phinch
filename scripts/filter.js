@@ -4,11 +4,11 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   filter = (function() {
-    var attr_length, attributes_array, attributes_array_units, biom, columns_non_empty_sample_count, columns_sample_count_list, columns_sample_name_array, date_array, filename, groupable_array, groupable_array_content, no_data_attributes_array, pinch, unknown_array;
+    var attr_length, attributes_array, attributes_array_units, biom, columns_non_empty_sample_count, columns_sample_count_list, columns_sample_name_array, date_array, filename, groupable_array, groupable_array_content, no_data_attributes_array, phinch, unknown_array;
 
     biom = null;
 
-    pinch = null;
+    phinch = null;
 
     filename = null;
 
@@ -54,7 +54,7 @@
           currentData = results[results.length - 1];
           filename = currentData.name;
           biom = JSON.parse(currentData.data);
-          pinch = JSON.parse(currentData.data);
+          phinch = JSON.parse(currentData.data);
           attr_length = biom.shape[1] - 1;
           _this.generateColumns();
           _this.generateColumnsSummary();
@@ -688,11 +688,11 @@
       return console.log('selected_sample: ' + this.selected_sample.length);
     };
 
-    filter.prototype.downloadPinch = function() {
-      var blob, flag, i, index, j, k, obj, pinch_data_matrix, sum_rows, valid_rows_count, _i, _j, _k, _l, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
-      pinch.generated_by = 'Phinch 1.0';
-      pinch.date = new Date();
-      pinch_data_matrix = [];
+    filter.prototype.downloadPhinch = function() {
+      var blob, flag, i, index, j, k, obj, phinch_data_matrix, sum_rows, valid_rows_count, _i, _j, _k, _l, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
+      phinch.generated_by = 'Phinch 1.0';
+      phinch.date = new Date();
+      phinch_data_matrix = [];
       sum_rows = new Array(biom.shape[0]);
       for (i = _i = 0, _ref = biom.shape[0] - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
         sum_rows[i] = 0;
@@ -707,22 +707,22 @@
           }
         }
         if (flag) {
-          pinch_data_matrix[index] = new Array(3);
-          pinch_data_matrix[index] = [biom.data[i][0], j, biom.data[i][2]];
+          phinch_data_matrix[index] = new Array(3);
+          phinch_data_matrix[index] = [biom.data[i][0], j, biom.data[i][2]];
           sum_rows[biom.data[i][0]] += biom.data[i][2];
           index++;
         }
       }
-      pinch.data = pinch_data_matrix;
+      phinch.data = phinch_data_matrix;
       for (i = _l = 0, _ref3 = biom.shape[1] - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
         for (j = _m = 0, _ref4 = no_data_attributes_array.length - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; j = 0 <= _ref4 ? ++_m : --_m) {
           if (this.selected_no_data_attributes_array.indexOf(no_data_attributes_array[j]) === -1) {
-            this.removeFromObjectByKey(pinch.columns[i].metadata, no_data_attributes_array[j]);
+            this.removeFromObjectByKey(phinch.columns[i].metadata, no_data_attributes_array[j]);
           }
         }
         for (k = _n = 0, _ref5 = attributes_array.length - 1; 0 <= _ref5 ? _n <= _ref5 : _n >= _ref5; k = 0 <= _ref5 ? ++_n : --_n) {
           if (this.selected_attributes_array.indexOf(attributes_array[k]) === -1) {
-            this.removeFromObjectByKey(pinch.columns[i].metadata, attributes_array[k]);
+            this.removeFromObjectByKey(phinch.columns[i].metadata, attributes_array[k]);
           }
         }
       }
@@ -731,11 +731,11 @@
         if (parseInt(sum_rows[i]) > 0) {
           valid_rows_count++;
         } else {
-          pinch.rows[i].metadata.taxonomy = ["k__", "p__", "c__", "o__", "f__", "g__", "s__"];
+          phinch.rows[i].metadata.taxonomy = ["k__", "p__", "c__", "o__", "f__", "g__", "s__"];
         }
       }
-      pinch.shape[1] = this.selected_sample.length;
-      obj = JSON.stringify(pinch);
+      phinch.shape[1] = this.selected_sample.length;
+      obj = JSON.stringify(phinch);
       blob = new Blob([obj], {
         type: "text/plain;charset=utf-8"
       });

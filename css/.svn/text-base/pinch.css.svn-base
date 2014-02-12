@@ -530,7 +530,7 @@ td { border-right: 1px #ccc solid;}
 }
 
 .range_right_dates {
-	margin-top: -30px;
+	margin-top: -25px;
 	margin-left: 250px;
 	font-size: 10px; 
 	line-height: 10px;
@@ -840,6 +840,9 @@ rect.pane {
 	cursor: default !important;
 }
 
+.nullnode {
+	display: none;
+}
 .node rect {
   fill-opacity: .8;
   shape-rendering: crispEdges;
@@ -855,7 +858,7 @@ rect.pane {
   stroke-opacity: .2;
 }
 .link:hover {
-  stroke-opacity: .5;
+  stroke-opacity: .8;
 }
 
 .donutDiv {
@@ -866,7 +869,7 @@ rect.pane {
 .panelCombSample {
 	float: left;
 	width: 880px;
-	height: 220px;
+	height: 230px;
 	margin-top: 10px;
 	font-size: 12px;
 	padding: 5px;
@@ -877,7 +880,7 @@ rect.pane {
 	-moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4);
 	border: 1px solid rgba(200,200,200,0.85);
 	text-align: right;
-	overflow: scroll;
+	overflow: hidden;
 }
 .containedTaxonomy {
 	padding-right: 20px;
@@ -906,7 +909,7 @@ rect.pane {
 circle {
   fill: #ccc;
   stroke: #999;
-  pointer-events: all;
+  /*pointer-events: all;*/
 }
 
 circle.parent {
@@ -917,7 +920,7 @@ circle.parent {
 
 circle.parent:hover {
   stroke: #ff7f0e;
-  stroke-width: .5px;
+  stroke-width: 2px;
 }
 
 circle.child {

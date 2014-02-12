@@ -1,7 +1,7 @@
 class filter
 
 	biom = null
-	pinch = null
+	phinch = null
 	filename = null
 	attr_length = null
 	date_array = []
@@ -25,7 +25,7 @@ class filter
 				currentData = results[results.length-1]
 				filename = currentData.name
 				biom = JSON.parse(currentData.data)
-				pinch = JSON.parse(currentData.data)
+				phinch = JSON.parse(currentData.data)
 				# Parse 		
 				attr_length = biom.shape[1]-1
 				@generateColumns()
@@ -122,7 +122,7 @@ class filter
 				unknown_array.push(key)
 
 	generateColumnsSummary: () -> 
-		columns_sample_total_count = 0 # Non empty sample ids, for new pinch file
+		columns_sample_total_count = 0 # Non empty sample ids, for new phinch file
 
 		for i in [0..attr_length]
 			columns_sample_count_list[i] = 0
@@ -526,14 +526,14 @@ class filter
 		console.log 'selected_sample: ' + @selected_sample.length
 
 	# 4 Download
-	downloadPinch: () ->
+	downloadPhinch: () ->
 		
-		pinch.generated_by = 'Phinch 1.0'
-		pinch.date = new Date() 
+		phinch.generated_by = 'Phinch 1.0'
+		phinch.date = new Date() 
 
 		# Step 1 - get data matrix ready 
 
-		pinch_data_matrix = []
+		phinch_data_matrix = []
 		sum_rows = new Array(biom.shape[0])
 		for i in [0..biom.shape[0]-1] 
 			sum_rows[i] = 0 
@@ -545,44 +545,44 @@ class filter
 					flag = true 
 					break 
 			if flag 
-				pinch_data_matrix[index] = new Array(3) 
-				pinch_data_matrix[index] = [biom.data[i][0], j ,biom.data[i][2]] 
+				phinch_data_matrix[index] = new Array(3) 
+				phinch_data_matrix[index] = [biom.data[i][0], j ,biom.data[i][2]] 
 				sum_rows[biom.data[i][0]] += biom.data[i][2]
 				index++ 
-		pinch.data = pinch_data_matrix		
+		phinch.data = phinch_data_matrix 
 
 		# Step 2 - get columns ready 
 
 		for i in [0..biom.shape[1]-1]
-			# if @selected_sample.indexOf(i) == -1 # unselected samples 
-			# 	for key of pinch.columns[i].metadata
-			# 		if key.toLowerCase().indexOf("date") == -1 # exclude the date columns 
-			# 			pinch.columns[i].metadata[key] = 'no_data' # pinch.columns[i].metadata[key] + '_unselected'
-		
 
 			# If this is a not selected descriptive attribute, delete it 
 			for j in [0..no_data_attributes_array.length-1]
 				if @selected_no_data_attributes_array.indexOf(no_data_attributes_array[j]) == -1 
-					@removeFromObjectByKey(pinch.columns[i].metadata, no_data_attributes_array[j])
+					@removeFromObjectByKey(phinch.columns[i].metadata, no_data_attributes_array[j])
 
 			# If this is not a selected attributes, delete it 
 			for k in [0..attributes_array.length-1]
 				if @selected_attributes_array.indexOf(attributes_array[k]) == -1 
-					@removeFromObjectByKey(pinch.columns[i].metadata, attributes_array[k])
+					@removeFromObjectByKey(phinch.columns[i].metadata, attributes_array[k])
 
-		# Step 3 - get rows ready 
+		# Step 3 - get rows ready, if sum == 0, get rid of that row 
+		
 		valid_rows_count = 0 
 		for i in [0..sum_rows.length-1]
 			if parseInt(sum_rows[i]) > 0 
 				valid_rows_count++
 			else 
-				pinch.rows[i].metadata.taxonomy = ["k__", "p__", "c__", "o__", "f__", "g__", "s__"]
+				phinch.rows[i].metadata.taxonomy = ["k__", "p__", "c__", "o__", "f__", "g__", "s__"]
 
-		pinch.shape[1] = @selected_sample.length
+		# console.log valid_rows_count # not change the shape[0], cuz otherwise we have to change all the row numbers  
+		# phinch.shape[0] = valid_rows_count
+
+		phinch.shape[1] = @selected_sample.length
+		
 		# Step 4 - stringify 				
-		obj = JSON.stringify(pinch)
+		obj = JSON.stringify(phinch)
 		blob = new Blob([obj], {type: "text/plain;charset=utf-8"})
-		saveAs(blob, filename+".phinch")
+		saveAs(blob, filename + ".phinch")
 
 	# 5 Utilities & Control Parts
 	check_unique: (arr) ->

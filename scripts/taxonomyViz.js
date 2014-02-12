@@ -601,7 +601,7 @@
     };
 
     taxonomyViz.prototype.drawTaxonomyBubble = function() {
-      var color, comb_name, comb_name_list, force, i, infoPanel, j, max_amount, max_single, node, nodes, radius_scale, removePanel, tooltip, tooltipOverPanel, vis, viz_series, xAxisLabels, y, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3;
+      var adjust_max, adjust_min, color, comb_name, comb_name_list, force, i, infoPanel, j, max_amount, max_single, node, nodes, radius_scale, removePanel, tooltip, tooltipOverPanel, vis, viz_series, xAxisLabels, y, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3;
       this.fadeInOutCtrl();
       viz_series = new Array(unique_taxonomy_comb_onLayer.length);
       vizdata = new Array(unique_taxonomy_comb_onLayer.length);
@@ -630,18 +630,22 @@
       nodes = [];
       color = d3.scale.category10();
       max_amount = d3.max(vizdata);
-      radius_scale = d3.scale.pow().exponent(0.5).domain([0, max_amount]).range([3, 50]);
+      adjust_min = 100;
+      adjust_max = max_amount + 1;
+      radius_scale = d3.scale.pow().exponent(0.25).domain([adjust_min, adjust_max]).range([3, 50]);
       for (i = _m = 0, _ref3 = new_data_matrix_onLayer.length - 1; 0 <= _ref3 ? _m <= _ref3 : _m >= _ref3; i = 0 <= _ref3 ? ++_m : --_m) {
-        node = {
-          id: i,
-          radius: 100 * radius_scale(vizdata[i]),
-          value: vizdata[i],
-          name: comb_name_list[i],
-          group: "medium",
-          x: Math.random() * 1000,
-          y: Math.random() * 600
-        };
-        nodes.push(node);
+        if (vizdata[i] > adjust_min && vizdata[i] < max_amount) {
+          node = {
+            id: i,
+            radius: 100 * radius_scale(vizdata[i]),
+            value: vizdata[i],
+            name: comb_name_list[i],
+            group: "medium",
+            x: Math.random() * 1000,
+            y: Math.random() * 600
+          };
+          nodes.push(node);
+        }
       }
       force = d3.layout.force().gravity(0.025 * LayerID).nodes(nodes).on("tick", function(e) {
         return node.attr("cx", function(d) {
@@ -778,7 +782,6 @@
           }
         }
       }
-      console.log(taxonomySankey);
       width = 1500;
       height = 20 * unique_taxonomy_comb_onLayer.length;
       margin = {
@@ -795,7 +798,7 @@
       link = svg.append("g").selectAll(".link").data(taxonomySankey.links).enter().append("path").attr("class", "link").attr("d", path).style('stroke', function(d, i) {
         return color(d.target.name);
       }).style("stroke-width", function(d) {
-        return Math.max(1, d.dy);
+        return Math.max(0, d.dy);
       }).sort(function(a, b) {
         return b.dy - a.dy;
       }).on("mouseover", function(d, i) {
@@ -810,8 +813,16 @@
           "visibility": "hidden"
         });
       });
-      node = svg.append("g").selectAll(".node").data(taxonomySankey.nodes).enter().append("g").attr("class", "node").attr("transform", function(d) {
-        return "translate(" + d.x + "," + d.y + ")";
+      node = svg.append("g").selectAll(".node").data(taxonomySankey.nodes).enter().append("g").attr("class", function(d) {
+        if (isNaN(d.y)) {
+          return 'nullnode';
+        } else {
+          return 'node';
+        }
+      }).attr("transform", function(d) {
+        if (!isNaN(d.y)) {
+          return "translate(" + d.x + "," + d.y + ")";
+        }
       });
       node.append("rect").attr("height", function(d) {
         if (d.dy < 1) {
