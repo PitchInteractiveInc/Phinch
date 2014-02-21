@@ -47,8 +47,8 @@ class taxonomyViz
 						currentData = results[results.length-1]
 						biom = JSON.parse(currentData.data)
 
-						$("#file_numbers").html("");
-						$("#file_numbers").append("File: " + currentData.name + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br/>Observation: " + biom.shape[0] + ", Selected sample: " + selected_samples.length )
+						$("#file_details").html("");
+						$("#file_details").append( "ANALYZING &nbsp;<span>" + currentData.name + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>")
 
 						# 3 Click events 
 						$('.layer_change').click (evt) => 
@@ -106,7 +106,7 @@ class taxonomyViz
 						unique_taxonomy_comb_count[j]++
 						map_array[i] = j
 						flag = false
-						break
+						break 
 			if flag 
 				map_array[i] = comb_len
 				unique_taxonomy_comb_count[comb_len] = 1
@@ -383,7 +383,13 @@ class taxonomyViz
 			.attr("font-size", "9px")
 			.attr('fill', '#444')	
 
-		# add x-axis
+		# add title & x-axis 
+		svg.append("text")
+			.attr('y', -35)
+			.attr("font-size", "11px")
+			.text('Sequence Reads')
+			.attr('transform', (d) -> return "translate(" + y(max_single) / 2 + ", 0)" )
+
 		rule = svg.selectAll('g.rule')
 			.data(y.ticks(10))
 		.enter().append('g')

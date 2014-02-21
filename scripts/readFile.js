@@ -40,6 +40,29 @@
           return _this.checkFile(files);
         }
       }, false);
+      document.getElementById('loadTestFile').addEventListener('click', function(evt) {
+        var rawFile, testfile;
+        testfile = 'http://localhost/ucdavis/SLOAN/_web/v5/data/testdata.biom';
+        rawFile = new XMLHttpRequest();
+        rawFile.open("GET", testfile, true);
+        $('#loadTestFile').addClass('loading_notes');
+        rawFile.onreadystatechange = function() {
+          var biomToStore, d;
+          if (rawFile.readyState === 4) {
+            if (rawFile.status === 200 || rawFile.status === 0) {
+              biomToStore = {};
+              biomToStore.name = 'testdata.biom';
+              biomToStore.size = 15427024;
+              biomToStore.data = rawFile.responseText;
+              d = new Date();
+              biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC";
+              _this.server.biom.add(biomToStore);
+              return setTimeout("window.location.href = 'preview.html'", 2000);
+            }
+          }
+        };
+        return rawFile.send(null);
+      }, false);
       document.getElementById('files').addEventListener('change', this.handleFileSelect, false);
       fileDrag = document.getElementById('fileDrag');
       fileDrag.addEventListener('dragover', this.dragFileProc, false);
@@ -119,12 +142,14 @@
     readFile.prototype.readBlob = function(file) {
       var _this = this;
       reader.onloadend = function(evt) {
-        var biomToStore;
+        var biomToStore, d;
         if (evt.target.readyState === FileReader.DONE) {
           biomToStore = {};
           biomToStore.name = file.name;
           biomToStore.size = file.size;
           biomToStore.data = evt.target.result;
+          d = new Date();
+          biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC";
           if (JSON.parse(biomToStore.data).format.indexOf("Biological Observation Matrix") !== -1) {
             _this.server.biom.add(biomToStore).done(function(item) {
               return this.currentData = item;
@@ -141,19 +166,16 @@
     readFile.prototype.listRecentFiles = function() {
       var _this = this;
       return this.server.biom.query().all().execute().done(function(results) {
-        var content, k, _i, _j, _ref, _ref1, _results;
+        var content, k, tk, _i, _j, _ref, _ref1, _results;
         if (results.length > 0) {
           $('#recent').show();
           _this.currentData = results;
-          content = "<table id='recent_data'><thead><tr><th class = 'header'>ID</th><th class = 'header'>Name</th><th class='header'>Size</th><th class='header'>Load</th><th class='header'>Del</th></thead>";
+          content = "<table id='recent_data'>";
           for (k = _i = 0, _ref = results.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; k = 0 <= _ref ? ++_i : --_i) {
-            if (k % 2 === 1) {
-              content += '<tr class="recent_data even"><td>';
-            } else {
-              content += '<tr class="recent_data"><td>';
-            }
-            content += results[k].id + '</td><td>' + results[k].name.substring(0, 80) + '</td><td>' + (results[k].size / 1000000).toFixed(1) + " MB";
-            content += '</td><td class="reload" id="reload_' + k + '"><center><i class="icon-upload-alt icon-large"></i></center>' + '</td><td class="del" id="del_' + k + '"><center><i class="icon-trash icon-large"></i></center></td></tr>';
+            tk = results.length - 1 - k;
+            content += '<tr><td class="reload" id="reload_' + k + '">LOAD' + '</td><td>';
+            content += results[tk].name.substring(0, 45) + '</td><td>' + (results[tk].size / 1000000).toFixed(1) + " MB" + '</td><td>' + results[tk].date;
+            content += '</td><td class="del" id="del_' + k + '"><i class="icon-fa-times icon-large"></i></td></tr>';
           }
           content += "</table>";
           $("#recent").append(content);
@@ -163,19 +185,19 @@
             _results.push($('#del_' + k).click(_this.removeRow));
           }
           return _results;
-        } else {
-          return $('#recent').hide();
         }
       });
     };
 
     readFile.prototype.reloadRow = function(evt) {
-      var biomToStore, i;
+      var biomToStore, d, i;
       i = evt.currentTarget.id.replace("reload_", "");
       biomToStore = {};
       biomToStore.name = this.currentData[i].name;
       biomToStore.size = this.currentData[i].size;
       biomToStore.data = this.currentData[i].data;
+      d = new Date();
+      biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC";
       this.server.biom.add(biomToStore).done(function(item) {
         return this.currentData = item;
       });
@@ -183,11 +205,21 @@
     };
 
     readFile.prototype.removeRow = function(evt) {
-      var i;
-      i = evt.currentTarget.id.replace("del_", "");
-      return this.server.biom.remove(this.currentData[i].id).done(function() {
-        return $('#recent_data tr')[parseInt(i) + 1].remove();
-      });
+      var i, k, totalrows, _i, _ref, _results;
+      i = evt.currentTarget.id;
+      totalrows = $('#recent_data tr .del').length;
+      _results = [];
+      for (k = _i = 0, _ref = totalrows - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; k = 0 <= _ref ? ++_i : --_i) {
+        if (i === $('#recent_data tr .del')[k].id) {
+          this.server.biom.remove(this.currentData[totalrows - k - 1].id).done(function() {
+            return $('#recent_data tr')[k].remove();
+          });
+          break;
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
     };
 
     return readFile;

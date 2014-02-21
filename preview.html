@@ -23,23 +23,19 @@
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
 
-        <section id = "header">
-            <p id = "LOGO"><a href = "index.html">PHINCH</a></p>
-            <div id = "menu">
-                <p><a href="about.html"><i class="icon-info-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="instruction.html"><i class="icon-question-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="https://github.com/shujianbu/pinch" target="_blank"><i class="icon-github icon-large"></i></a>&nbsp;&nbsp;&nbsp;<a href="http://phinch.org/blog/" target="_blank"><i class="icon-file-text-o icon-large"></i></a></p>
-            </div>
+        <section id = "head_sec">
+            <p class = "logo"><a href="index.html"><img src="img/phinch-logo.jpg" height="50px"></a></p>
+            <h3>FILTER DATA</h3>
+            <p class="help"><a href="#">HELP</a></p>
         </section>
 
         <section id = "up_sec">
-            
-            <div id = "file_details">
-                <div id = "back_box">
-                    <p id = "box_title"> file details </p>
-                    <p id = "file_numbers"></p>
-                </div>
-            </div>
-
+            <p id = "file_details"></p>
+            <button class="up_sec_btn" id="gallery">PROCEED TO GALLERY</button>
+            <button class="up_sec_btn" id="export">EXPORT</button>
         </section>
+
+        <hr width="100%">
 
         <section id = "NotSupported">
             <br /> <br />
@@ -67,18 +63,33 @@
 
         </section>
         
-        <section class = "footer" style="position: relative; float:left;">
-            <p class = "footer_copyright">Copyright © 2014 Phinch. This content is released under <a href="http://opensource.org/licenses/BSD-2-Clause" target="_blank">The BSD 2-Clause License.</p>
-        </section>
-        
         <script src="lib/jquery-1.10.1.min.js"></script>
         <script src="lib/jquery-ui-1.10.3.custom.min.js"></script>
-
         <script src="lib/indexedDB.polyfill.js"></script>
         <script src="lib/db.js"></script>
         <script src="lib/FileSaver.js"></script>
         <script src="lib/moment.min.js"></script>
         <script src="lib/d3.v3.min.js"></script>
+        <script src="lib/jquery.dataTables.min.js"></script>
+        <script src="lib/d3.v3.min.js"></script>
+
+        <script src="scripts/filter.js"></script>
+
+        <script>
+        if ( !( navigator.userAgent.match(/Chrome/i) || navigator.userAgent.match(/Firefox/i) ) || !window.File || !window.FileReader || !window.FileList || !window.Blob ){
+            alert('Please use Chrome or Firefox! Your browser does not support the Phinch framework!');
+            $('#up_sec').hide();
+            $('#bottom_sec').hide();
+            $('#NotSupported').show();
+        } else {
+            app = new filter();
+        }
+        </script>
+
+    </body>
+</html>
+
+ipt>
         <script src="lib/dat.gui.min.js"></script>
         <script src="lib/jquery.dataTables.min.js"></script>
         <script src="lib/d3.v3.min.js"></script>

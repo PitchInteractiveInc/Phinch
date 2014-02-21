@@ -84,8 +84,8 @@
               var currentData;
               currentData = results[results.length - 1];
               biom = JSON.parse(currentData.data);
-              $("#file_numbers").html("");
-              $("#file_numbers").append("File: " + currentData.name + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br/>Observation: " + biom.shape[0] + ", Selected sample: " + selected_samples.length);
+              $("#file_details").html("");
+              $("#file_details").append("ANALYZING &nbsp;<span>" + currentData.name + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>");
               $('.layer_change').click(function(evt) {
                 LayerID = parseInt(evt.currentTarget.id.replace("layer_", ""));
                 return $('#layer_' + LayerID).addClass("loading_notes").delay(800).queue(function(n) {
@@ -464,6 +464,9 @@
       }).attr('x', -20).attr('y', function(d, i) {
         return 14 * i + 9;
       }).attr('text-anchor', 'middle').attr("font-size", "9px").attr('fill', '#444');
+      svg.append("text").attr('y', -35).attr("font-size", "11px").text('Sequence Reads').attr('transform', function(d) {
+        return "translate(" + y(max_single) / 2 + ", 0)";
+      });
       rule = svg.selectAll('g.rule').data(y.ticks(10)).enter().append('g').attr('class', 'rule').attr('transform', function(d) {
         return "translate(" + y(d) + ", 0)";
       });

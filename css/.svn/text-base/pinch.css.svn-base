@@ -381,7 +381,7 @@ td { border-right: 1px #ccc solid;}
 }
 
 #right_live_panel {
-	width: calc(100% - 394px);
+	width: calc(100% - 400px);
 	min-width: 600px;
 	border: 1px #bbb solid;
 	border-top: none;

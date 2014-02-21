@@ -1,11 +1,17 @@
 K 25
 svn:wc:ra_dav:version-url
 V 50
-/svn/repo/!svn/ver/10386/ucdavis/SLOAN/_web/v4/img
+/svn/repo/!svn/ver/10483/ucdavis/SLOAN/_web/v4/img
 END
 gallery_6.png
 K 25
 svn:wc:ra_dav:version-url
 V 64
 /svn/repo/!svn/ver/10386/ucdavis/SLOAN/_web/v4/img/gallery_6.png
+END
+sloan-logo.jpg
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/repo/!svn/ver/10483/ucdavis/SLOAN/_web/v4/img/sloan-logo.jpg
 END

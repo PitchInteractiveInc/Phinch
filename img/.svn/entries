@@ -1,14 +1,14 @@
 10
 
 dir
-10445
+10493
 http://shujian@50.196.132.109/svn/repo/ucdavis/SLOAN/_web/v4/img
 http://shujian@50.196.132.109/svn/repo
 
 
 
-2014-02-04T00:30:59.884906Z
-10386
+2014-02-17T23:14:56.070644Z
+10483
 shujian
 
 
@@ -196,6 +196,20 @@ has-props
 
 138858
 
+phinch-logo.jpg
+file
+0
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
 gallery_6.png
 file
 
@@ -229,6 +243,40 @@ has-props
 
 
 456690
+
+sloan-logo.jpg
+file
+
+
+
+
+2014-02-17T22:04:21.000000Z
+0e2be2c6e5a597fc19a0f8af8044e9ae
+2014-02-17T23:14:56.070644Z
+10483
+shujian
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+96721
 
 gallery_TBD.png
 file

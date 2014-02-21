@@ -22,20 +22,14 @@
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
 
-        <section id = "header">
-            <p id = "LOGO"><a href = "index.html">PHINCH</a></p>
-            <div id = "menu">
-                <p><a href="viz.html"><i class="icon-chevron-sign-left icon-large" style="display: none;"></i>&nbsp;&nbsp;&nbsp;</a><a href="about.html"><i class="icon-info-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="instruction.html"><i class="icon-question-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="https://github.com/shujianbu/pinch" target="_blank"><i class="icon-github icon-large"></i></a>&nbsp;&nbsp;&nbsp;<a href="http://phinch.org/blog/" target="_blank"><i class="icon-file-text-o icon-large"></i></a></p>
-            </div>
+        <section id = "head_sec">
+            <p class = "logo"><a href="index.html"><img src="img/phinch-logo.jpg" height="50px"></a></p>
+            <h3>GRAPH GALLERY</h3>
+            <p class="help"><a href="#">HELP</a></p>
         </section>
 
         <section id = "up_sec" style="display:none;">
-            <div id = "file_details">
-                <div id = "back_box">
-                    <p id = "box_title"> file details </p>
-                    <p id = "file_numbers"></p>
-                </div>
-            </div>
+            <p id = "file_details"></p>
             <div style="position: absolute; right: 180px; top: 5px;">
                 <select id = "attributes_dropdown" style="display: none;"></select>  
             </div>
@@ -48,9 +42,13 @@
             <p>The browser you are using does not support <a href="https://developer.mozilla.org/en-US/docs/IndexedDB" target="_blank">IndexedDB</a>, which is required for the Phinch framework!</p>
         </section>
 
+
         <section id="GraphGallery">
-            <h2>GRAPH GALLERY</h2>
-            <a href="preview.html"><button id="goBackFilter"> <&nbsp;&nbsp;FILTER DATA </button></a>
+
+            <a href="preview.html"><button id="goBackFilter" class="up_sec_btn">FILTER DATA </button></a>
+            <hr width="100%">
+            </br></br>
+
             <!-- Graph 1 -->
             <div class="col3"><img src="img/gallery_1.png">
                 <p class = "graphGalleryTitle"><span>Taxonomy Bar</span></p>
@@ -87,7 +85,7 @@
         </section>
 
         <section class = "footer">
-            <p class = "footer_copyright">Copyright © 2014 Phinch. This content is released under <a href="http://opensource.org/licenses/BSD-2-Clause" target="_blank">The BSD 2-Clause License.</p>
+            <p class = "footer_copyright">Copyright © 2014 Phinch. Phinch is supported by the <a href="http://www.sloan.org/" target="_blank">Alfred P. Sloan Foundation</a>. This content is released under <a href="http://opensource.org/licenses/BSD-2-Clause" target="_blank">The BSD 2-Clause License</a>. <span><a href="https://github.com/shujianbu/phinch" target="_blank"><i class="icon-github icon-large"></i>&nbsp;&nbsp;&nbsp;Fork me on Github</a></span></p>
         </section>
 
         <script src="lib/jquery-1.10.1.min.js"></script>
@@ -139,6 +137,20 @@
                         $('#LayerFolder ul li').each( function(index_layer) {
                             d3.select(this).select('.property-name').attr('id', 'layer_' + (index_layer + 1) ).attr('class', 'layer_change');
                             if (index_layer == 1) { d3.select(this).select('.property-name').attr('class', 'loading_notes').attr('class', 'current_layer'); }
+                        });
+
+                    });
+
+                    var app = new taxonomyViz(index);
+                                      
+                });
+            });
+        }
+        </script>
+
+    </body>
+</html>
+ == 1) { d3.select(this).select('.property-name').attr('class', 'loading_notes').attr('class', 'current_layer'); }
                         });
 
                     });

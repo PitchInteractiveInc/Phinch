@@ -4,6 +4,7 @@ class filter
 	phinch = null
 	filename = null
 	attr_length = null
+	format = d3.format(',d')
 	date_array = []
 	no_data_attributes_array = []
 	unknown_array = []
@@ -34,8 +35,9 @@ class filter
 				@generateDate()
 
 				# Build
-				$("#file_numbers").append( "File: " + filename + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation: " + biom.shape[0] + ", Sample: " + biom.shape[1] )
-
+				$("#file_details").append( "ANALYZING &nbsp;<span>" + filename + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Samples &nbsp;<em>" + format(biom.shape[1]) + "</em>")
+				$('#gallery').click( () => @jumpToGallery() )
+				$('#export').click( () => @downloadPhinch() )
 				@generateLeftDates()
 				@generateLeftNumeric()
 				@generateLeftNonNumeric()
@@ -504,10 +506,10 @@ class filter
 				@selected_sample.splice(@selected_sample.indexOf(delete_index[i]), 1)
 		
 		# Step 3 Now based on the filters, selected sample now contains all the right sample # within that range.
-		content = "<table id='myTable'><thead><tr><th class = 'headerID myTableHeader'>ID</th><th class = 'headerID myTableHeader'>Sample ID" + "</th><th class='myTableHeader'>Sample Name</th><th class='headerCount myTableHeader'>Count</th></thead>"
+		content = "<table id='myTable'><thead><tr><th class = 'headerID myTableHeader'>Phinch ID</th><th class = 'headerID myTableHeader'>Biom Sample ID" + "</th><th class='myTableHeader'>Sample Name</th><th class='headerCount myTableHeader'>Sequence Reads</th></thead>"
 		if @selected_sample.length > 0
 			for i in [0..@selected_sample.length-1] 
-				content += '<tr><td>' +  i + '</td><td>' + @selected_sample[i] + '</td><td>' + columns_sample_name_array[@selected_sample[i]] + '</td><td>' + columns_sample_count_list[@selected_sample[i]] + '</td></tr>'
+				content += '<tr><td>' +  i + '</td><td>' + @selected_sample[i] + '</td><td>' + columns_sample_name_array[@selected_sample[i]] + '</td><td>' + format(columns_sample_count_list[@selected_sample[i]]) + '</td></tr>'
 		content += "</table>"
 		$("#right_live_panel").append(content)
 

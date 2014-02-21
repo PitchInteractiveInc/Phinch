@@ -23,15 +23,12 @@
         <![endif]-->
 
         <section id = "header">
-            <p id = "LOGO"><a href = "index.html">PHINCH</a></p>
-            <div id = "menu">
-                <p><a href="index.html"><i class="icon-home icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="about.html"><i class="icon-info-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="https://github.com/shujianbu/pinch" target="_blank"><i class="icon-github icon-large"></i></a>&nbsp;&nbsp;&nbsp;<a href="http://phinch.org/blog/" target="_blank"><i class="icon-file-text-o icon-large"></i></a></p>
-            </div>
+            <p id = "LOGO"><img src="img/phinch-logo.jpg" height="50px"></p>
         </section>
 
         <section id="desc">
             <br /><br />
-            <h2>Instruction</h2>
+            <h2>Instructions</h2>
 
             <p class="descPara">
                 Phinch is optimized for use in the Chrome browser.</br></br>
@@ -59,10 +56,23 @@
                 If you want to visualize biological data currently formatted as a tab-delimited text file (e.g. the style of OTU tables produced by older versions of QIIME), <a href="https://github.com/biom-format/biom-format/blob/df81277857a553e7e5c9679924e09861d8a5f61f/doc/documentation/biom_conversion.rst" target="_blank">please refer to this documentation for conversion instructions</a>. Phinch supports both "sparse" and "dense" BIOM formats (although <b>sparse .biom files are highly recommended, since the file size is much smaller</b>). </br></br>
 
             </p>
+    
+           <h2>Some important notes on metadata</h2>
+            <p class="descPara">
+                In order to be properly detected, all date/time metadata must be standardized according to MIxS standardized format (<a href="http://wiki.gensc.org/index.php?title=MIxS" target="_blank">more information at the Genomic Standards Consortium wiki</a>), and entered into one column in your original sample metadata mapping file, as follows:</br></br>
+
+                [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss]-[Z]</br>
+                For example, metadata for a sample collected at 2:30pm EST on May 4, 2007 would be entered as: 2007-04-05T14:30:00-05:00</br></br>
+
+                Similarly, any geographic coordinates or GPS data must be entered as <a href="http://en.wikipedia.org/wiki/Decimal_degrees" target="_blank"></a>decimal degrees (the format used by GoogleMaps, e.g. -90.017926).  We recommend using separate columns labeled “Latitude” and “Longitude” in your original sample metadata mapping file, to ensure that GPS metadata is correctly detected.
+            </p>
+
+            <h2>Compatibility with older QIIME file formats</h2>
+            If you want to visualize biological data currently formatted as a tab-delimited text file (e.g. the style of OTU tables produced by older versions of QIIME), <a href="https://github.com/biom-format/biom-format/blob/df81277857a553e7e5c9679924e09861d8a5f61f/doc/documentation/biom_conversion.rst" target="_blank">please refer to this documentation for conversion instructions</a>. Phinch supports both "sparse" and "dense" BIOM formats (although <b>sparse .biom files are highly recommended, since the file size is much smaller</b>).</br></br></br></br></br></br>
         </section>
         
         <section class = "footer">
-            <p class = "footer_copyright">Copyright © 2014 Phinch. This content is released under <a href="http://opensource.org/licenses/BSD-2-Clause" target="_blank">The BSD 2-Clause License.</p>
+            <p class = "footer_copyright">Copyright © 2014 Phinch. Phinch is supported by the <a href="http://www.sloan.org/" target="_blank">Alfred P. Sloan Foundation</a>. This content is released under <a href="http://opensource.org/licenses/BSD-2-Clause" target="_blank">The BSD 2-Clause License</a>. <span><a href="https://github.com/shujianbu/phinch" target="_blank"><i class="icon-github icon-large"></i>&nbsp;&nbsp;&nbsp;Fork me on Github</a></span></p>
         </section>
 
 

@@ -464,6 +464,9 @@
       }).attr('x', -20).attr('y', function(d, i) {
         return 14 * i + 9;
       }).attr('text-anchor', 'middle').attr("font-size", "9px").attr('fill', '#444');
+      svg.append("text").attr('y', -35).attr("font-size", "11px").text('Sequence Reads').attr('transform', function(d) {
+        return "translate(" + y(max_single) / 2 + ", 0)";
+      });
       rule = svg.selectAll('g.rule').data(y.ticks(10)).enter().append('g').attr('class', 'rule').attr('transform', function(d) {
         return "translate(" + y(d) + ", 0)";
       });

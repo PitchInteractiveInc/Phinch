@@ -4,7 +4,7 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   filter = (function() {
-    var attr_length, attributes_array, attributes_array_units, biom, columns_non_empty_sample_count, columns_sample_count_list, columns_sample_name_array, date_array, filename, groupable_array, groupable_array_content, no_data_attributes_array, phinch, unknown_array;
+    var attr_length, attributes_array, attributes_array_units, biom, columns_non_empty_sample_count, columns_sample_count_list, columns_sample_name_array, date_array, filename, format, groupable_array, groupable_array_content, no_data_attributes_array, phinch, unknown_array;
 
     biom = null;
 
@@ -13,6 +13,8 @@
     filename = null;
 
     attr_length = null;
+
+    format = d3.format(',d');
 
     date_array = [];
 
@@ -60,7 +62,13 @@
           _this.generateColumnsSummary();
           _this.generateColumnsValues();
           _this.generateDate();
-          $("#file_numbers").append("File: " + filename + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation: " + biom.shape[0] + ", Sample: " + biom.shape[1]);
+          $("#file_details").append("ANALYZING &nbsp;<span>" + filename + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Samples &nbsp;<em>" + format(biom.shape[1]) + "</em>");
+          $('#gallery').click(function() {
+            return _this.jumpToGallery();
+          });
+          $('#export').click(function() {
+            return _this.downloadPhinch();
+          });
           _this.generateLeftDates();
           _this.generateLeftNumeric();
           _this.generateLeftNonNumeric();
@@ -667,10 +675,10 @@
           this.selected_sample.splice(this.selected_sample.indexOf(delete_index[i]), 1);
         }
       }
-      content = "<table id='myTable'><thead><tr><th class = 'headerID myTableHeader'>ID</th><th class = 'headerID myTableHeader'>Sample ID" + "</th><th class='myTableHeader'>Sample Name</th><th class='headerCount myTableHeader'>Count</th></thead>";
+      content = "<table id='myTable'><thead><tr><th class = 'headerID myTableHeader'>Phinch ID</th><th class = 'headerID myTableHeader'>Biom Sample ID" + "</th><th class='myTableHeader'>Sample Name</th><th class='headerCount myTableHeader'>Sequence Reads</th></thead>";
       if (this.selected_sample.length > 0) {
         for (i = _x = 0, _ref15 = this.selected_sample.length - 1; 0 <= _ref15 ? _x <= _ref15 : _x >= _ref15; i = 0 <= _ref15 ? ++_x : --_x) {
-          content += '<tr><td>' + i + '</td><td>' + this.selected_sample[i] + '</td><td>' + columns_sample_name_array[this.selected_sample[i]] + '</td><td>' + columns_sample_count_list[this.selected_sample[i]] + '</td></tr>';
+          content += '<tr><td>' + i + '</td><td>' + this.selected_sample[i] + '</td><td>' + columns_sample_name_array[this.selected_sample[i]] + '</td><td>' + format(columns_sample_count_list[this.selected_sample[i]]) + '</td></tr>';
         }
       }
       content += "</table>";

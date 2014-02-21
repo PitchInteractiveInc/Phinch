@@ -20,27 +20,29 @@
 	<!--[if lt IE 7]>
 		<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
 	<![endif]-->
-	<section id = "top_sec">
+	<section id = "top_sec" href="#top_sec">
 		<section id = "header">
-			<p id = "LOGO"><a href = "index.html">PHINCH</a></p>
-			<div id = "menu">
-				<p><a href="about.html"><i class="icon-info-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="instruction.html"><i class="icon-question-sign icon-large"></i>&nbsp;&nbsp;&nbsp;</a><a href="https://github.com/shujianbu/pinch" target="_blank"><i class="icon-github icon-large"></i></a>&nbsp;&nbsp;&nbsp;<a href="http://phinch.org/blog/" target="_blank"><i class="icon-file-text-o icon-large"></i></a></p>
-			</div>
+			<p id = "LOGO"><img src="img/phinch-logo.jpg" height="50px"></p>
+			<ul id = "menu">
+				<li><a href="#top_sec">UPLOAD</a></li>
+				<li><a href="#recent">RECENT FILES</a></li>
+				<li><a href="#desc">ABOUT PHINCH</a></li>
+			</ul>
+			<p class="blog"><a href="http://phinch.org/blog/" target="_blank">BLOG</a></p>
 		</section>
 
 		<section id = "Page1">
-			<h1 class="with-bracket"><span>UPLOAD FILE</span></h1>
 			<div id = "frmUpload">
-				<!-- Real Input field, hidden--> 
+				<!-- Real Input field, hidden-->
 				<input type="file" id="files" name="myFile" onchange="$('#txtFakeText').val($('#files').val().replace('C:\\fakepath\\', '') ); " style="display: none" />
-				<input type="text" id="txtFakeText" name="txtFakeText" readonly="true">
+				<input type="text" id="txtFakeText" name="txtFakeText" readonly="true" value="DROP FILE HERE OR BROWSE">
 				<input type="button" id = "fakeBrowse" class="button" onclick="$('#files').click(); " value="BROWSE">
 			</div>
 
 			<div id = "fileDrag">DROP FILE HERE!</div>
 			<div id="progress_bar"><div class="percent"></div></div>
-			<button id="parse" class="button">UPLOAD</button>
-
+			<button id="parse" class="button">LOAD FILE</button>
+			<button id="loadTestFile">Load a test file</button>
 		</section>
 	</section>
 
@@ -50,13 +52,19 @@
 		<p>The browser you are using does not support <a href="https://developer.mozilla.org/en-US/docs/IndexedDB" target="_blank">IndexedDB</a>, which is required for the Phinch framework!</p>
 	</section>
 
-	<section id = "recent">
+	<section id = "recent" href="#recent">
 		<br /> <br />
 		<h1>Recent Files</h1>
 	</section>
 
-	<section id="desc">
-		<br /><br />
+	<br /><br />
+<!-- 	<br /><br />
+	<hr width="100%">
+	<br /><br />
+ -->	<br />
+
+	<section id="desc" href="#desc">
+		
 		<h1>About Phinch </h1>
 		<p class = "descPara">
             Phinch is an open-source framework for visualizing biological data, funded by a grant from the Alfred P. Sloan foundation. This project represents an interdisciplinary collaboration between Pitch Interactive, a data visualization studio in Berkeley, CA, and biological researchers at UC Davis. </br></br>
@@ -65,12 +73,20 @@
             
             The sheer volume of data produced from high-throughput sequencing technologies will require fundamentally different approaches and new paradigms for effective data analysis.</br></br>
 
-            Scientific visualization represents an innovative method towards tackling the current bottleneck in bioinformatics; in addition to giving researchers a unique approach for exploring large datasets, it stands to empower biologists with the ability to conduct powerful analyses without requiring a deep level of computational knowledge. </br></br></br></br>
+            Scientific visualization represents an innovative method towards tackling the current bottleneck in bioinformatics; in addition to giving researchers a unique approach for exploring large datasets, it stands to empower biologists with the ability to conduct powerful analyses without requiring a deep level of computational knowledge. </br>
+		</p>
+		<h1>People</h1>
+		<p class = "descPara">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tincidunt risus erat, non tempus risus aliquam non. Quisque pharetra mattis interdum. Proin dignissim tempus turpis et sodales. Nulla euismod consequat elementum. Quisque ut turpis dui. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce eleifend commodo lectus. </br></br>
+
+            sed sollicitudin. Maecenas adipiscing nunc vel malesuada dapibus. Pellentesque ut purus sed orci scelerisque consequat. In sem metus, lobortis a dolor ac, convallis pretium urna. Morbi risus velit, adipiscing vel faucibus eu, mollis eu justo. Etiam at pulvinar arcu, id volutpat enim. Curabitur pharetra iaculis ipsum, quis vehicula massa viverra nec. Quisque commodo, arcu nec volutpat ullamcorper, turpis massa facilisis ante, feugiat tempus nibh risus nec velit. Duis erat est, hendrerit ut placerat a, accumsan eu nulla. Nunc leo nibh, malesuada in risus id, bibendum aliquam ante. Nulla fringilla. </br></br>
+
+            dolor llamcorper dolor,piscing vel faucibus eu, mollis eu justo. Etiam at pulvinar arcu, id volutpat enim. Curabitur pharetra iaculis ipsum, quis vehicula massa viverra nec. Quisque commodo, arcu nec  vitae auctor velit. Nulla tempus quam iaculis magna pretium, quis rutrum turpis consequat. Pellentesque mollis aliquam aliquam. Sed egestas diam sed nibh dignissim tempor. </br></br></br></br>
 		</p>
 	</section>
 	
 	<section class = "footer">
-		<p class = "footer_copyright">Copyright © 2014 Phinch. This content is released under <a href="http://opensource.org/licenses/BSD-2-Clause" target="_blank">The BSD 2-Clause License.</p>
+		<p class = "footer_copyright">Copyright © 2014 Phinch. Phinch is supported by the <a href="http://www.sloan.org/" target="_blank">Alfred P. Sloan Foundation</a>. This content is released under <a href="http://opensource.org/licenses/BSD-2-Clause" target="_blank">The BSD 2-Clause License</a>. <span><a href="https://github.com/shujianbu/phinch" target="_blank"><i class="icon-github icon-large"></i>&nbsp;&nbsp;&nbsp;Fork me on Github</a></span></p>
 	</section>
 
 	<script src="lib/jquery-1.10.1.min.js"></script>
