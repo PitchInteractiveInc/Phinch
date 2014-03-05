@@ -45,7 +45,7 @@
 
         <section id="GraphGallery">
 
-            <a href="preview.html"><button id="goBackFilter" class="up_sec_btn">FILTER DATA </button></a>
+            <a href="preview.html"><button id="goBackFilter" class="orange_btn">FILTER DATA </button></a>
             <hr width="100%">
             </br></br>
 
@@ -84,9 +84,9 @@
             <div id="fake_taxonomy_container"></div>
         </section>
 
-        <section class = "footer">
+<!--         <section class = "footer">
             <p class = "footer_copyright">Copyright © 2014 Phinch. Phinch is supported by the <a href="http://www.sloan.org/" target="_blank">Alfred P. Sloan Foundation</a>. This content is released under <a href="http://opensource.org/licenses/BSD-2-Clause" target="_blank">The BSD 2-Clause License</a>. <span><a href="https://github.com/shujianbu/phinch" target="_blank"><i class="icon-github icon-large"></i>&nbsp;&nbsp;&nbsp;Fork me on Github</a></span></p>
-        </section>
+        </section> -->
 
         <script src="lib/jquery-1.10.1.min.js"></script>
         <script src="lib/jquery-ui-1.10.3.custom.min.js"></script>
@@ -118,26 +118,26 @@
                         $('.icon-chevron-sign-left').show(); 
                         $('#up_sec').fadeIn(800); 
 
-                        var FizzyText = function() {
-                            this.Layer2 = false; this.Layer3 = false; this.Layer4 = false; this.Layer5 = false; this.Layer6 = false; this.Layer7 = false;
-                            this.Display = 'Values'; this.Export = false; this.Share = false;
-                        };
+                        // var FizzyText = function() {
+                        //     this.Layer2 = false; this.Layer3 = false; this.Layer4 = false; this.Layer5 = false; this.Layer6 = false; this.Layer7 = false;
+                        //     this.Display = 'Values'; this.Export = false; this.Share = false;
+                        // };
 
-                        var text = new FizzyText();
-                        var gui = new dat.GUI();
-                        var f1 = gui.addFolder('Layers');
-                        f1.add(text, 'Layer2'); f1.add(text, 'Layer3'); f1.add(text, 'Layer4'); f1.add(text, 'Layer5'); f1.add(text, 'Layer6'); f1.add(text, 'Layer7');
-                        var f2 = gui.addFolder('Others');
-                        f2.add(text, 'Display', [ 'Values', 'Percent' ] );
-                        f2.add(text, 'Export'); f2.add(text, 'Share');  
+                        // var text = new FizzyText();
+                        // var gui = new dat.GUI();
+                        // var f1 = gui.addFolder('Layers');
+                        // f1.add(text, 'Layer2'); f1.add(text, 'Layer3'); f1.add(text, 'Layer4'); f1.add(text, 'Layer5'); f1.add(text, 'Layer6'); f1.add(text, 'Layer7');
+                        // var f2 = gui.addFolder('Others');
+                        // f2.add(text, 'Display', [ 'Values', 'Percent' ] );
+                        // f2.add(text, 'Export'); f2.add(text, 'Share');  
 
-                        gui.domElement.childNodes[1].children[0].children[0].id = 'LayerFolder';
-                        gui.domElement.childNodes[1].children[1].children[0].children[0].id = 'otherFuncs';
+                        // gui.domElement.childNodes[1].children[0].children[0].id = 'LayerFolder';
+                        // gui.domElement.childNodes[1].children[1].children[0].children[0].id = 'otherFuncs';
 
-                        $('#LayerFolder ul li').each( function(index_layer) {
-                            d3.select(this).select('.property-name').attr('id', 'layer_' + (index_layer + 1) ).attr('class', 'layer_change');
-                            if (index_layer == 1) { d3.select(this).select('.property-name').attr('class', 'loading_notes').attr('class', 'current_layer'); }
-                        });
+                        // $('#LayerFolder ul li').each( function(index_layer) {
+                        //     d3.select(this).select('.property-name').attr('id', 'layer_' + (index_layer + 1) ).attr('class', 'layer_change');
+                        //     if (index_layer == 1) { d3.select(this).select('.property-name').attr('class', 'loading_notes').attr('class', 'current_layer'); }
+                        // });
 
                     });
 
@@ -150,7 +150,7 @@
 
     </body>
 </html>
- == 1) { d3.select(this).select('.property-name').attr('class', 'loading_notes').attr('class', 'current_layer'); }
+s', 'loading_notes').attr('class', 'current_layer'); }
                         });
 
                     });

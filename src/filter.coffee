@@ -15,6 +15,7 @@ class filter
 	columns_sample_name_array = [] # All sample names 
 	columns_sample_count_list = [] # Each sample count
 	columns_non_empty_sample_count = [] # Add up all columns 
+	phinchID_array = []
 
 	constructor: () -> 
 		db.open(
@@ -67,8 +68,10 @@ class filter
 			sampleToStore.groupable = groupable_array
 			sampleToStore.selected_groupable_array = @selected_groupable_array
 			sampleToStore.selected_attributes_array = @selected_attributes_array
+			sampleToStore.selected_attributes_units_array = @selected_attributes_units_array
+
 			s.biomSample.add( sampleToStore ).done (item) -> 
-				setTimeout( "window.location.href = 'viz.html'", 1000)		
+				setTimeout( "window.location.href = 'viz.html'", 1000)
 				
 	# 1 Parse Data 
 
@@ -93,19 +96,20 @@ class filter
 					if biom.columns[i].metadata[key] != idential_elements_in_array and biom.columns[i].metadata[key] != 'no_data'
 						idential_elements_in_array_flag = true
 
+				unitsFlag = false
 				if idential_elements_in_array_flag 
 					attributes_array.push(key)
-					for i in [0..attr_length]
-						if biom.columns[i].metadata[key] != 'no_data'
+					for i in [0..attr_length] # in case 'no_data'
+						if biom.columns[i].metadata[key] != 'no_data' and unitsFlag is false
 							attributes_array_units.push(biom.columns[i].metadata[key].split(" ")[1])
-				else 
+							unitsFlag = true
+				else
 					no_data_attributes_array.push(key)
 
 			else if typeof key == 'string'
 				groupable_array.push(key)
 				starting_flag = groupable_array_content.length
 				groupable_array_content.push(starting_flag)
-
 
 				for i in [0..attr_length]
 					flag = true
@@ -122,12 +126,13 @@ class filter
 					groupable_array_content.splice(groupable_array_content.length-2, 2)
 			else 
 				unknown_array.push(key)
-
+		
 	generateColumnsSummary: () -> 
 		columns_sample_total_count = 0 # Non empty sample ids, for new phinch file
 
 		for i in [0..attr_length]
 			columns_sample_count_list[i] = 0
+			phinchID_array.push(i)
 			columns_sample_name_array.push(biom.columns[i].id)
 
 		for i in [0..biom.data.length-1] 
@@ -257,6 +262,7 @@ class filter
 						})
 
 	generateLeftNumeric: () ->
+
 		if attributes_array.length == 0 
 			$('#att_head_numeric').hide()
 		else 
@@ -419,6 +425,7 @@ class filter
 		@selected_sample = []
 		@selected_groupable_array = []
 		@selected_attributes_array = []
+		@selected_attributes_units_array = []
 		@selected_no_data_attributes_array = []
 		selected_range_array = []
 
@@ -426,6 +433,7 @@ class filter
 			for i in [1..attributes_array.length]
 				if $('#numeric_check_' + i).is(':checked') 
 					@selected_attributes_array.push(attributes_array[i-1])
+					@selected_attributes_units_array.push(attributes_array_units[i-1])
 
 		if no_data_attributes_array.length > 0
 			for i in [1..no_data_attributes_array.length] 
@@ -509,7 +517,7 @@ class filter
 		content = "<table id='myTable'><thead><tr><th class = 'headerID myTableHeader'>Phinch ID</th><th class = 'headerID myTableHeader'>Biom Sample ID" + "</th><th class='myTableHeader'>Sample Name</th><th class='headerCount myTableHeader'>Sequence Reads</th></thead>"
 		if @selected_sample.length > 0
 			for i in [0..@selected_sample.length-1] 
-				content += '<tr><td>' +  i + '</td><td>' + @selected_sample[i] + '</td><td>' + columns_sample_name_array[@selected_sample[i]] + '</td><td>' + format(columns_sample_count_list[@selected_sample[i]]) + '</td></tr>'
+				content += '<tr><td contenteditable="true" id="phinchID_' + @selected_sample[i] + '">' +  phinchID_array[@selected_sample[i]] + '</td><td>' + @selected_sample[i] + '</td><td>' + columns_sample_name_array[@selected_sample[i]] + '</td><td>' + format(columns_sample_count_list[@selected_sample[i]]) + '</td></tr>'
 		content += "</table>"
 		$("#right_live_panel").append(content)
 
@@ -525,6 +533,7 @@ class filter
 			}
 		})
 
+		$('#myTable').on('input', 'td[contenteditable]', @editPhinchID );
 		console.log 'selected_sample: ' + @selected_sample.length
 
 	# 4 Download
@@ -609,6 +618,11 @@ class filter
 
 	removeFromObjectByKey: (thisObject, key) -> delete thisObject[key]	
 
+	editPhinchID: () -> 
+		changedID = parseInt( $(this)[0].id.replace('phinchID_','') ) 
+		phinchID_array[changedID] = $(this).html()
+		# console.log phinchID_array
+
 	drawBasicBars: (div, each_numeric_linechart0, each_numeric_linechart1, values, size) => 
 
 		d3.select(div + " svg").remove()
@@ -633,9 +647,9 @@ class filter
 			.attr('y', (d,i) -> return size[1] - y(d) )
 			.attr('fill', (d,i) ->
 				if values == null
-					return '#444'
+					return '#ff8900'
 				else if values != null and each_numeric_linechart0[i] >= values[0] and each_numeric_linechart0[i] <= values[1]
-					return '#adccd5'
+					return '#ff8900'
 				else 
 					return '#aaa'
 			)
@@ -649,7 +663,5 @@ class filter
 
 
 window.filter = filter
-
-
 
 

@@ -4,7 +4,7 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   filter = (function() {
-    var attr_length, attributes_array, attributes_array_units, biom, columns_non_empty_sample_count, columns_sample_count_list, columns_sample_name_array, date_array, filename, format, groupable_array, groupable_array_content, no_data_attributes_array, phinch, unknown_array;
+    var attr_length, attributes_array, attributes_array_units, biom, columns_non_empty_sample_count, columns_sample_count_list, columns_sample_name_array, date_array, filename, format, groupable_array, groupable_array_content, no_data_attributes_array, phinch, phinchID_array, unknown_array;
 
     biom = null;
 
@@ -35,6 +35,8 @@
     columns_sample_count_list = [];
 
     columns_non_empty_sample_count = [];
+
+    phinchID_array = [];
 
     function filter() {
       this.drawBasicBars = __bind(this.drawBasicBars, this);
@@ -108,6 +110,7 @@
         sampleToStore.groupable = groupable_array;
         sampleToStore.selected_groupable_array = _this.selected_groupable_array;
         sampleToStore.selected_attributes_array = _this.selected_attributes_array;
+        sampleToStore.selected_attributes_units_array = _this.selected_attributes_units_array;
         return s.biomSample.add(sampleToStore).done(function(item) {
           return setTimeout("window.location.href = 'viz.html'", 1000);
         });
@@ -115,7 +118,7 @@
     };
 
     filter.prototype.generateColumns = function() {
-      var flag, i, idential_elements_in_array, idential_elements_in_array_flag, j, key, starting_flag, _i, _j, _k, _l, _ref, _ref1, _results;
+      var flag, i, idential_elements_in_array, idential_elements_in_array_flag, j, key, starting_flag, unitsFlag, _i, _j, _k, _l, _ref, _ref1, _results;
       _results = [];
       for (key in biom.columns[0].metadata) {
         if (key.toLowerCase().indexOf("date") !== -1) {
@@ -135,14 +138,16 @@
               idential_elements_in_array_flag = true;
             }
           }
+          unitsFlag = false;
           if (idential_elements_in_array_flag) {
             attributes_array.push(key);
             _results.push((function() {
               var _k, _results1;
               _results1 = [];
               for (i = _k = 0; 0 <= attr_length ? _k <= attr_length : _k >= attr_length; i = 0 <= attr_length ? ++_k : --_k) {
-                if (biom.columns[i].metadata[key] !== 'no_data') {
-                  _results1.push(attributes_array_units.push(biom.columns[i].metadata[key].split(" ")[1]));
+                if (biom.columns[i].metadata[key] !== 'no_data' && unitsFlag === false) {
+                  attributes_array_units.push(biom.columns[i].metadata[key].split(" ")[1]);
+                  _results1.push(unitsFlag = true);
                 } else {
                   _results1.push(void 0);
                 }
@@ -189,6 +194,7 @@
       columns_sample_total_count = 0;
       for (i = _i = 0; 0 <= attr_length ? _i <= attr_length : _i >= attr_length; i = 0 <= attr_length ? ++_i : --_i) {
         columns_sample_count_list[i] = 0;
+        phinchID_array.push(i);
         columns_sample_name_array.push(biom.columns[i].id);
       }
       for (i = _j = 0, _ref = biom.data.length - 1; 0 <= _ref ? _j <= _ref : _j >= _ref; i = 0 <= _ref ? ++_j : --_j) {
@@ -563,12 +569,14 @@
       this.selected_sample = [];
       this.selected_groupable_array = [];
       this.selected_attributes_array = [];
+      this.selected_attributes_units_array = [];
       this.selected_no_data_attributes_array = [];
       selected_range_array = [];
       if (attributes_array.length > 0) {
         for (i = _i = 1, _ref = attributes_array.length; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
           if ($('#numeric_check_' + i).is(':checked')) {
             this.selected_attributes_array.push(attributes_array[i - 1]);
+            this.selected_attributes_units_array.push(attributes_array_units[i - 1]);
           }
         }
       }
@@ -678,7 +686,7 @@
       content = "<table id='myTable'><thead><tr><th class = 'headerID myTableHeader'>Phinch ID</th><th class = 'headerID myTableHeader'>Biom Sample ID" + "</th><th class='myTableHeader'>Sample Name</th><th class='headerCount myTableHeader'>Sequence Reads</th></thead>";
       if (this.selected_sample.length > 0) {
         for (i = _x = 0, _ref15 = this.selected_sample.length - 1; 0 <= _ref15 ? _x <= _ref15 : _x >= _ref15; i = 0 <= _ref15 ? ++_x : --_x) {
-          content += '<tr><td>' + i + '</td><td>' + this.selected_sample[i] + '</td><td>' + columns_sample_name_array[this.selected_sample[i]] + '</td><td>' + format(columns_sample_count_list[this.selected_sample[i]]) + '</td></tr>';
+          content += '<tr><td contenteditable="true" id="phinchID_' + this.selected_sample[i] + '">' + phinchID_array[this.selected_sample[i]] + '</td><td>' + this.selected_sample[i] + '</td><td>' + columns_sample_name_array[this.selected_sample[i]] + '</td><td>' + format(columns_sample_count_list[this.selected_sample[i]]) + '</td></tr>';
         }
       }
       content += "</table>";
@@ -693,6 +701,7 @@
           "sInfoFiltered": "(filtered from _MAX_ total samples)"
         }
       });
+      $('#myTable').on('input', 'td[contenteditable]', this.editPhinchID);
       return console.log('selected_sample: ' + this.selected_sample.length);
     };
 
@@ -786,6 +795,12 @@
       return delete thisObject[key];
     };
 
+    filter.prototype.editPhinchID = function() {
+      var changedID;
+      changedID = parseInt($(this)[0].id.replace('phinchID_', ''));
+      return phinchID_array[changedID] = $(this).html();
+    };
+
     filter.prototype.drawBasicBars = function(div, each_numeric_linechart0, each_numeric_linechart1, values, size) {
       var eachBarWidth, max_single, tempBar, tempViz, tooltipOverPanel, y;
       d3.select(div + " svg").remove();
@@ -802,9 +817,9 @@
         return size[1] - y(d);
       }).attr('fill', function(d, i) {
         if (values === null) {
-          return '#444';
+          return '#ff8900';
         } else if (values !== null && each_numeric_linechart0[i] >= values[0] && each_numeric_linechart0[i] <= values[1]) {
-          return '#adccd5';
+          return '#ff8900';
         } else {
           return '#aaa';
         }

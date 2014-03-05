@@ -19,7 +19,7 @@ class readFile
 		false)
 
 		document.getElementById('loadTestFile').addEventListener('click', (evt) =>
-			testfile = 'http://localhost/ucdavis/SLOAN/_web/v5/data/testdata.biom'
+			testfile = 'http://localhost/ucdavis/SLOAN/_web/v5/data/testdata.biom'  ## Dev TODO http://phinch.org/data/testdata.biom
 			rawFile = new XMLHttpRequest();
 			rawFile.open("GET", testfile, true);
 			$('#loadTestFile').addClass('loading_notes');

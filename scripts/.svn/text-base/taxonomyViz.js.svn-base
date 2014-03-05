@@ -84,8 +84,8 @@
               var currentData;
               currentData = results[results.length - 1];
               biom = JSON.parse(currentData.data);
-              $("#file_numbers").html("");
-              $("#file_numbers").append("File: " + currentData.name + ", Size: " + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br/>Observation: " + biom.shape[0] + ", Selected sample: " + selected_samples.length);
+              $("#file_details").html("");
+              $("#file_details").append("ANALYZING &nbsp;<span>" + currentData.name + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>");
               $('.layer_change').click(function(evt) {
                 LayerID = parseInt(evt.currentTarget.id.replace("layer_", ""));
                 return $('#layer_' + LayerID).addClass("loading_notes").delay(800).queue(function(n) {

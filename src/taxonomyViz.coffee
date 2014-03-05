@@ -36,7 +36,8 @@ class taxonomyViz
 				groupable = results[results.length-1].groupable
 				selected_groupable_array = results[results.length-1].selected_groupable_array
 				selected_attributes_array = results[results.length-1].selected_attributes_array
-
+				selected_attributes_units_array = results[results.length-1].selected_attributes_units_array
+				
 				# 2 open the biom file 
 				db.open(
 					server: "BiomData", version: 1,

@@ -31,11 +31,12 @@
 
         <section id = "up_sec">
             <p id = "file_details"></p>
-            <button class="up_sec_btn" id="gallery">PROCEED TO GALLERY</button>
-            <button class="up_sec_btn" id="export">EXPORT</button>
+            <button class="orange_btn" id="gallery">PROCEED TO GALLERY</button>
+            <button class="orange_btn" id="export">EXPORT</button>
         </section>
 
         <hr width="100%">
+        </br>
 
         <section id = "NotSupported">
             <br /> <br />
@@ -46,14 +47,18 @@
         <section id = "bottom_sec">
             
             <section id = "left_control_panel">
+
                 <p class = "att_head" id = "att_head_dates">Dates</p>
-                <div id = "dates"></div>
+                <div id = "dates" class="att_block"></div></br>
+
                 <p class = "att_head" id = "att_head_numeric">Numeric Range</p>
-                <div id = "numeric_att"></div>
+                <div id = "numeric_att" class="att_block"></div></br>
+                
                 <p class = "att_head" id = "att_head_groupable">Groupable</p>
-                <div id = "groupable_att"></div>
+                <div id = "groupable_att" class="att_block"></div></br>
+                
                 <p class = "att_head" id = "att_head_descriptive">Descriptive or Fixed Value</p>
-                <div id = "non_numeric_att"></div>
+                <div id = "non_numeric_att" class="att_block"></div>
 
             </section>
 
@@ -89,10 +94,7 @@
     </body>
 </html>
 
-ipt>
-        <script src="lib/dat.gui.min.js"></script>
-        <script src="lib/jquery.dataTables.min.js"></script>
-        <script src="lib/d3.v3.min.js"></script>
+"lib/d3.v3.min.js"></script>
 
         <script src="scripts/filter.js"></script>
         <script>

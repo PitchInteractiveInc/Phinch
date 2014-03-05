@@ -63,11 +63,12 @@
         }
       }).done(function(s) {
         return s.biomSample.query().all().execute().done(function(results) {
-          var selected_groupable_array;
+          var selected_attributes_units_array, selected_groupable_array;
           selected_samples = results[results.length - 1].selected_sample;
           groupable = results[results.length - 1].groupable;
           selected_groupable_array = results[results.length - 1].selected_groupable_array;
           selected_attributes_array = results[results.length - 1].selected_attributes_array;
+          selected_attributes_units_array = results[results.length - 1].selected_attributes_units_array;
           return db.open({
             server: "BiomData",
             version: 1,
