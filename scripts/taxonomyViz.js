@@ -3,11 +3,13 @@
   var taxonomyViz;
 
   taxonomyViz = (function() {
-    var LayerID, VizID, biom, columns_sample_name_array, deleteOTUArr, deleteSampleArr, fillCol, format, groupable, map_array, new_data_matrix, new_data_matrix_onLayer, percentage, selected_attributes_array, selected_samples, sumEachCol, sumEachTax, unique_taxonomy_comb, unique_taxonomy_comb_count, unique_taxonomy_comb_onLayer, vizdata;
+    var LayerID, VizID, biom, bubbleView, columns_sample_name_array, deleteOTUArr, deleteSampleArr, fillCol, format, groupable, layerNameArr, map_array, new_data_matrix, new_data_matrix_onLayer, percentage, selected_attributes_array, selected_attributes_units_array, selected_phinchID_array, selected_samples, standardizedValue, sumEachCol, sumEachTax, unique_taxonomy_comb, unique_taxonomy_comb_count, unique_taxonomy_comb_onLayer, vizdata;
 
     biom = null;
 
     percentage = false;
+
+    bubbleView = true;
 
     LayerID = 2;
 
@@ -26,6 +28,10 @@
     format = d3.format(',d');
 
     fillCol = ['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#e6550d', '#fd8d3c', '#fdae6b', '#fdd0a2', '#31a354', '#74c476', '#a1d99b', '#c7e9c0', '#756bb1', '#9e9ac8', '#bcbddc', '#dadaeb', '#636363', '#969696', '#bdbdbd', '#d9d9d9'];
+
+    layerNameArr = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species'];
+
+    standardizedValue = 0;
 
     deleteOTUArr = [];
 
@@ -47,6 +53,10 @@
 
     selected_attributes_array = [];
 
+    selected_attributes_units_array = [];
+
+    selected_phinchID_array = [];
+
     function taxonomyViz(_VizID) {
       var _this = this;
       VizID = _VizID;
@@ -63,12 +73,13 @@
         }
       }).done(function(s) {
         return s.biomSample.query().all().execute().done(function(results) {
-          var selected_attributes_units_array, selected_groupable_array;
+          var selected_groupable_array;
           selected_samples = results[results.length - 1].selected_sample;
           groupable = results[results.length - 1].groupable;
           selected_groupable_array = results[results.length - 1].selected_groupable_array;
           selected_attributes_array = results[results.length - 1].selected_attributes_array;
           selected_attributes_units_array = results[results.length - 1].selected_attributes_units_array;
+          selected_phinchID_array = results[results.length - 1].selected_phinchID_array;
           return db.open({
             server: "BiomData",
             version: 1,
@@ -86,31 +97,156 @@
               currentData = results[results.length - 1];
               biom = JSON.parse(currentData.data);
               $("#file_details").html("");
-              $("#file_details").append("ANALYZING &nbsp;<span>" + currentData.name + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>");
-              $('.layer_change').click(function(evt) {
+              $("#file_details").append("ANALYZING &nbsp;<span>" + currentData.name.substring(0, 40) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>");
+              $('.circle').click(function(evt) {
+                var that;
+                that = _this;
+                $('.circle').removeClass('selected_layer');
+                $('.circle').css('background-image', 'url("css/images/circle.png")');
                 LayerID = parseInt(evt.currentTarget.id.replace("layer_", ""));
-                return $('#layer_' + LayerID).addClass("loading_notes").delay(800).queue(function(n) {
-                  if ($('#otherFuncs li:eq(1) .c option:selected').val() === 'Percent') {
-                    percentage = true;
-                  } else {
-                    percentage = false;
+                $('#layer_' + LayerID).css('background-image', 'url("css/images/' + layerNameArr[LayerID - 1] + '.png")');
+                return $('.progressLine').animate({
+                  width: (120 + (LayerID - 2) * 111) + 'px'
+                }, {
+                  duration: 1000,
+                  specialEasing: {
+                    width: "easeInOutQuad"
+                  },
+                  complete: function() {
+                    var i, _i, _ref;
+                    if (LayerID > 1) {
+                      for (i = _i = 1, _ref = LayerID - 1; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
+                        $('#layer_' + i).addClass('selected_layer');
+                      }
+                    }
+                    if ($('#valueBtn').hasClass('clicked')) {
+                      percentage = false;
+                    } else {
+                      percentage = true;
+                    }
+                    return that.generateVizData();
                   }
-                  _this.generateVizData();
-                  return n();
                 });
               });
-              $('#otherFuncs li:eq(1) .c select').change(function(evt) {
-                if (evt.currentTarget.value === 'Percent') {
-                  percentage = true;
-                } else {
+              $('#valueBtn').click(function(evt) {
+                if (percentage) {
                   percentage = false;
+                  LayerID = parseInt($('.selected_layer').length) + 1;
+                  $('#valueBtn').addClass('clicked');
+                  $('#percentBtn').removeClass('clicked');
+                  return _this.generateVizData();
                 }
-                LayerID = parseInt($('.current_layer').attr('id').replace('layer_', ''));
-                return _this.generateVizData();
+              });
+              $('#percentBtn').click(function(evt) {
+                if (!percentage) {
+                  percentage = true;
+                  LayerID = parseInt($('.selected_layer').length) + 1;
+                  $('#valueBtn').removeClass('clicked');
+                  $('#percentBtn').addClass('clicked');
+                  return _this.generateVizData();
+                }
+              });
+              $('#bubbleBtn').click(function(evt) {
+                if (!bubbleView) {
+                  bubbleView = true;
+                  LayerID = parseInt($('.selected_layer').length) + 1;
+                  $('#bubbleBtn').addClass('clicked');
+                  $('#listBtn').removeClass('clicked');
+                  return _this.generateVizData();
+                }
+              });
+              $('#listBtn').click(function(evt) {
+                if (bubbleView) {
+                  bubbleView = false;
+                  LayerID = parseInt($('.selected_layer').length) + 1;
+                  $('#bubbleBtn').removeClass('clicked');
+                  $('#listBtn').addClass('clicked');
+                  return _this.generateVizData();
+                }
               });
               if (VizID === 5) {
                 LayerID = 7;
               }
+              $('#legend_header').click(function() {
+                if ($('#legend_header').html() === 'TOP SEQS') {
+                  $('#outline').hide();
+                  return $('#legend_header').animate({
+                    width: ($('#legend_container').width() - 1) + 'px'
+                  }, {
+                    duration: 500,
+                    specialEasing: {
+                      width: "easeInOutQuad"
+                    },
+                    complete: function() {
+                      $('#legend_container').animate({
+                        opacity: 1
+                      }, {
+                        duration: 500
+                      });
+                      $('#legend_header').html('TOP SEQUENCES');
+                      return $('#legend_header').css('background', 'url("css/images/collapse.png") no-repeat');
+                    }
+                  });
+                } else {
+                  return $('#legend_container').animate({
+                    opacity: '0'
+                  }, {
+                    duration: 500,
+                    specialEasing: {
+                      opacity: "easeInOutQuad"
+                    },
+                    complete: function() {
+                      $('#legend_header').animate({
+                        width: '146px'
+                      }, {
+                        duration: 500
+                      });
+                      $('#legend_header').html('TOP SEQS');
+                      $('#legend_header').css('background', 'none');
+                      return $('#outline').show();
+                    }
+                  });
+                }
+              });
+              $('#count_header').click(function() {
+                if ($('#count_header').html() === 'SAMPLE DIST') {
+                  return $('#count_header').animate({
+                    width: '399px'
+                  }, {
+                    duration: 500,
+                    specialEasing: {
+                      width: "easeInOutQuad"
+                    },
+                    complete: function() {
+                      $('#count_container').animate({
+                        opacity: 1
+                      }, {
+                        duration: 500
+                      });
+                      $('#count_header').html('SAMPLE DISTRIRBUTION');
+                      return $('#count_header').css('background', 'url("css/images/collapse.png") no-repeat');
+                    }
+                  });
+                } else {
+                  return $('#count_container').animate({
+                    opacity: '0'
+                  }, {
+                    duration: 500,
+                    specialEasing: {
+                      opacity: "easeInOutQuad"
+                    },
+                    complete: function() {
+                      $('#count_header').animate({
+                        width: '146px'
+                      }, {
+                        duration: 500
+                      });
+                      $('#count_header').html('SAMPLE DIST');
+                      return $('#count_header').css('background', 'none');
+                    }
+                  });
+                }
+              });
               _this.prepareData();
               return _this.generateVizData();
             });
@@ -277,7 +413,6 @@
         }
       } else if (VizID === 4) {
         if (selected_attributes_array.length > 0) {
-          d3.select('#viz_container').append('div').attr('id', 'countResult');
           for (i = _q = 0, _ref8 = selected_attributes_array.length - 1; 0 <= _ref8 ? _q <= _ref8 : _q >= _ref8; i = 0 <= _ref8 ? ++_q : --_q) {
             $('#attributes_dropdown').append('<option>' + selected_attributes_array[i] + '</option>');
           }
@@ -342,7 +477,7 @@
     };
 
     taxonomyViz.prototype.drawBasicBars = function() {
-      var delePanel, divCont, h, i, infoPanel, label, margin, max_single, rect, rule, svg, taxonomy, that, w, x, y, _i, _j, _ref, _ref1;
+      var delePanel, divCont, h, i, infoPanel, label, legendArr, margin, max_single, rect, rule, svg, taxonomy, temp, that, w, x, y, _i, _j, _k, _ref, _ref1, _ref2;
       that = this;
       this.fadeInOutCtrl();
       w = 1200;
@@ -352,7 +487,7 @@
         top: 100,
         right: 20,
         bottom: 20,
-        left: 50
+        left: 100
       };
       x = d3.scale.ordinal().domain(vizdata[0].map(function(d) {
         return d.x;
@@ -459,12 +594,10 @@
         });
       });
       label = svg.selectAll('text').data(x.domain()).enter().append('text').text(function(d, i) {
-        if (i % 2 === 1) {
-          return d;
-        }
-      }).attr('x', -20).attr('y', function(d, i) {
+        return String(selected_phinchID_array[i]).substring(0, 15);
+      }).attr('x', -13).attr('y', function(d, i) {
         return 14 * i + 9;
-      }).attr('text-anchor', 'middle').attr("font-size", "9px").attr('fill', '#444');
+      }).attr('text-anchor', 'end').attr("font-size", "10px").attr('fill', '#444');
       svg.append("text").attr('y', -35).attr("font-size", "11px").text('Sequence Reads').attr('transform', function(d) {
         return "translate(" + y(max_single) / 2 + ", 0)";
       });
@@ -491,13 +624,22 @@
           return Math.round(i / (y.ticks(10).length) * 100) + '%';
         }
       });
+      legendArr = [];
+      for (i = _i = 0, _ref = sumEachTax.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        temp = new Object();
+        temp.originalID = i;
+        temp.value = sumEachTax[i];
+        temp.name = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6];
+        legendArr.push(temp);
+      }
+      this.createLegend(legendArr);
       divCont = '';
       if (!percentage) {
-        for (i = _i = 0, _ref = sumEachCol.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        for (i = _j = 0, _ref1 = sumEachCol.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
           divCont += '<div class="fake" style="width:' + y(sumEachCol[i]) + 'px;"></div>';
         }
       } else {
-        for (i = _j = 0, _ref1 = sumEachCol.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+        for (i = _k = 0, _ref2 = sumEachCol.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
           divCont += '<div class="fake" style="width:' + y(max_single) + 'px;"></div>';
         }
       }
@@ -605,7 +747,8 @@
     };
 
     taxonomyViz.prototype.drawTaxonomyBubble = function() {
-      var adjust_max, adjust_min, color, comb_name, comb_name_list, force, i, infoPanel, j, max_amount, max_single, node, nodes, radius_scale, removePanel, tooltip, tooltipOverPanel, vis, viz_series, xAxisLabels, y, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3;
+      var adjust_max, adjust_min, comb_name, comb_name_list, force, i, infoPanel, j, maxRowHeight, max_single, node, nodes, radius_scale, removePanel, tooltip, vis, viz_series, _i, _j, _k, _l, _m, _n, _ref, _ref1, _ref2, _ref3, _ref4,
+        _this = this;
       this.fadeInOutCtrl();
       viz_series = new Array(unique_taxonomy_comb_onLayer.length);
       vizdata = new Array(unique_taxonomy_comb_onLayer.length);
@@ -631,56 +774,85 @@
         comb_name += unique_taxonomy_comb_onLayer[i][6];
         comb_name_list[i] = comb_name;
       }
+      vis = d3.select("#taxonomy_container").append("svg").attr("width", 1000).attr("height", 1000).attr("style", "margin: 20px 0 0 50px;");
+      tooltip = d3.select("#taxonomy_container").append("div").attr("id", "pinch_tooltip").style("visibility", "hidden");
+      infoPanel = d3.select("#taxonomy_container").append("div").attr("id", "pinch_panel").style("visibility", "hidden");
+      removePanel = d3.select("#taxonomy_container").append('div').attr('id', "removePanel").style("visibility", "hidden");
+      removePanel.append('i').attr('class', 'icon-remove icon-large');
+      $('#bubbleSlider').slider({
+        range: true,
+        min: 1,
+        max: d3.max(vizdata),
+        values: [1, d3.max(vizdata)],
+        slide: function(event, ui) {
+          console.log(ui.values[0]);
+          return console.log(ui.values[1]);
+        }
+      });
       nodes = [];
-      color = d3.scale.category10();
-      max_amount = d3.max(vizdata);
-      adjust_min = 100;
-      adjust_max = max_amount + 1;
-      radius_scale = d3.scale.pow().exponent(0.25).domain([adjust_min, adjust_max]).range([3, 50]);
+      adjust_min = 1;
+      adjust_max = d3.max(vizdata) + 1;
+      radius_scale = d3.scale.pow().exponent(0.25).domain([adjust_min, adjust_max]).range([2, 50]);
       for (i = _m = 0, _ref3 = new_data_matrix_onLayer.length - 1; 0 <= _ref3 ? _m <= _ref3 : _m >= _ref3; i = 0 <= _ref3 ? ++_m : --_m) {
-        if (vizdata[i] > adjust_min && vizdata[i] < max_amount) {
+        if (vizdata[i] > adjust_min && vizdata[i] < adjust_max) {
           node = {
             id: i,
-            radius: 100 * radius_scale(vizdata[i]),
+            radius: radius_scale(vizdata[i]),
             value: vizdata[i],
             name: comb_name_list[i],
             group: "medium",
-            x: Math.random() * 1000,
+            x: Math.random() * 800,
             y: Math.random() * 600
           };
           nodes.push(node);
         }
       }
-      force = d3.layout.force().gravity(0.025 * LayerID).nodes(nodes).on("tick", function(e) {
-        return node.attr("cx", function(d) {
-          return d.x;
-        }).attr("cy", function(d) {
-          return d.y;
-        });
-      }).size([1200, 1000]).start();
-      vis = d3.select("#taxonomy_container").append("svg").attr("width", 1500).attr("height", 1200);
-      tooltip = d3.select("#taxonomy_container").append("div").attr("id", "pinch_tooltip").style("visibility", "hidden");
-      infoPanel = d3.select("#taxonomy_container").append("div").attr("id", "pinch_pannel").style("visibility", "hidden");
-      tooltipOverPanel = d3.select("#taxonomy_container").append("div").attr("id", "pinch_pannelTooltip").style("visibility", "hidden");
-      removePanel = d3.select("#taxonomy_container").append('div').attr('id', "removePanel").style("visibility", "hidden");
-      removePanel.append('i').attr('class', 'icon-remove icon-large');
-      y = d3.scale.linear().domain([0, max_single]).range([1, 100]);
-      xAxisLabels = selected_samples;
+      if (bubbleView) {
+        force = d3.layout.force().gravity(0.025 * LayerID).nodes(nodes).on("tick", function(e) {
+          return node.attr("cx", function(d) {
+            return d.x;
+          }).attr("cy", function(d) {
+            return d.y;
+          });
+        }).size([200 + LayerID * 120, 160 + LayerID * 120]).start();
+      } else {
+        if (nodes.length > 0) {
+          nodes.sort(function(a, b) {
+            return b.value - a.value;
+          });
+          nodes[0].x = 60;
+          nodes[0].y = 60;
+          maxRowHeight = 50;
+          for (i = _n = 1, _ref4 = nodes.length - 1; 1 <= _ref4 ? _n <= _ref4 : _n >= _ref4; i = 1 <= _ref4 ? ++_n : --_n) {
+            nodes[i].x = nodes[i - 1].x + nodes[i - 1].radius + nodes[i].radius + 20;
+            nodes[i].y = nodes[i - 1].y;
+            if (nodes[i].x > 850) {
+              nodes[i].x = 10 + nodes[i].radius;
+              nodes[i].y += 40 + nodes[i].radius + maxRowHeight;
+              maxRowHeight = nodes[i].radius;
+            }
+          }
+          vis.attr("height", nodes[nodes.length - 1].y + 50);
+        }
+      }
       node = vis.selectAll(".node").data(nodes).enter().append("circle").attr("class", "node").attr("cx", function(d) {
         return d.x;
       }).attr("cy", function(d) {
         return d.y;
       }).attr("r", function(d) {
-        return d.radius / 100;
+        return d.radius;
       }).style("fill", function(d, i) {
-        return color(i % 10);
-      }).style("opacity", 0.7).on('mouseover', function(d, i) {
+        return fillCol[d.id % 20];
+      }).style({
+        opacity: '1',
+        stroke: 'none'
+      }).on('mouseover', function(d, i) {
         d3.select(this).style({
           opacity: '1',
           stroke: '#000',
           'stroke-width': '3'
         });
-        tooltip.html("Taxonomy: " + d.name + "<br/> Total: " + vizdata[i]);
+        tooltip.html("Taxonomy: " + d.name + "<br/><br/> Total Reads: " + d.value);
         return tooltip.style({
           "visibility": "visible",
           top: (d3.event.pageY - 10) + "px",
@@ -688,56 +860,63 @@
         });
       }).on('mouseout', function(d) {
         d3.select(this).style({
-          opacity: '0.7',
+          opacity: '1',
           stroke: 'none'
         });
         return tooltip.style("visibility", "hidden");
       }).on('click', function(d, i) {
-        var barrect, circleUnderMouse, curColor, numberPerRow, txtrect;
-        tooltip.style("visibility", "hidden");
-        force.stop();
+        var barrect, circleUnderMouse, curColor, txtrect, valrect, y;
+        tooltip.style("display", "none");
+        if (bubbleView) {
+          force.stop();
+        }
         circleUnderMouse = this;
-        d3.select(this).transition().attr('cx', '100').attr('cy', '100').duration(750).ease("quad");
+        d3.select(this).transition().attr('cx', '60').attr('cy', '60').duration(750).ease("quad-in-out");
         d3.selectAll(".node").filter(function(d, i) {
           return this !== circleUnderMouse;
-        }).transition().style("opacity", 0).attr('cx', '-100').attr('cy', '-100').duration(750).ease("quad");
+        }).transition().attr('r', '0').duration(750).delay(750).ease("quad-in-out");
+        y = d3.scale.linear().domain([0, d3.max(viz_series[d.id])]).range([1, 115]);
         infoPanel.style("visibility", "visible");
         removePanel.style("visibility", 'visible');
-        numberPerRow = 40;
         curColor = d3.select(this).style("fill");
-        infoPanel.html('<br/><span>Taxonomy: ' + d.name + '</span><svg width="860px" height="' + Math.ceil(viz_series[i].length / numberPerRow + 1) * 100 + '"></svg>');
-        barrect = infoPanel.select('svg').selectAll('rect').data(viz_series[i]);
-        txtrect = infoPanel.select('svg').selectAll('text').data(xAxisLabels);
+        infoPanel.html('<div class="taxonomyHeader">' + d.name.substring(0, 70) + '&nbsp;&nbsp;' + format(d3.sum(viz_series[d.id])) + ' Reads &nbsp;<span>SAMPLE DISTRIRBUTION</span></div><svg width="813px" style="float: right; padding: 0 20px; border: 1px solid #c8c8c8; border-top: none;" height="' + Math.ceil(viz_series[d.id].length / 5 + 1) * 25 + '"></svg>');
+        barrect = infoPanel.select('svg').selectAll('rect').data(viz_series[d.id]);
+        valrect = infoPanel.select('svg').selectAll('text').data(viz_series[d.id]);
+        txtrect = infoPanel.select('svg').selectAll('text').data(selected_samples);
         txtrect.enter().append('text').text(function(d, i) {
-          return d;
+          return String(selected_phinchID_array[i]).substring(0, 6);
         }).attr("x", function(d, i) {
-          return ((i % numberPerRow) * 21 + 22) + 'px';
+          return ((i % 5) * 160 + 50) + 'px';
         }).attr("y", function(d, i) {
-          return 35 - y(d) + 100 * Math.floor(i / numberPerRow + 1);
-        }).attr("font-size", "10px").style("fill", curColor);
-        return barrect.enter().append('rect').attr('height', function(d) {
+          return 25 * Math.floor(i / 5) + 30 + 'px';
+        }).attr("text-anchor", 'end').attr("font-size", "10px").attr("font-weight", 'bold');
+        barrect.enter().append('rect').attr('height', '15px').attr('width', '115px').attr("x", function(d, i) {
+          return ((i % 5) * 160 + 55) + 'px';
+        }).attr("y", function(d, i) {
+          return 25 * Math.floor(i / 5) + 20 + 'px';
+        }).style("fill", '#f2f2f2');
+        barrect.enter().append('rect').attr('height', '15px').attr('width', function(d) {
           return y(d);
-        }).attr('width', '15px').attr("x", function(d, i) {
-          return ((i % numberPerRow) * 21 + 21) + 'px';
+        }).attr("x", function(d, i) {
+          return ((i % 5) * 160 + 55) + 'px';
         }).attr("y", function(d, i) {
-          return 20 - y(d) + 100 * Math.floor(i / numberPerRow + 1);
-        }).style("fill", curColor).on('mouseover', function(d, i) {
-          tooltipOverPanel.style("visibility", "visible");
-          tooltipOverPanel.html("Num: " + d);
-          return tooltipOverPanel.style({
-            "visibility": "visible",
-            top: (d3.event.pageY - 10) + "px",
-            left: (d3.event.pageX + 10) + "px"
-          });
-        }).on('mouseout', function(d) {
-          return tooltipOverPanel.style("visibility", "hidden");
-        });
+          return 25 * Math.floor(i / 5) + 20 + 'px';
+        }).style("fill", curColor);
+        return valrect.enter().append('text').text(function(d, i) {
+          return format(d);
+        }).attr("x", function(d, i) {
+          return ((i % 5) * 160 + 165) + 'px';
+        }).attr("y", function(d, i) {
+          return 25 * Math.floor(i / 5) + 31 + 'px';
+        }).attr("text-anchor", 'end').attr("font-size", "10px").attr("fill", "#bbb");
       });
       return d3.select('#removePanel').on('click', function(d) {
         tooltip.style("display", "block");
         infoPanel.style("visibility", "hidden");
         removePanel.style("visibility", 'hidden');
-        force.resume();
+        if (bubbleView) {
+          force.resume();
+        }
         return d3.selectAll(".node").transition().style({
           opacity: '0.7',
           stroke: 'none'
@@ -745,6 +924,8 @@
           return d.x;
         }).attr("cy", function(d) {
           return d.y;
+        }).attr('r', function(d) {
+          return d.radius;
         }).duration(750).ease("quad");
       });
     };
@@ -786,7 +967,7 @@
           }
         }
       }
-      width = 1500;
+      width = 1200;
       height = 20 * unique_taxonomy_comb_onLayer.length;
       margin = {
         top: 20,
@@ -902,7 +1083,8 @@
     };
 
     taxonomyViz.prototype.drawBasicDonut = function(donutID, donutName, donutData, donutContainedSamp) {
-      var arc, g, infoPanel, pie, radius, svg, that, yScale;
+      var arc, g, infoPanel, pie, radius, svg, that, yScale,
+        _this = this;
       radius = 125;
       yScale = d3.scale.pow().exponent(.4).domain([0, d3.max(donutData)]).range([0, 100]);
       arc = d3.svg.arc().outerRadius(radius).innerRadius(50);
@@ -910,7 +1092,7 @@
         return yScale(d);
       });
       d3.select('#taxonomy_container').append('div').attr("id", "donut_" + donutID).attr("class", "donutDiv");
-      svg = d3.select('#donut_' + donutID).append('svg').attr("width", 300).attr("height", 250).style("float", "left").append("g").attr("transform", "translate(" + 125 + "," + 125 + ")");
+      svg = d3.select('#donut_' + donutID).append('svg').attr("width", 300).attr("height", 255).style("float", "left").append("g").attr("transform", "translate(" + 125 + "," + 125 + ")");
       svg.append('text').attr('dy', '.35em').attr('y', '-7').style('text-anchor', 'middle').attr("font-size", "12px").text(donutName);
       svg.append('text').attr('dy', '.35em').style('text-anchor', 'middle').attr("font-size", "14px").attr("font-weight", "bold").attr('y', '7').text(d3.sum(donutData));
       that = this;
@@ -928,13 +1110,21 @@
       }).on('mouseout', function(d, i) {
         return d3.selectAll('g.arc_' + donutID).style('opacity', 1);
       }).on('click', function(d, i) {
-        return that.drawBasicRect(false, donutContainedSamp, donutID, i);
+        return that.drawBasicRect(false, donutContainedSamp, donutID, i, $('#toggle_' + donutID).html());
       });
-      infoPanel = d3.select('#donut_' + donutID).append("div").attr("class", "panelCombSample").html('<span class="containedTaxonomy" id="containedTaxonomy_' + donutID + '"></span><div id="selectedColumn_' + donutID + '"></div>');
-      return this.drawBasicRect(true, donutContainedSamp, donutID, null);
+      infoPanel = d3.select('#donut_' + donutID).append("div").attr("class", "panelCombSample").html('<a class="toggleStandard" id="toggle_' + donutID + '">dynamic</a><span class="containedTaxonomy" id="containedTaxonomy_' + donutID + '"></span><div id="selectedColumn_' + donutID + '"></div>');
+      $('#toggle_' + donutID).click(function() {
+        if ($('#toggle_' + donutID).html() === 'standardized') {
+          $('#toggle_' + donutID).html('dynamic');
+        } else {
+          $('#toggle_' + donutID).html('standardized');
+        }
+        return _this.drawBasicRect(true, donutContainedSamp, donutID, null, $('#toggle_' + donutID).html());
+      });
+      return this.drawBasicRect(true, donutContainedSamp, donutID, null, 'dynamic');
     };
 
-    taxonomyViz.prototype.drawBasicRect = function(totalFlag, containedSamp, donutID, selectedTaxnomy) {
+    taxonomyViz.prototype.drawBasicRect = function(totalFlag, containedSamp, donutID, selectedTaxnomy, toggleStandard) {
       var eachBarWidth, i, j, rectArr, rectContainedSamp, rule, thisTaxonomyName, yScale, _i, _j, _ref, _ref1;
       rectArr = new Array(containedSamp.length);
       for (i = _i = 0, _ref = containedSamp.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
@@ -954,7 +1144,14 @@
         thisTaxonomyName = unique_taxonomy_comb_onLayer[selectedTaxnomy][0] + ',' + unique_taxonomy_comb_onLayer[selectedTaxnomy][1] + ',' + unique_taxonomy_comb_onLayer[selectedTaxnomy][2] + ',' + unique_taxonomy_comb_onLayer[selectedTaxnomy][3] + ',' + unique_taxonomy_comb_onLayer[selectedTaxnomy][4] + ',' + unique_taxonomy_comb_onLayer[selectedTaxnomy][5] + ',' + unique_taxonomy_comb_onLayer[selectedTaxnomy][6];
         d3.select('#containedTaxonomy_' + donutID).html('Taxonomy:  ' + thisTaxonomyName);
       }
-      yScale = d3.scale.pow().exponent(.5).domain([0, d3.max(rectArr)]).range([2, 195]);
+      if (d3.max(rectArr) > standardizedValue) {
+        standardizedValue = d3.max(rectArr);
+      }
+      if (toggleStandard === 'dynamic') {
+        yScale = d3.scale.pow().exponent(.5).domain([0, d3.max(rectArr)]).range([2, 185]);
+      } else {
+        yScale = d3.scale.pow().exponent(.5).domain([0, standardizedValue]).range([2, 185]);
+      }
       eachBarWidth = 800 / containedSamp.length;
       if (eachBarWidth < 10) {
         return d3.select('#selectedColumn_' + donutID).html("Too many samples!" + containedSamp);
@@ -966,21 +1163,23 @@
         }).attr('width', eachBarWidth - 3).attr("x", function(d, i) {
           return eachBarWidth * i + 50;
         }).attr("y", function(d, i) {
-          return 200 - yScale(d);
+          return 190 - yScale(d);
         }).style("fill", function(d, i) {
           if (totalFlag) {
-            return '#efc14f';
+            return '#ff8900';
           } else {
             return fillCol[selectedTaxnomy % 20];
           }
         });
         rectContainedSamp.selectAll('text').data(containedSamp).enter().append('text').text(function(d, i) {
-          return d;
+          return String(selected_phinchID_array[i]).substring(0, 9);
         }).attr('x', function(d, i) {
           return eachBarWidth * (i + 0.5) + 50;
-        }).attr('y', 210).attr('width', eachBarWidth).attr('text-anchor', 'middle').attr("font-size", "9px").attr('fill', '#444');
+        }).attr('y', 200).attr('width', eachBarWidth).attr('text-anchor', 'end').attr("font-size", "9px").attr('fill', '#444').attr("transform", function(d, i) {
+          return "translate( " + (eachBarWidth / 3.3 * i - 120) + "," + (100 + i * 0.71 * eachBarWidth + eachBarWidth / 3) + ")rotate(-45)";
+        });
         rule = rectContainedSamp.selectAll('g.rule').data(yScale.ticks(10)).enter().append('g').attr('class', 'rule').attr('transform', function(d) {
-          return "translate(0," + (202 - yScale(d)) + ")";
+          return "translate(0," + (192 - yScale(d)) + ")";
         });
         rule.append('line').attr('x1', 45).attr('x2', 870).style("stroke", function(d) {
           if (d) {
@@ -1002,7 +1201,7 @@
     };
 
     taxonomyViz.prototype.drawTaxonomyByAttributes = function(cur_attribute) {
-      var arr_id, attributes_array, content, count, countEmpty, i, j, selected_new_data_matrix_onLayer, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _ref, _ref1, _ref10, _ref11, _ref12, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _s, _t, _u;
+      var arr_id, attributes_array, content, count, countEmpty, i, j, legendArr, selected_new_data_matrix_onLayer, temp, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _s, _t, _u, _v, _w;
       $('#attributes_dropdown').fadeIn(800);
       selected_new_data_matrix_onLayer = new Array(new_data_matrix_onLayer.length);
       attributes_array = [];
@@ -1012,7 +1211,9 @@
           attributes_array.push(parseFloat(biom.columns[selected_samples[i]].metadata[cur_attribute].split(" ")[0]));
         }
       }
-      attributes_array.sort(this.numberSort);
+      attributes_array.sort(function(a, b) {
+        return a - b;
+      });
       count = new Array(attributes_array.length);
       for (i = _j = 0, _ref1 = attributes_array.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
         count[i] = [];
@@ -1053,36 +1254,48 @@
         }
       }
       this.drawBasicColumns(attributes_array);
+      $('#count_container').html("");
       content = '';
-      content += '<div>' + cur_attribute + '</div><div>';
+      content += '<span>' + cur_attribute + ', ' + selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] + '</span>';
       if (attributes_array.length > 0) {
         for (i = _s = 0, _ref10 = attributes_array.length - 1; 0 <= _ref10 ? _s <= _ref10 : _s >= _ref10; i = 0 <= _ref10 ? ++_s : --_s) {
-          content += '<div>' + attributes_array[i] + ': ';
+          content += '<p><b>' + attributes_array[i] + '</b>:&nbsp;&nbsp;';
           if (count[i].length > 0) {
             for (j = _t = 0, _ref11 = count[i].length - 1; 0 <= _ref11 ? _t <= _ref11 : _t >= _ref11; j = 0 <= _ref11 ? ++_t : --_t) {
-              content += count[i][j] + ', ';
+              content += selected_phinchID_array[count[i][j]] + ' (' + count[i][j] + '), ';
             }
           } else {
             content += 'no samples';
           }
-          content += '</div>';
+          content += '</p>';
         }
       }
       if (countEmpty.length > 0) {
-        content += '<div>NaN value samples: ';
+        content += '<p><i><b>* NaN value samples</b>:&nbsp;&nbsp;';
         for (i = _u = 0, _ref12 = countEmpty.length - 1; 0 <= _ref12 ? _u <= _ref12 : _u >= _ref12; i = 0 <= _ref12 ? ++_u : --_u) {
           content += countEmpty[i] + ', ';
         }
-        content += '</div>';
+        content += '</i></p>';
       }
-      content += '</div>';
-      return $('#countResult').html(content);
+      $('#count_container').html(content);
+      legendArr = [];
+      for (i = _v = 0, _ref13 = selected_new_data_matrix_onLayer.length - 1; 0 <= _ref13 ? _v <= _ref13 : _v >= _ref13; i = 0 <= _ref13 ? ++_v : --_v) {
+        temp = new Object();
+        temp.originalID = i;
+        temp.value = 0;
+        temp.name = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6];
+        for (j = _w = 0, _ref14 = selected_new_data_matrix_onLayer[0].length - 1; 0 <= _ref14 ? _w <= _ref14 : _w >= _ref14; j = 0 <= _ref14 ? ++_w : --_w) {
+          temp.value += selected_new_data_matrix_onLayer[i][j];
+        }
+        legendArr.push(temp);
+      }
+      return this.createLegend(legendArr);
     };
 
     taxonomyViz.prototype.drawBasicColumns = function(attributes_array) {
       var h, label, margin, max_single, rect, rule, svg, taxonomy, tooltip, w, x, y;
       this.fadeInOutCtrl();
-      w = sumEachCol.length < 80 ? 1500 : sumEachCol.length * 18 + 200;
+      w = sumEachCol.length < 80 ? 1000 : sumEachCol.length * 18 + 200;
       h = 800;
       max_single = d3.max(sumEachCol);
       margin = {
@@ -1093,7 +1306,7 @@
       };
       x = d3.scale.ordinal().domain(vizdata[0].map(function(d) {
         return d.x;
-      })).rangeRoundBands([0, w - margin.right - margin.left - 300]);
+      })).rangeRoundBands([0, w - margin.right - margin.left]);
       y = d3.scale.linear().domain([0, max_single]).range([0, h - margin.top - margin.bottom]);
       svg = d3.select("#taxonomy_container").append("svg").attr("width", w).attr("height", h + 100).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
       tooltip = d3.select("#taxonomy_container").append("div").attr("class", "tooltipOverSmallThumb").style("visibility", "hidden");
@@ -1142,7 +1355,6 @@
       }).on('mouseout', function(d, i) {
         return tooltip.style("visibility", "hidden");
       });
-      x.domain();
       label = svg.selectAll('text').data(attributes_array).enter().append('text').text(function(d, i) {
         return d;
       }).attr('x', function(d, i) {
@@ -1157,9 +1369,9 @@
       });
       rule.append('line').attr('x2', function(d, i) {
         if (sumEachCol.length < 80) {
-          return w - margin.left - margin.right - 200;
+          return w - margin.left - margin.right + 30;
         } else {
-          return w - 200;
+          return w + 30;
         }
       }).style("stroke", function(d) {
         if (d) {
@@ -1178,7 +1390,7 @@
         if (!percentage) {
           return format(d);
         } else {
-          return Math.round(i / (y.ticks(10).length - 1) * 100) + '%';
+          return Math.round(i / (y.ticks(10).length) * 100) + '%';
         }
       });
     };
@@ -1308,25 +1520,64 @@
       return d3.event.stopPropagation();
     };
 
-    taxonomyViz.prototype.numberSort = function(a, b) {
-      return a - b;
+    taxonomyViz.prototype.createLegend = function(legendArr) {
+      var content, i, legendLen, _i;
+      legendArr.sort(function(a, b) {
+        return b.value - a.value;
+      });
+      $('#legend_container').html('');
+      content = '<ul>';
+      if (legendArr.length < 10) {
+        legendLen = legendArr.length - 1;
+      } else {
+        legendLen = 9;
+      }
+      for (i = _i = 0; 0 <= legendLen ? _i <= legendLen : _i >= legendLen; i = 0 <= legendLen ? ++_i : --_i) {
+        content += '<li><span style = "display:block; background-color:' + fillCol[legendArr[i].originalID % 20] + '; height: 12px; width: 12px; float: left; margin: 2px 0px;" ></span>&nbsp;&nbsp;&nbsp;' + legendArr[i].name + '&nbsp;&nbsp;<b>' + format(legendArr[i].value) + '</b></li>';
+      }
+      content += '</ul>';
+      $('#legend_container').append(content);
+      if ($('#legend_header').html() === 'TOP SEQUENCES') {
+        return $('#legend_header').css('width', $('#legend_container').width() - 1);
+      }
     };
 
     taxonomyViz.prototype.fadeInOutCtrl = function() {
-      $("#taxonomy_container").html("");
-      $('#taxonomy_container').fadeIn(500);
-      $('.dg').fadeIn(500);
-      if (VizID === 0) {
-        $('#outline').fadeIn(500);
-        $('#tags').fadeIn(500);
-      }
-      if (VizID === 2) {
-        $('#layer_6').hide();
-        $('#layer_7').hide();
-      }
-      $('#layer_' + LayerID).removeClass("loading_notes");
-      $('#LayerFolder ul li .layer_change').removeClass('current_layer');
-      return $('#layer_' + LayerID).addClass('current_layer');
+      $('#taxonomy_container').html("");
+      $('#loadingLarge').css('opacity', '1');
+      return $('#loadingLarge').animate({
+        opacity: 0
+      }, {
+        duration: 2000,
+        specialEasing: {
+          width: "easeInOutQuad"
+        },
+        complete: function() {
+          $('#taxonomy_container').animate({
+            opacity: 1
+          }, {
+            duration: 2000
+          });
+          $('#layerSwitch').fadeIn(500);
+          if (VizID === 0) {
+            $('#outline').fadeIn(500);
+            $('#tags').fadeIn(500);
+            $('#PercentValue').fadeIn(500);
+            $('#legend_header').fadeIn(500);
+          }
+          if (VizID === 1) {
+            $('#ListBubble').fadeIn(500);
+          }
+          if (VizID === 2) {
+            console.log('Need to do sth here!');
+          }
+          if (VizID === 4) {
+            $('#PercentValue').fadeIn(500);
+            $('#legend_header').fadeIn(500);
+            return $('#count_header').fadeIn(500);
+          }
+        }
+      });
     };
 
     return taxonomyViz;

@@ -14,6 +14,7 @@
       this.removeRow = __bind(this.removeRow, this);
       this.reloadRow = __bind(this.reloadRow, this);
       this.listRecentFiles = __bind(this.listRecentFiles, this);
+      this.readBlob = __bind(this.readBlob, this);
       this.dragFileProc = __bind(this.dragFileProc, this);
       this.handleFileSelect = __bind(this.handleFileSelect, this);
       var fileDrag,
@@ -42,10 +43,11 @@
       }, false);
       document.getElementById('loadTestFile').addEventListener('click', function(evt) {
         var rawFile, testfile;
-        testfile = 'http://localhost/ucdavis/SLOAN/_web/v5/data/testdata.biom';
+        testfile = 'http://phinch.org/data/testdata.biom';
         rawFile = new XMLHttpRequest();
         rawFile.open("GET", testfile, true);
-        $('#loadTestFile').addClass('loading_notes');
+        $('#loadTestFile').html('Loading...');
+        $('#loadTestFile').addClass('loadingSmall');
         rawFile.onreadystatechange = function() {
           var biomToStore, d;
           if (rawFile.readyState === 4) {
@@ -56,8 +58,9 @@
               biomToStore.data = rawFile.responseText;
               d = new Date();
               biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC";
-              _this.server.biom.add(biomToStore);
-              return setTimeout("window.location.href = 'preview.html'", 2000);
+              return _this.server.biom.add(biomToStore).done(function() {
+                return setTimeout("window.location.href = 'preview.html'", 2000);
+              });
             }
           }
         };
@@ -150,11 +153,12 @@
           biomToStore.data = evt.target.result;
           d = new Date();
           biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC";
+          console.log(_this);
           if (JSON.parse(biomToStore.data).format.indexOf("Biological Observation Matrix") !== -1) {
-            _this.server.biom.add(biomToStore).done(function(item) {
-              return this.currentData = item;
+            return _this.server.biom.add(biomToStore).done(function(item) {
+              _this.currentData = item;
+              return setTimeout("window.location.href = 'preview.html'", 2000);
             });
-            return setTimeout("window.location.href = 'preview.html'", 2000);
           } else {
             return alert("Incorrect biom format field! Please check your file content!");
           }
@@ -166,25 +170,35 @@
     readFile.prototype.listRecentFiles = function() {
       var _this = this;
       return this.server.biom.query().all().execute().done(function(results) {
-        var content, k, tk, _i, _j, _ref, _ref1, _results;
+        var content, k, p, tk, _i, _j, _k, _ref, _ref1, _ref2, _results;
         if (results.length > 0) {
-          $('#recent').show();
-          _this.currentData = results;
-          content = "<table id='recent_data'>";
-          for (k = _i = 0, _ref = results.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; k = 0 <= _ref ? ++_i : --_i) {
-            tk = results.length - 1 - k;
-            content += '<tr><td class="reload" id="reload_' + k + '">LOAD' + '</td><td>';
-            content += results[tk].name.substring(0, 45) + '</td><td>' + (results[tk].size / 1000000).toFixed(1) + " MB" + '</td><td>' + results[tk].date;
-            content += '</td><td class="del" id="del_' + k + '"><i class="icon-fa-times icon-large"></i></td></tr>';
+          for (p = _i = 0, _ref = results.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; p = 0 <= _ref ? ++_i : --_i) {
+            if (results[p].name === "testdata.biom") {
+              _this.server.biom.remove(results[p].id).done;
+              results.splice(p, 1);
+            }
           }
-          content += "</table>";
-          $("#recent").append(content);
-          _results = [];
-          for (k = _j = 0, _ref1 = results.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; k = 0 <= _ref1 ? ++_j : --_j) {
-            $('#reload_' + k).click(_this.reloadRow);
-            _results.push($('#del_' + k).click(_this.removeRow));
+          if (results.length > 0) {
+            $('#recent').show();
+            _this.currentData = results;
+            content = "<table id='recent_data'>";
+            for (k = _j = 0, _ref1 = results.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; k = 0 <= _ref1 ? ++_j : --_j) {
+              tk = results.length - 1 - k;
+              if (k < 10) {
+                content += '<tr><td class="reload" id="reload_' + k + '">LOAD' + '</td><td>';
+                content += results[tk].name.substring(0, 45) + '</td><td>' + (results[tk].size / 1000000).toFixed(1) + " MB" + '</td><td>' + results[tk].date;
+                content += '</td><td class="del" id="del_' + k + '"><i class="icon-fa-times icon-large"></i></td></tr>';
+              }
+            }
+            content += "</table>";
+            $("#recent").append(content);
+            _results = [];
+            for (k = _k = 0, _ref2 = results.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; k = 0 <= _ref2 ? ++_k : --_k) {
+              $('#reload_' + k).click(_this.reloadRow);
+              _results.push($('#del_' + k).click(_this.removeRow));
+            }
+            return _results;
           }
-          return _results;
         }
       });
     };
@@ -198,10 +212,10 @@
       biomToStore.data = this.currentData[i].data;
       d = new Date();
       biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC";
-      this.server.biom.add(biomToStore).done(function(item) {
-        return this.currentData = item;
+      return this.server.biom.add(biomToStore).done(function(item) {
+        this.currentData = item;
+        return setTimeout("window.location.href = 'preview.html'", 1000);
       });
-      return setTimeout("window.location.href = 'preview.html'", 1000);
     };
 
     readFile.prototype.removeRow = function(evt) {

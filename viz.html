@@ -3,164 +3,220 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>PHINCH</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-        <link rel="stylesheet" href="css/pinch.css">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>PHINCH</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/pinch.css">
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', '']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+    <!--[if lt IE 9]>
+        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <script>window.html5 || document.write('<script src="lib/html5shiv.js"><\/script>')</script>
+    <![endif]-->
+</head>
 
-        <!--[if lt IE 9]>
-            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-            <script>window.html5 || document.write('<script src="lib/html5shiv.js"><\/script>')</script>
-        <![endif]-->
-    </head>
+<body>
+    <!--[if lt IE 7]>
+        <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+    <![endif]-->
 
-    <body>
-        <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-        <![endif]-->
+    <section id = "head_sec">
+        <p class = "logo"><a href="index.html"><img src="img/phinch-logo.jpg" height="50px"></a></p>
+        <h3>GRAPH GALLERY</h3>
+        <p id="help">HELP</p>
+        <div id="dialog-modal">
+            <h4>How to Use</h4>
+            <p class="descPara">
 
-        <section id = "head_sec">
-            <p class = "logo"><a href="index.html"><img src="img/phinch-logo.jpg" height="50px"></a></p>
-            <h3>GRAPH GALLERY</h3>
-            <p class="help"><a href="#">HELP</a></p>
-        </section>
+                <span>Instructions</span></br></br>
+                This visualization framework aims to address current bottlenecks in the analysis of large sequence datasets (rRNA amplicons, metagenomes), helping researchers analyze high-throughput datasets more efficiently. Phich takes advantage of standard outputs from computational pipelines in order to bridge the gap between biological software (e.g. QIIME) and existing data visualization capabilities (harnessing the scalability of WebGL and HTML5 in a browser-based tool). </br></br>
+                Phinch currently supports downstream analyses of <b>.biom files</b> ( <a href="http://biom-format.org/" target="_blank">Biological Observation Matrix</a>, a JSON-formatted file type typically used to represent marker gene OTUs or metagenomic data). <b>All sample metadata and taxonomy/ontology information MUST be embedded in the .biom file before being uploaded into Phinch</b>.</br></br>
+                In QIIME (version 1.7 or later), users can prepare the .biom file by executing the following commands:</br></br>
+                First, construct an OTU table:</br></br>
+                     <code>make_otu_table.py -i final_otu_map_mc2.txt -o otu_table_mc2_w_tax.biom -t rep_set_tax_assignments.txt</code></br></br>
+                Where your input file (-i) is your OTU Map (defining clusters of raw sequences reads), and taxonomy file (-t) contains the taxonomy or gene ontology strings that correspond to each OTU.</br></br>
+                Second, add your sample metadata to your .biom file:</br></br>
+                    <code>add_metadata.py -i otu_table_mc2_w_tax.biom -o otu_table_mc2_w_tax_and_metadata.biom -m sample_metadata_mapping_file.txt</code></br></br>
+                Where your input file (-i) is your .biom file from the previous step, and your mapping file (-m) is a tab-delimited file containing sample metadata (<a href="http://qiime.org/documentation/file_formats.html#metadata-mapping-files" target="_blank">formatted according to these QIIME instructions</a>).</br></br>
+                After these two steps, you're ready to upload.</br></br>
+                If you want to visualize biological data currently formatted as a tab-delimited text file (e.g. the style of OTU tables produced by older versions of QIIME), <a href="https://github.com/biom-format/biom-format/blob/df81277857a553e7e5c9679924e09861d8a5f61f/doc/documentation/biom_conversion.rst" target="_blank">please refer to this documentation for conversion instructions</a>. Phinch supports both "sparse" and "dense" BIOM formats (although <b>sparse .biom files are highly recommended, since the file size is much smaller</b>). </br></br>
 
-        <section id = "up_sec" style="display:none;">
-            <p id = "file_details"></p>
-            <div style="position: absolute; right: 180px; top: 5px;">
-                <select id = "attributes_dropdown" style="display: none;"></select>  
+                <span>Some important notes on metadata</span></br></br>
+                In order to be properly detected, all date/time metadata must be standardized according to MIxS standardized format (<a href="http://wiki.gensc.org/index.php?title=MIxS" target="_blank">more information at the Genomic Standards Consortium wiki</a>), and entered into one column in your original sample metadata mapping file, as follows:</br></br>
+                [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss]-[Z]</br>
+                For example, metadata for a sample collected at 2:30pm EST on May 4, 2007 would be entered as: 2007-04-05T14:30:00-05:00</br></br>
+                Similarly, any geographic coordinates or GPS data must be entered as <a href="http://en.wikipedia.org/wiki/Decimal_degrees" target="_blank"></a>decimal degrees (the format used by GoogleMaps, e.g. -90.017926).  We recommend using separate columns labeled “Latitude” and “Longitude” in your original sample metadata mapping file, to ensure that GPS metadata is correctly detected.</br></br>
+                
+                <span>Compatibility with older QIIME file formats</span></br></br>
+                If you want to visualize biological data currently formatted as a tab-delimited text file (e.g. the style of OTU tables produced by older versions of QIIME), <a href="https://github.com/biom-format/biom-format/blob/df81277857a553e7e5c9679924e09861d8a5f61f/doc/documentation/biom_conversion.rst" target="_blank">please refer to this documentation for conversion instructions</a>. Phinch supports both "sparse" and "dense" BIOM formats (although <b>sparse .biom files are highly recommended, since the file size is much smaller</b>).</br></br>
+
+            </p>
+
+        </div>
+    </section>
+
+    <section id = "up_sec" style="display:none;">
+        <button class="orange_btn" id="share">SHARE</button>
+        <button class="orange_btn" id="export">EXPORT</button>
+        <a href="viz.html"><button id="goBackGallery" class="orange_btn">BACK TO GALLERY </button></a>
+            
+        <p id = "file_details"></p>
+        <select id = "attributes_dropdown" style="display: none;"></select>  
+
+    </section>
+    
+    <section id = "NotSupported">
+        <br /> <br />
+        <h1>Not Supported</h1>
+        <p>The browser you are using does not support <a href="https://developer.mozilla.org/en-US/docs/IndexedDB" target="_blank">IndexedDB</a>, which is required for the Phinch framework!</p>
+    </section>
+
+    <section id="GraphGallery">
+        <a href="preview.html"><button id="goBackFilter" class="orange_btn">FILTER DATA </button></a>
+        <hr width="100%">
+        </br></br>
+
+        <!-- Graph 1 -->
+        <div class="col3">
+            <p class = "graphGalleryTitle"><span>Taxonomy Bar Chart</span></p>
+            <img src="img/gallery_1.png">
+        </div>
+         <!-- Graph 2 -->
+        <div class="col3">
+            <p class = "graphGalleryTitle"><span>Bubble Chart</span></p>
+            <img src="img/gallery_2.png">
+        </div>
+        <!-- Graph 3 -->
+        <div class="col3">
+            <p class = "graphGalleryTitle"><span>Sankey Diagram</span></p>
+            <img src="img/gallery_3.png">
+        </div>
+        <!-- Graph 4 -->
+        <div class="col3">
+            <p class = "graphGalleryTitle"><span>Donut Partition</span></p>
+            <img src="img/gallery_4.png">
+        </div>
+        <!-- Graph 5 -->
+        <div class="col3">
+            <p class = "graphGalleryTitle"><span>Attributes Column Chart</span></p>
+            <img src="img/gallery_5.png">
+        </div>
+        <!-- Graph 6 -->
+        <div class="col3">
+            <p class = "graphGalleryTitle"><span>Bubble Chart By OTU</span></p>
+            <img src="img/gallery_6.png">
+        </div>
+
+    </section>
+
+    <section id = "viz_container">
+        <hr width="100%">
+        </br> 
+        
+        <div id="layerSwitch">
+            <div class="circle selected_layer" id="layer_1"></div>
+            <div class="circle" id="layer_2" style="background: url('css/images/phylum.png') no-repeat"></div>
+            <div class="circle" id="layer_3"></div>
+            <div class="circle" id="layer_4"></div>
+            <div class="circle" id="layer_5"></div>
+            <div class="circle" id="layer_6"></div>
+            <div class="circle" id="layer_7"></div>
+            <div class="line"></div>
+            <div class="progressLine"></div>
+            
+            <div id="PercentValue">
+                <button id = "valueBtn" class="clicked">VALUE</button>
+                <button id = "percentBtn">%</button>
             </div>
 
-        </section>
-
-        <section id = "NotSupported">
-            <br /> <br />
-            <h1>Not Supported</h1>
-            <p>The browser you are using does not support <a href="https://developer.mozilla.org/en-US/docs/IndexedDB" target="_blank">IndexedDB</a>, which is required for the Phinch framework!</p>
-        </section>
-
-
-        <section id="GraphGallery">
-
-            <a href="preview.html"><button id="goBackFilter" class="orange_btn">FILTER DATA </button></a>
-            <hr width="100%">
-            </br></br>
-
-            <!-- Graph 1 -->
-            <div class="col3"><img src="img/gallery_1.png">
-                <p class = "graphGalleryTitle"><span>Taxonomy Bar</span></p>
-            </div>
-             <!-- Graph 2 -->
-            <div class="col3"><img src="img/gallery_2.png">
-                <p class = "graphGalleryTitle"><span>Bubble Chart</span></p>
-            </div>
-            <!-- Graph 3 -->
-            <div class="col3"><img src="img/gallery_3.png">
-                <p class = "graphGalleryTitle"><span>Sankey Diagram</span></p>
-            </div>
-            <!-- Graph 4 -->
-            <div class="col3"><img src="img/gallery_4.png">
-                <p class = "graphGalleryTitle"><span>Donut Partition</span></p>
-            </div>
-            <!-- Graph 5 -->
-            <div class="col3"> <img src="img/gallery_5.png">
-                <p class = "graphGalleryTitle"><span>Attributes Column Chart</span></p>
-            </div>
-            <!-- Graph 6 -->
-            <div class="col3"><img src="img/gallery_6.png">
-                <p class = "graphGalleryTitle"><span>Bubble Chart By OTU</span></p>
+            <div id="ListBubble">
+                <button id = "bubbleBtn" class="clicked">BUBBLE</button>
+                <button id = "listBtn">LIST</button>
             </div>
 
-        </section>
+            <div id="bubbleSlider"></div>
+        </div>
 
-        <section id = "viz_container">
-            <div id="taxonomy_container"></div> 
+        <div id="taxonomy_container"></div>
+        <img src="img/loadinglarge.gif" id="loadingLarge">
+        <input type="text" name="search" placeholder="  search..." id = 'tags'>
+        <div id = "autoCompleteList"></div>
+        <div id="fake_taxonomy_container"></div>
+        
+        <div id="legend_header">TOP SEQS</div>
+        <div id="legend_container"></div>
 
-            <input type="text" name="search" placeholder="  search..." id = 'tags'>
-            <div id = "autoCompleteList"></div>
-            <div id="fake_taxonomy_container"></div>
-        </section>
+        <div id="count_header">SAMPLE DIST</div>
+        <div id="count_container"></div>
+
+    </section>
 
 <!--         <section class = "footer">
-            <p class = "footer_copyright">Copyright © 2014 Phinch. Phinch is supported by the <a href="http://www.sloan.org/" target="_blank">Alfred P. Sloan Foundation</a>. This content is released under <a href="http://opensource.org/licenses/BSD-2-Clause" target="_blank">The BSD 2-Clause License</a>. <span><a href="https://github.com/shujianbu/phinch" target="_blank"><i class="icon-github icon-large"></i>&nbsp;&nbsp;&nbsp;Fork me on Github</a></span></p>
-        </section> -->
+        <p class = "footer_copyright">Copyright © 2014 Phinch. Phinch is supported by the <a href="http://www.sloan.org/" target="_blank">Alfred P. Sloan Foundation</a>. This content is released under <a href="http://opensource.org/licenses/BSD-2-Clause" target="_blank">The BSD 2-Clause License</a>. <span><a href="https://github.com/shujianbu/phinch" target="_blank"><i class="icon-github icon-large"></i>&nbsp;&nbsp;&nbsp;Fork me on Github</a></span></p>
+    </section> -->
 
-        <script src="lib/jquery-1.10.1.min.js"></script>
-        <script src="lib/jquery-ui-1.10.3.custom.min.js"></script>
-        <script src="lib/jquery.fracs-0.12.0.min.js"></script>
-        <script src="lib/jquery.outline-0.12.0.min.js"></script>
+    <script src="lib/jquery-1.10.1.min.js"></script>
+    <script src="lib/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="lib/jquery.fracs-0.12.0.min.js"></script>
+    <script src="lib/jquery.outline-0.12.0.min.js"></script>
 
-        <script src="lib/dat.gui.min.js"></script>
-        <script src="lib/indexedDB.polyfill.js"></script>
-        <script src="lib/db.js"></script>
-        <script src="lib/d3.v3.min.js"></script>
-        <script src="lib/d3.layout.min.js"></script>
-        <script src="lib/d3.sankey.js"></script>
+    <script src="lib/indexedDB.polyfill.js"></script>
+    <script src="lib/db.js"></script>
+    <script src="lib/d3.v3.min.js"></script>
+    <script src="lib/d3.layout.min.js"></script>
+    <script src="lib/d3.sankey.js"></script>
 
-        <script src="scripts/taxonomyViz.js"></script>
+    <script src="scripts/taxonomyViz.js"></script>
 
-        <script>
-        if ( !( navigator.userAgent.match(/Chrome/i) || navigator.userAgent.match(/Firefox/i) ) || !window.File || !window.FileReader || !window.FileList || !window.Blob ){
-            alert('Please use Chrome or Firefox! Your browser does not support the Phinch framework!');
-            $('#up_sec').hide();
-            $('#GraphGallery').hide();
-            $('#NotSupported').show();
-            $('.footer').css("position", "fixed");
-        } else {
+    <script>
+    if ( !( navigator.userAgent.match(/Chrome/i) || navigator.userAgent.match(/Firefox/i) || navigator.userAgent.match(/Safari/) ) || !window.File || !window.FileReader || !window.FileList || !window.Blob ){
+        alert('Please use Chrome or Firefox or Safari! Your browser does not support the Phinch framework!');
+        $('#Page1').hide();
+        $('#NotSupported').show();
+        $('#top_sec').animate({height:50}, 200);
+        $('#recent').hide();
+    }   else {
 
+        $( "#GraphGallery .col3" ).each( function(index) {
+            $(this).click( function() {
 
-            $( "#GraphGallery img" ).each( function(index) {
-                $(this).click( function() {
-                    $('#GraphGallery').fadeOut(800, function(){ 
-                        $('.icon-chevron-sign-left').show(); 
-                        $('#up_sec').fadeIn(800); 
+                // 1 change the big title 
+                $('h3').html( $(this).find('p').text() );
 
-                        // var FizzyText = function() {
-                        //     this.Layer2 = false; this.Layer3 = false; this.Layer4 = false; this.Layer5 = false; this.Layer6 = false; this.Layer7 = false;
-                        //     this.Display = 'Values'; this.Export = false; this.Share = false;
-                        // };
-
-                        // var text = new FizzyText();
-                        // var gui = new dat.GUI();
-                        // var f1 = gui.addFolder('Layers');
-                        // f1.add(text, 'Layer2'); f1.add(text, 'Layer3'); f1.add(text, 'Layer4'); f1.add(text, 'Layer5'); f1.add(text, 'Layer6'); f1.add(text, 'Layer7');
-                        // var f2 = gui.addFolder('Others');
-                        // f2.add(text, 'Display', [ 'Values', 'Percent' ] );
-                        // f2.add(text, 'Export'); f2.add(text, 'Share');  
-
-                        // gui.domElement.childNodes[1].children[0].children[0].id = 'LayerFolder';
-                        // gui.domElement.childNodes[1].children[1].children[0].children[0].id = 'otherFuncs';
-
-                        // $('#LayerFolder ul li').each( function(index_layer) {
-                        //     d3.select(this).select('.property-name').attr('id', 'layer_' + (index_layer + 1) ).attr('class', 'layer_change');
-                        //     if (index_layer == 1) { d3.select(this).select('.property-name').attr('class', 'loading_notes').attr('class', 'current_layer'); }
-                        // });
-
-                    });
-
-                    var app = new taxonomyViz(index);
-                                      
+                // 2 Fade in and out 
+                $('#GraphGallery').fadeOut(800, function(){
+                    $('#up_sec').fadeIn(800);
                 });
+
+                var app = new taxonomyViz(index);
+
             });
-        }
-        </script>
+        });
 
-    </body>
-</html>
-s', 'loading_notes').attr('class', 'current_layer'); }
-                        });
-
-                    });
-
-                    var app = new taxonomyViz(index);
-                                      
-                });
+        // 3 Modal Help 
+        $('#help').click( function (e){
+            e.preventDefault();
+            $('#dialog-modal').show();
+            $('#dialog-modal').dialog({
+                height: 140,
+                modal: true
             });
-        }
-        </script>
+            $('.ui-button-text').html('<i class="icon-remove icon-large"></i>');
+        });
 
-    </body>
+    }
+    </script>
+
+</body>
 </html>

@@ -22,12 +22,14 @@ class filter
 			server: "BiomData", version: 1,
 			schema:
 				"biom": key: keyPath: 'id', autoIncrement: true,
-		).done (s) => 
+		).done (s) =>
+			@server = s
 			s.biom.query().all().execute().done (results) => 
 				currentData = results[results.length-1]
 				filename = currentData.name
 				biom = JSON.parse(currentData.data)
 				phinch = JSON.parse(currentData.data)
+				
 				# Parse 		
 				attr_length = biom.shape[1]-1
 				@generateColumns()
@@ -36,9 +38,9 @@ class filter
 				@generateDate()
 
 				# Build
-				$("#file_details").append( "ANALYZING &nbsp;<span>" + filename + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Samples &nbsp;<em>" + format(biom.shape[1]) + "</em>")
-				$('#gallery').click( () => @jumpToGallery() )
-				$('#export').click( () => @downloadPhinch() )
+				$("#file_details").append( "ANALYZING &nbsp;<span>" + filename.substring(0,52) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Samples &nbsp;<em>" + format(biom.shape[1]) + "</em>")
+				$('#export').click( () => @downloadPhinch(0) )
+				$('#gallery').click( () => @downloadPhinch(1) )
 				@generateLeftDates()
 				@generateLeftNumeric()
 				@generateLeftNonNumeric()
@@ -55,7 +57,8 @@ class filter
 
 	# 0 Jump to Gallery 
 
-	jumpToGallery: () -> 
+	jumpToGallery: () ->
+		that = this
 		db.open(
 			server: "BiomSample", version: 1,
 			schema:
@@ -68,11 +71,22 @@ class filter
 			sampleToStore.groupable = groupable_array
 			sampleToStore.selected_groupable_array = @selected_groupable_array
 			sampleToStore.selected_attributes_array = @selected_attributes_array
+			
+			selected_phinchID_array = [] # last step to store the selected ones 
+			for i in [0..@selected_sample.length-1]
+				selected_phinchID_array.push(phinchID_array[@selected_sample[i]])
+			sampleToStore.selected_phinchID_array = selected_phinchID_array
+
+			selected_attributes_units_array = @selected_attributes_units_array # store the units in case of changes
+			if @selected_attributes_units_array.length > 0
+				for i in [0..@selected_attributes_units_array.length-1]
+					if $('#unit_' + (i+1) ).val() != @selected_attributes_units_array[i] and $('#unit_' + (i+1) ).val() != ''
+						selected_attributes_units_array[i] = $('#unit_' + (i+1) ).val()
 			sampleToStore.selected_attributes_units_array = @selected_attributes_units_array
 
-			s.biomSample.add( sampleToStore ).done (item) -> 
-				setTimeout( "window.location.href = 'viz.html'", 1000)
-				
+			s.biomSample.add( sampleToStore ).done (item) ->
+				setTimeout( "window.location.href = 'viz.html'" )
+
 	# 1 Parse Data 
 
 	generateColumns: () ->
@@ -80,6 +94,9 @@ class filter
 		for key of biom.columns[0].metadata
 			if key.toLowerCase().indexOf("date") != -1
 				date_array.push(key)
+
+			else if key == 'phinchID'
+				console.log 'PhinchID does exsit!'
 
 			else if (key.toLowerCase().indexOf("barcode") != -1) || (key.toLowerCase().indexOf("sequence") != -1) || (key.toLowerCase().indexOf("reverse") != -1) || (key.toLowerCase() == "internalcode") || (key.toLowerCase() == "description") || (key.toLowerCase().indexOf("adapter") !=-1)
 				no_data_attributes_array.push(key)
@@ -124,7 +141,7 @@ class filter
 					no_data_attributes_array.push(key)
 					groupable_array.splice(groupable_array.length-1,1)
 					groupable_array_content.splice(groupable_array_content.length-2, 2)
-			else 
+			else
 				unknown_array.push(key)
 		
 	generateColumnsSummary: () -> 
@@ -132,8 +149,13 @@ class filter
 
 		for i in [0..attr_length]
 			columns_sample_count_list[i] = 0
-			phinchID_array.push(i)
 			columns_sample_name_array.push(biom.columns[i].id)
+
+		for i in [0..attr_length]
+			if biom.columns[i].metadata['phinchID']?
+				phinchID_array.push(biom.columns[i].metadata['phinchID'])
+			else
+				phinchID_array.push(i)
 
 		for i in [0..biom.data.length-1] 
 			columns_sample_total_count += biom.data[i][2]
@@ -274,6 +296,8 @@ class filter
 					
 					if (typeof(attributes_array_units[i]) != 'undefined' && attributes_array_units[i] != null)
 						content += "<input type='text' class='biom_valid_attr_units' id='unit_" + (i+1) + "' placeholder='" + attributes_array_units[i] + "'>"
+					else 
+						content += "<input type='text' class='biom_valid_attr_units' id='unit_" + (i+1) + "' placeholder='unit'>"
 
 					content += "<div class = 'icon-expand-collapse-c' id= 'expend_collapse_icon_" + (i+1) + "'><i class='icon-expand-alt'></i></div>" 
 					content += "<div class='biom_valid_att_thumbnail_sm' id='thumb_sm_" + (i+1) + "'></div>"
@@ -523,6 +547,7 @@ class filter
 
 		$('#myTable').dataTable({
 			"iDisplayLength": 50,
+			"aaSorting": [[ 1, "asc" ]],
 			"oLanguage": {
 			# "sLengthMenu": "_MENU_ samples per page",
 			"sLengthMenu": "",
@@ -534,13 +559,16 @@ class filter
 		})
 
 		$('#myTable').on('input', 'td[contenteditable]', @editPhinchID );
+		$('tr td:first-child').on('mouseover', () -> $(this).addClass('phinchCol') ).on('mouseout', () -> $(this).removeClass('phinchCol') )
+
 		console.log 'selected_sample: ' + @selected_sample.length
 
 	# 4 Download
-	downloadPhinch: () ->
+	downloadPhinch: (param) ->
 		
+		that = this
 		phinch.generated_by = 'Phinch 1.0'
-		phinch.date = new Date() 
+		phinch.date = new Date()
 
 		# Step 1 - get data matrix ready 
 
@@ -555,7 +583,7 @@ class filter
 				if biom.data[i][1] == @selected_sample[j] # is selected 
 					flag = true 
 					break 
-			if flag 
+			if flag
 				phinch_data_matrix[index] = new Array(3) 
 				phinch_data_matrix[index] = [biom.data[i][0], j ,biom.data[i][2]] 
 				sum_rows[biom.data[i][0]] += biom.data[i][2]
@@ -576,8 +604,23 @@ class filter
 				if @selected_attributes_array.indexOf(attributes_array[k]) == -1 
 					@removeFromObjectByKey(phinch.columns[i].metadata, attributes_array[k])
 
-		# Step 3 - get rows ready, if sum == 0, get rid of that row 
-		
+			# Add the new phinch Id column back in the file 
+			phinch.columns[i].metadata['phinchID'] = phinchID_array[i]
+
+
+		# Step 2'2 - get rid of the deleted columns & also save the units
+		tempCol = new Array(@selected_sample.length)
+		for i in [0..@selected_sample.length-1]
+			tempCol[i] = phinch.columns[@selected_sample[i]]
+			if @selected_attributes_units_array.length > 0
+				for j in [0..@selected_attributes_array.length-1]
+					if $('#unit_' + (j+1) ).val() != ""
+						tStr = String(tempCol[i].metadata[@selected_attributes_array[j]]).replace( String(@selected_attributes_units_array[j]), $('#unit_' + (j+1) ).val() )
+						tempCol[i].metadata[@selected_attributes_array[j]] = tStr
+		phinch.columns = tempCol
+
+		# Step 3 - get rows ready, if sum == 0, get rid of that row
+
 		valid_rows_count = 0 
 		for i in [0..sum_rows.length-1]
 			if parseInt(sum_rows[i]) > 0 
@@ -587,13 +630,25 @@ class filter
 
 		# console.log valid_rows_count # not change the shape[0], cuz otherwise we have to change all the row numbers  
 		# phinch.shape[0] = valid_rows_count
-
 		phinch.shape[1] = @selected_sample.length
 		
-		# Step 4 - stringify 				
 		obj = JSON.stringify(phinch)
 		blob = new Blob([obj], {type: "text/plain;charset=utf-8"})
-		saveAs(blob, filename + ".phinch")
+
+		biomToStore = {}
+		biomToStore.name = filename
+		biomToStore.size = blob.size
+		biomToStore.data = obj
+		d = new Date();
+		biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
+
+		@server.biom.add(biomToStore).done () -> 
+			# Step 4 - stringify
+			if param == 0 # Download 			
+				saveAs(blob, filename.replace('.biom','.phinch'))
+			# Step 5 - jump to gallery 	
+			else if param == 1 
+				that.jumpToGallery()
 
 	# 5 Utilities & Control Parts
 	check_unique: (arr) ->

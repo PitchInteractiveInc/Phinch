@@ -7,7 +7,7 @@ class readFile
 			server: "BiomData", version: 1,
 			schema:
 				"biom": key: keyPath: 'id', autoIncrement: true,
-		).done( (s) => 
+		).done( (s) =>
 			@server = s
 			@listRecentFiles()
 		)
@@ -19,10 +19,12 @@ class readFile
 		false)
 
 		document.getElementById('loadTestFile').addEventListener('click', (evt) =>
-			testfile = 'http://localhost/ucdavis/SLOAN/_web/v5/data/testdata.biom'  ## Dev TODO http://phinch.org/data/testdata.biom
+			testfile = 'http://phinch.org/data/testdata.biom'  ## Dev TODO http://phinch.org/data/testdata.biom
 			rawFile = new XMLHttpRequest();
 			rawFile.open("GET", testfile, true);
-			$('#loadTestFile').addClass('loading_notes');
+			$('#loadTestFile').html('Loading...');
+			$('#loadTestFile').addClass('loadingSmall');
+
 			rawFile.onreadystatechange = () =>
 				if rawFile.readyState == 4
 					if (rawFile.status == 200 || rawFile.status == 0)
@@ -32,8 +34,8 @@ class readFile
 						biomToStore.data = rawFile.responseText
 						d = new Date();
 						biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
-						@server.biom.add(biomToStore)
-						setTimeout( "window.location.href = 'preview.html'", 2000)
+						@server.biom.add(biomToStore).done () ->
+							setTimeout( "window.location.href = 'preview.html'", 2000)
 			rawFile.send(null);
 		false)
 
@@ -89,7 +91,7 @@ class readFile
 				files = evt.target.files || evt.dataTransfer.files
 				@checkFile(files)
 		
-	readBlob: (file) ->
+	readBlob: (file) =>
 		reader.onloadend = (evt) => 
 			if evt.target.readyState == FileReader.DONE
 				# JSON.parse(reader.result)
@@ -99,9 +101,11 @@ class readFile
 				biomToStore.data = evt.target.result
 				d = new Date();
 				biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
+				console.log @
 				if JSON.parse(biomToStore.data).format.indexOf("Biological Observation Matrix") != -1
-					@server.biom.add(biomToStore).done (item) -> @currentData = item
-					setTimeout( "window.location.href = 'preview.html'", 2000)
+					@server.biom.add(biomToStore).done (item) => 
+						@currentData = item
+						setTimeout( "window.location.href = 'preview.html'", 2000)
 				else 
 					alert "Incorrect biom format field! Please check your file content!"
 		reader.readAsBinaryString(file)
@@ -109,19 +113,28 @@ class readFile
 	listRecentFiles: () => 
 		@server.biom.query().all().execute().done (results) =>
 			if results.length > 0
-				$('#recent').show()
-				@currentData = results
-				content = "<table id='recent_data'>"
-				for k in [0..results.length-1]
-					tk = results.length - 1 - k
-					content += '<tr><td class="reload" id="reload_' + k + '">LOAD' + '</td><td>' 
-					content += results[tk].name.substring(0,45) + '</td><td>' + (results[tk].size / 1000000).toFixed(1) + " MB" + '</td><td>' + results[tk].date
-					content += '</td><td class="del" id="del_' + k + '"><i class="icon-fa-times icon-large"></i></td></tr>'		
-				content += "</table>"
-				$("#recent").append(content)
-				for k in [0..results.length-1]
-					$('#reload_' + k).click( @reloadRow )
-					$('#del_' + k).click( @removeRow )
+				for p in [0..results.length-1]
+					if results[p].name == "testdata.biom"
+						@server.biom.remove(results[p].id).done # () -> console.log 'remove '
+						results.splice(p,1)
+
+				# @server.biom.remove(results[0].id) while results.length > 10
+
+				if results.length > 0
+					$('#recent').show()
+					@currentData = results
+					content = "<table id='recent_data'>"
+					for k in [0..results.length-1]
+						tk = results.length - 1 - k
+						if k < 10
+							content += '<tr><td class="reload" id="reload_' + k + '">LOAD' + '</td><td>' 
+							content += results[tk].name.substring(0,45) + '</td><td>' + (results[tk].size / 1000000).toFixed(1) + " MB" + '</td><td>' + results[tk].date
+							content += '</td><td class="del" id="del_' + k + '"><i class="icon-fa-times icon-large"></i></td></tr>'		
+					content += "</table>"
+					$("#recent").append(content)
+					for k in [0..results.length-1]
+						$('#reload_' + k).click( @reloadRow )
+						$('#del_' + k).click( @removeRow )
 
 	reloadRow: (evt) =>
 		i = evt.currentTarget.id.replace("reload_","")
@@ -131,8 +144,9 @@ class readFile
 		biomToStore.data = @currentData[i].data
 		d = new Date();
 		biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
-		@server.biom.add(biomToStore).done (item) -> @currentData = item
-		setTimeout( "window.location.href = 'preview.html'", 1000)
+		@server.biom.add(biomToStore).done (item) -> 
+			@currentData = item
+			setTimeout( "window.location.href = 'preview.html'", 1000)
 
 	removeRow: (evt) =>
 		i = evt.currentTarget.id

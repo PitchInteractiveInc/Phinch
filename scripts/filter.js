@@ -53,6 +53,7 @@
           }
         }
       }).done(function(s) {
+        _this.server = s;
         return s.biom.query().all().execute().done(function(results) {
           var currentData, i, _i, _ref;
           currentData = results[results.length - 1];
@@ -64,12 +65,12 @@
           _this.generateColumnsSummary();
           _this.generateColumnsValues();
           _this.generateDate();
-          $("#file_details").append("ANALYZING &nbsp;<span>" + filename + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Samples &nbsp;<em>" + format(biom.shape[1]) + "</em>");
-          $('#gallery').click(function() {
-            return _this.jumpToGallery();
-          });
+          $("#file_details").append("ANALYZING &nbsp;<span>" + filename.substring(0, 52) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Samples &nbsp;<em>" + format(biom.shape[1]) + "</em>");
           $('#export').click(function() {
-            return _this.downloadPhinch();
+            return _this.downloadPhinch(0);
+          });
+          $('#gallery').click(function() {
+            return _this.downloadPhinch(1);
           });
           _this.generateLeftDates();
           _this.generateLeftNumeric();
@@ -89,7 +90,9 @@
     }
 
     filter.prototype.jumpToGallery = function() {
-      var _this = this;
+      var that,
+        _this = this;
+      that = this;
       return db.open({
         server: "BiomSample",
         version: 1,
@@ -102,7 +105,7 @@
           }
         }
       }).done(function(s) {
-        var sampleToStore;
+        var i, sampleToStore, selected_attributes_units_array, selected_phinchID_array, _i, _j, _ref, _ref1;
         sampleToStore = {};
         sampleToStore.name = filename;
         sampleToStore.type = 'sampleIDs';
@@ -110,9 +113,22 @@
         sampleToStore.groupable = groupable_array;
         sampleToStore.selected_groupable_array = _this.selected_groupable_array;
         sampleToStore.selected_attributes_array = _this.selected_attributes_array;
+        selected_phinchID_array = [];
+        for (i = _i = 0, _ref = _this.selected_sample.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          selected_phinchID_array.push(phinchID_array[_this.selected_sample[i]]);
+        }
+        sampleToStore.selected_phinchID_array = selected_phinchID_array;
+        selected_attributes_units_array = _this.selected_attributes_units_array;
+        if (_this.selected_attributes_units_array.length > 0) {
+          for (i = _j = 0, _ref1 = _this.selected_attributes_units_array.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+            if ($('#unit_' + (i + 1)).val() !== _this.selected_attributes_units_array[i] && $('#unit_' + (i + 1)).val() !== '') {
+              selected_attributes_units_array[i] = $('#unit_' + (i + 1)).val();
+            }
+          }
+        }
         sampleToStore.selected_attributes_units_array = _this.selected_attributes_units_array;
         return s.biomSample.add(sampleToStore).done(function(item) {
-          return setTimeout("window.location.href = 'viz.html'", 1000);
+          return setTimeout("window.location.href = 'viz.html'");
         });
       });
     };
@@ -123,6 +139,8 @@
       for (key in biom.columns[0].metadata) {
         if (key.toLowerCase().indexOf("date") !== -1) {
           _results.push(date_array.push(key));
+        } else if (key === 'phinchID') {
+          _results.push(console.log('PhinchID does exsit!'));
         } else if ((key.toLowerCase().indexOf("barcode") !== -1) || (key.toLowerCase().indexOf("sequence") !== -1) || (key.toLowerCase().indexOf("reverse") !== -1) || (key.toLowerCase() === "internalcode") || (key.toLowerCase() === "description") || (key.toLowerCase().indexOf("adapter") !== -1)) {
           _results.push(no_data_attributes_array.push(key));
         } else if (!isNaN(biom.columns[0].metadata[key].split(" ")[0].replace(",", "")) || biom.columns[0].metadata[key] === "no_data") {
@@ -190,19 +208,25 @@
     };
 
     filter.prototype.generateColumnsSummary = function() {
-      var columns_sample_total_count, i, _i, _j, _k, _ref, _results;
+      var columns_sample_total_count, i, _i, _j, _k, _l, _ref, _results;
       columns_sample_total_count = 0;
       for (i = _i = 0; 0 <= attr_length ? _i <= attr_length : _i >= attr_length; i = 0 <= attr_length ? ++_i : --_i) {
         columns_sample_count_list[i] = 0;
-        phinchID_array.push(i);
         columns_sample_name_array.push(biom.columns[i].id);
       }
-      for (i = _j = 0, _ref = biom.data.length - 1; 0 <= _ref ? _j <= _ref : _j >= _ref; i = 0 <= _ref ? ++_j : --_j) {
+      for (i = _j = 0; 0 <= attr_length ? _j <= attr_length : _j >= attr_length; i = 0 <= attr_length ? ++_j : --_j) {
+        if (biom.columns[i].metadata['phinchID'] != null) {
+          phinchID_array.push(biom.columns[i].metadata['phinchID']);
+        } else {
+          phinchID_array.push(i);
+        }
+      }
+      for (i = _k = 0, _ref = biom.data.length - 1; 0 <= _ref ? _k <= _ref : _k >= _ref; i = 0 <= _ref ? ++_k : --_k) {
         columns_sample_total_count += biom.data[i][2];
         columns_sample_count_list[biom.data[i][1]] += biom.data[i][2];
       }
       _results = [];
-      for (i = _k = 0; 0 <= attr_length ? _k <= attr_length : _k >= attr_length; i = 0 <= attr_length ? ++_k : --_k) {
+      for (i = _l = 0; 0 <= attr_length ? _l <= attr_length : _l >= attr_length; i = 0 <= attr_length ? ++_l : --_l) {
         if (columns_sample_count_list[i] > 0) {
           _results.push(columns_non_empty_sample_count.push(i));
         } else {
@@ -379,6 +403,8 @@
             content += "<span class = 'biom_valid_attr' id='att_" + (i + 1) + "'>" + attributes_array[i] + "</span>";
             if (typeof attributes_array_units[i] !== 'undefined' && attributes_array_units[i] !== null) {
               content += "<input type='text' class='biom_valid_attr_units' id='unit_" + (i + 1) + "' placeholder='" + attributes_array_units[i] + "'>";
+            } else {
+              content += "<input type='text' class='biom_valid_attr_units' id='unit_" + (i + 1) + "' placeholder='unit'>";
             }
             content += "<div class = 'icon-expand-collapse-c' id= 'expend_collapse_icon_" + (i + 1) + "'><i class='icon-expand-alt'></i></div>";
             content += "<div class='biom_valid_att_thumbnail_sm' id='thumb_sm_" + (i + 1) + "'></div>";
@@ -693,6 +719,7 @@
       $("#right_live_panel").append(content);
       $('#myTable').dataTable({
         "iDisplayLength": 50,
+        "aaSorting": [[1, "asc"]],
         "oLanguage": {
           "sLengthMenu": "",
           "sZeroRecords": "Nothing found - sorry",
@@ -702,11 +729,17 @@
         }
       });
       $('#myTable').on('input', 'td[contenteditable]', this.editPhinchID);
+      $('tr td:first-child').on('mouseover', function() {
+        return $(this).addClass('phinchCol');
+      }).on('mouseout', function() {
+        return $(this).removeClass('phinchCol');
+      });
       return console.log('selected_sample: ' + this.selected_sample.length);
     };
 
-    filter.prototype.downloadPhinch = function() {
-      var blob, flag, i, index, j, k, obj, phinch_data_matrix, sum_rows, valid_rows_count, _i, _j, _k, _l, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
+    filter.prototype.downloadPhinch = function(param) {
+      var biomToStore, blob, d, flag, i, index, j, k, obj, phinch_data_matrix, sum_rows, tStr, tempCol, that, valid_rows_count, _i, _j, _k, _l, _m, _n, _o, _p, _q, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
+      that = this;
       phinch.generated_by = 'Phinch 1.0';
       phinch.date = new Date();
       phinch_data_matrix = [];
@@ -742,9 +775,23 @@
             this.removeFromObjectByKey(phinch.columns[i].metadata, attributes_array[k]);
           }
         }
+        phinch.columns[i].metadata['phinchID'] = phinchID_array[i];
       }
+      tempCol = new Array(this.selected_sample.length);
+      for (i = _o = 0, _ref6 = this.selected_sample.length - 1; 0 <= _ref6 ? _o <= _ref6 : _o >= _ref6; i = 0 <= _ref6 ? ++_o : --_o) {
+        tempCol[i] = phinch.columns[this.selected_sample[i]];
+        if (this.selected_attributes_units_array.length > 0) {
+          for (j = _p = 0, _ref7 = this.selected_attributes_array.length - 1; 0 <= _ref7 ? _p <= _ref7 : _p >= _ref7; j = 0 <= _ref7 ? ++_p : --_p) {
+            if ($('#unit_' + (j + 1)).val() !== "") {
+              tStr = String(tempCol[i].metadata[this.selected_attributes_array[j]]).replace(String(this.selected_attributes_units_array[j]), $('#unit_' + (j + 1)).val());
+              tempCol[i].metadata[this.selected_attributes_array[j]] = tStr;
+            }
+          }
+        }
+      }
+      phinch.columns = tempCol;
       valid_rows_count = 0;
-      for (i = _o = 0, _ref6 = sum_rows.length - 1; 0 <= _ref6 ? _o <= _ref6 : _o >= _ref6; i = 0 <= _ref6 ? ++_o : --_o) {
+      for (i = _q = 0, _ref8 = sum_rows.length - 1; 0 <= _ref8 ? _q <= _ref8 : _q >= _ref8; i = 0 <= _ref8 ? ++_q : --_q) {
         if (parseInt(sum_rows[i]) > 0) {
           valid_rows_count++;
         } else {
@@ -756,7 +803,19 @@
       blob = new Blob([obj], {
         type: "text/plain;charset=utf-8"
       });
-      return saveAs(blob, filename + ".phinch");
+      biomToStore = {};
+      biomToStore.name = filename;
+      biomToStore.size = blob.size;
+      biomToStore.data = obj;
+      d = new Date();
+      biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC";
+      return this.server.biom.add(biomToStore).done(function() {
+        if (param === 0) {
+          return saveAs(blob, filename.replace('.biom', '.phinch'));
+        } else if (param === 1) {
+          return that.jumpToGallery();
+        }
+      });
     };
 
     filter.prototype.check_unique = function(arr) {

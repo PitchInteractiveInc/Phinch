@@ -1,13 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 50
-/svn/repo/!svn/ver/10521/ucdavis/SLOAN/_web/v5/lib
-END
-d3.layout.min.js
-K 25
-svn:wc:ra_dav:version-url
-V 67
-/svn/repo/!svn/ver/10521/ucdavis/SLOAN/_web/v5/lib/d3.layout.min.js
+/svn/repo/!svn/ver/10680/ucdavis/SLOAN/_web/v5/lib
 END
 jquery.dataTables.min.js
 K 25
@@ -15,17 +9,17 @@ svn:wc:ra_dav:version-url
 V 75
 /svn/repo/!svn/ver/10521/ucdavis/SLOAN/_web/v5/lib/jquery.dataTables.min.js
 END
+d3.layout.min.js
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/repo/!svn/ver/10521/ucdavis/SLOAN/_web/v5/lib/d3.layout.min.js
+END
 jquery.fracs-0.12.0.min.js
 K 25
 svn:wc:ra_dav:version-url
 V 77
 /svn/repo/!svn/ver/10521/ucdavis/SLOAN/_web/v5/lib/jquery.fracs-0.12.0.min.js
-END
-dat.gui.min.js
-K 25
-svn:wc:ra_dav:version-url
-V 65
-/svn/repo/!svn/ver/10521/ucdavis/SLOAN/_web/v5/lib/dat.gui.min.js
 END
 jquery-1.10.1.min.js
 K 25
@@ -39,17 +33,23 @@ svn:wc:ra_dav:version-url
 V 58
 /svn/repo/!svn/ver/10521/ucdavis/SLOAN/_web/v5/lib/blob.js
 END
-d3.v3.min.js
+jquery-1.10.1.min.map
 K 25
 svn:wc:ra_dav:version-url
-V 63
-/svn/repo/!svn/ver/10521/ucdavis/SLOAN/_web/v5/lib/d3.v3.min.js
+V 72
+/svn/repo/!svn/ver/10636/ucdavis/SLOAN/_web/v5/lib/jquery-1.10.1.min.map
 END
 indexedDB.polyfill.js
 K 25
 svn:wc:ra_dav:version-url
 V 72
 /svn/repo/!svn/ver/10521/ucdavis/SLOAN/_web/v5/lib/indexedDB.polyfill.js
+END
+d3.v3.min.js
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/repo/!svn/ver/10521/ucdavis/SLOAN/_web/v5/lib/d3.v3.min.js
 END
 FileSaver.js
 K 25
@@ -73,7 +73,7 @@ db.js
 K 25
 svn:wc:ra_dav:version-url
 V 56
-/svn/repo/!svn/ver/10521/ucdavis/SLOAN/_web/v5/lib/db.js
+/svn/repo/!svn/ver/10681/ucdavis/SLOAN/_web/v5/lib/db.js
 END
 jquery.outline-0.12.0.min.js
 K 25

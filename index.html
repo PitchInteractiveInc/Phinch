@@ -10,6 +10,16 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width">
 	<link rel="stylesheet" href="css/pinch.css">
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', '']);
+		_gaq.push(['_trackPageview']);
+		(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>	
 	<!--[if lt IE 9]>
 		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<script>window.html5 || document.write('<script src="lib/html5shiv.js"><\/script>')</script>
@@ -20,15 +30,13 @@
 	<!--[if lt IE 7]>
 		<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
 	<![endif]-->
-	<section id = "top_sec" href="#top_sec">
+	<section id = "top_sec">
 		<section id = "header">
 			<p id = "LOGO"><img src="img/phinch-logo.jpg" height="50px"></p>
 			<ul id = "menu">
-				<li><a href="#top_sec">UPLOAD</a></li>
-				<li><a href="#recent">RECENT FILES</a></li>
-				<li><a href="#desc">ABOUT PHINCH</a></li>
+				<li><a href="http://phinch.org/blog/" target="_blank">BLOG</a></li>
+				<li><a href="#desc">ABOUT</a></li>
 			</ul>
-			<p class="blog"><a href="http://phinch.org/blog/" target="_blank">BLOG</a></p>
 		</section>
 
 		<section id = "Page1">
@@ -52,7 +60,7 @@
 		<p>The browser you are using does not support <a href="https://developer.mozilla.org/en-US/docs/IndexedDB" target="_blank">IndexedDB</a>, which is required for the Phinch framework!</p>
 	</section>
 
-	<section id = "recent" href="#recent">
+	<section id = "recent">
 		<br /> <br />
 		<h1>Recent Files</h1>
 	</section>
@@ -75,29 +83,29 @@
 
             Scientific visualization represents an innovative method towards tackling the current bottleneck in bioinformatics; in addition to giving researchers a unique approach for exploring large datasets, it stands to empower biologists with the ability to conduct powerful analyses without requiring a deep level of computational knowledge. </br>
 		</p>
-		<h1>People</h1>
+<!-- 		<h1>People</h1>
 		<p class = "descPara">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tincidunt risus erat, non tempus risus aliquam non. Quisque pharetra mattis interdum. Proin dignissim tempus turpis et sodales. Nulla euismod consequat elementum. Quisque ut turpis dui. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce eleifend commodo lectus. </br></br>
 
             sed sollicitudin. Maecenas adipiscing nunc vel malesuada dapibus. Pellentesque ut purus sed orci scelerisque consequat. In sem metus, lobortis a dolor ac, convallis pretium urna. Morbi risus velit, adipiscing vel faucibus eu, mollis eu justo. Etiam at pulvinar arcu, id volutpat enim. Curabitur pharetra iaculis ipsum, quis vehicula massa viverra nec. Quisque commodo, arcu nec volutpat ullamcorper, turpis massa facilisis ante, feugiat tempus nibh risus nec velit. Duis erat est, hendrerit ut placerat a, accumsan eu nulla. Nunc leo nibh, malesuada in risus id, bibendum aliquam ante. Nulla fringilla. </br></br>
 
             dolor llamcorper dolor,piscing vel faucibus eu, mollis eu justo. Etiam at pulvinar arcu, id volutpat enim. Curabitur pharetra iaculis ipsum, quis vehicula massa viverra nec. Quisque commodo, arcu nec  vitae auctor velit. Nulla tempus quam iaculis magna pretium, quis rutrum turpis consequat. Pellentesque mollis aliquam aliquam. Sed egestas diam sed nibh dignissim tempor. </br></br></br></br>
-		</p>
+		</p> -->
 	</section>
 	
 	<section class = "footer">
 		<p class = "footer_copyright">Copyright © 2014 Phinch. Phinch is supported by the <a href="http://www.sloan.org/" target="_blank">Alfred P. Sloan Foundation</a>. This content is released under <a href="http://opensource.org/licenses/BSD-2-Clause" target="_blank">The BSD 2-Clause License</a>. <span><a href="https://github.com/shujianbu/phinch" target="_blank"><i class="icon-github icon-large"></i>&nbsp;&nbsp;&nbsp;Fork me on Github</a></span></p>
 	</section>
 
-	<script src="lib/jquery-1.10.1.min.js"></script>
-	<script src="lib/blob.js"></script>
 	<script src="lib/indexedDB.polyfill.js"></script>
 	<script src="lib/db.js"></script>
+	<script src="lib/jquery-1.10.1.min.js"></script>
+	<script src="lib/blob.js"></script>
 	<script src="scripts/readFile.js"></script>
 	
 	<script>
-    if ( !( navigator.userAgent.match(/Chrome/i) || navigator.userAgent.match(/Firefox/i) ) || !window.File || !window.FileReader || !window.FileList || !window.Blob ){
-    	alert('Please use Chrome or Firefox! Your browser does not support the Phinch framework!');
+    if ( !( navigator.userAgent.match(/Chrome/i) || navigator.userAgent.match(/Firefox/i) || navigator.userAgent.match(/Safari/) ) || !window.File || !window.FileReader || !window.FileList || !window.Blob ){
+    	alert('Please use Chrome or Firefox or Safari! Your browser does not support the Phinch framework!');
     	$('#Page1').hide();
     	$('#NotSupported').show();
     	$('#top_sec').animate({height:50}, 200);
