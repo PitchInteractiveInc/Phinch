@@ -1,5 +1,3 @@
-# Phinch
-
 ![VizGallery](https://github.com/shujianbu/phinch/blob/master/viz_gallery.png?raw=true)
 
 ## About 
