@@ -20,5 +20,5 @@ blog/wp-config.php
 *.DS_Store
 
 #Subversion files
-*/.svn
+*.svn
 .svn
