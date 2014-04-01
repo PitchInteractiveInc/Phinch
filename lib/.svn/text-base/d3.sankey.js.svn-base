@@ -5,7 +5,7 @@ d3.sankey = function() {
       size = [1, 1],
       nodes = [],
       links = [];
-      width = null; 
+      width = null;
 
   sankey.nodeWidth = function(_) {
     if (!arguments.length) return nodeWidth;
@@ -70,10 +70,20 @@ d3.sankey = function() {
       if (isNaN(x2)) { x2 = x1; }
       if (isNaN(x3)) { x3 = x1; }
 
-      return "M" + x0 + "," + y0
-           + "C" + x2 + "," + y0
-           + " " + x3 + "," + y1
-           + " " + x1 + "," + y1;
+      var halfHeight = d.dy/2
+      if(halfHeight < 1) {
+        halfHeight = 1;
+      }
+      var path = "M" + x0 + "," + (y0 - halfHeight)
+           + "C" + x2 + "," + (y0 - halfHeight)
+           + " " + x3 + "," + (y1 - halfHeight)
+           + " " + x1 + "," + (y1 - halfHeight)
+           + "L" + x1 + "," + (y1 + halfHeight)
+           + "C" + x3 + "," + (y1 + halfHeight)
+           + " " + x2 + "," + (y0 + halfHeight)
+           + " " + x0 + "," + (y0 + halfHeight)
+           + "z";
+      return path;
     }
 
     link.curvature = function(_) {

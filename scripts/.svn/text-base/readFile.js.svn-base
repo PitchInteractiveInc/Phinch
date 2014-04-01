@@ -43,7 +43,7 @@
       }, false);
       document.getElementById('loadTestFile').addEventListener('click', function(evt) {
         var rawFile, testfile;
-        testfile = 'http://phinch.org/data/testdata.biom';
+        testfile = '../data/testdata.biom';
         rawFile = new XMLHttpRequest();
         rawFile.open("GET", testfile, true);
         $('#loadTestFile').html('Loading...');

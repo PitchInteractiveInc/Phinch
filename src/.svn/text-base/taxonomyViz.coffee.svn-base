@@ -26,7 +26,7 @@ class taxonomyViz
 	selected_attributes_array = []
 	selected_attributes_units_array = []
 	selected_phinchID_array = []
-
+	globalColoring = d3.scale.category20()
 	constructor: (_VizID) ->
 		VizID = _VizID
 		db.open(
@@ -64,7 +64,6 @@ class taxonomyViz
 							$('.circle').css('background-image', 'url("css/images/circle.png")')
 							LayerID = parseInt evt.currentTarget.id.replace("layer_","");
 							$('#layer_' + LayerID).css('background-image', 'url("css/images/' + layerNameArr[LayerID-1] + '.png")');
-
 							$('.progressLine').animate({width: (120 + (LayerID - 2) * 111 ) + 'px'}, {duration: 1000, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
 								if LayerID > 1
 									for i in [1..LayerID-1]						
@@ -75,6 +74,7 @@ class taxonomyViz
 								else 
 									percentage = true
 								that.generateVizData()
+
 							});
 
 						# 4 Value | Percent View Change 
@@ -333,7 +333,7 @@ class taxonomyViz
 		that = this
 		@fadeInOutCtrl()
 
-        # clean canvas     
+		# clean canvas     
 		w = 1200 
 		h = sumEachCol.length * 14 + 200
 		max_single = d3.max(sumEachCol)
@@ -807,10 +807,10 @@ class taxonomyViz
 		# console.log new_data_matrix_onLayer
 
 		@fadeInOutCtrl()
-
+		
 		# prepare data 
 		nodesArr = []
-		sumEachTax = new Array(unique_taxonomy_comb_onLayer.length) 
+		sumEachTax = new Array(unique_taxonomy_comb_onLayer.length)
 		taxonomySankey = new Object()
 		taxonomySankey.nodes = []
 		taxonomySankey.links = []
@@ -822,8 +822,9 @@ class taxonomyViz
 					sumEachTax[i] += new_data_matrix_onLayer[i][selected_samples[j]]
 			
 			max_single = d3.max( sumEachTax )
-			yScale = d3.scale.pow().exponent(.2).domain([0, max_single]).range([0, 10])
-			yScaleReverse = d3.scale.linear().domain([0, 10]).range([0, Math.pow(max_single,0.2)])
+			console.log 'max_single: ' + max_single
+			
+			# yScaleReverse = d3.scale.linear().domain([0, 10]).range([0, Math.pow(max_single,0.2)])
 
 			for i in [0..unique_taxonomy_comb_onLayer.length-1] # 
 				for j in [0..LayerID-1]
@@ -835,18 +836,38 @@ class taxonomyViz
 						taxonomySankey.nodes.push( tempNode )
 					# step 2: push links 
 					if j > 0 
+						linkExist = false
 						tempLink = new Object() 
 						tempLink.source = nodesArr.indexOf( unique_taxonomy_comb_onLayer[i][j-1] )
 						tempLink.target = nodesArr.indexOf( unique_taxonomy_comb_onLayer[i][j] )
-						tempLink.value = yScale(sumEachTax[i])
+						# tempLink.value = yScale(sumEachTax[i])
 						tempLink.absValue = sumEachTax[i]
-						taxonomySankey.links.push( tempLink )
 
-        # clean canvas
+						for link in taxonomySankey.links 
+							if link.source == tempLink.source and link.target == tempLink.target
+								link.absValue += sumEachTax[i]
+								# link.value = yScale(link.absValue)
+								linkExist = true
+						if !linkExist
+							taxonomySankey.links.push( tempLink )
+
+			maxNodeAbsValue = d3.max(taxonomySankey.links, (d,i) -> return d.absValue )
+			yScale = d3.scale.linear().domain([0, maxNodeAbsValue]).range([0, 10])  # pow().exponent(.2)
+
+			for link in taxonomySankey.links
+				link.value = (link.absValue)
+
+			# console.log taxonomySankey.nodes
+			# console.log taxonomySankey.links
+
+		# add search function
+		@sankeyFilterControl(nodesArr)
+
+		# clean canvas
 		width = 1200
 		height = 20 * unique_taxonomy_comb_onLayer.length 
-		margin = {top: 20, right: 10, bottom: 20, left: 100}		
-		color = d3.scale.category20();
+		margin = {top: 40, right: 10, bottom: 20, left: 20}		
+		color = globalColoring
 		
 		svg = d3.select("#taxonomy_container").append("svg")
 			.attr("width", width )
@@ -857,9 +878,9 @@ class taxonomyViz
 		# add small panel when click 
 		infoPanel = d3.select("#taxonomy_container")
 			.append("div")
-			.attr("class", "tooltipOverSmallThumb")
-			.style("visibility", "hidden")
-
+			.attr("id", "sankeyInfo")
+			.style({"opacity":0, "z-index": -1})
+			
 		sankey = d3.sankey()
 			.size([width - 200, height - 100])
 			.nodeWidth(15)
@@ -875,14 +896,8 @@ class taxonomyViz
 		.enter().append("path")
 			.attr("class", "link")
 			.attr("d", path)
-			.style('stroke', (d,i) -> return color(d.target.name) )
-			.style("stroke-width", (d) -> return Math.max(0, d.dy) )
+			.style('fill', (d,i) -> return color(d.target.name) )
 			.sort( (a, b) -> return b.dy - a.dy )
-			.on "mouseover", (d,i) -> 
-				infoPanel.html(d.source.name + " → " + d.target.name + ': ' + d.absValue)
-				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px" })
-			.on "mouseout", (d,i) -> 
-				infoPanel.style("visibility": "hidden")
 						
 		node = svg.append("g").selectAll(".node")
 			.data(taxonomySankey.nodes)
@@ -891,17 +906,11 @@ class taxonomyViz
 			.attr("transform", (d) -> if !isNaN(d.y) then return "translate(" + d.x + "," + d.y + ")" )
 
 		node.append("rect")
-			.attr("height",  (d) -> if d.dy < 1 then return 1 else return d.dy )
+			.attr("height",  (d) -> if d.dy < 2 then return 2 else return d.dy )
 			.attr("width", sankey.nodeWidth())
 			.style("fill",  (d, i) -> return color(d.name) )
-			.on "mouseover", (d,i) -> 
-				temp = 0 
-				for i in [0..d.targetLinks.length-1]
-					temp += d.targetLinks[i].absValue
-				infoPanel.html( d.name + ': ' + temp)
-				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px" })
-			.on "mouseout", (d,i) -> 
-				infoPanel.style("visibility": "hidden")
+			.on "click", (d,i) =>
+				return @clickLargeSnakeyNode(d,i, taxonomySankey,svg)
 
 		node.append("text")
 			.attr("x", -6)
@@ -913,6 +922,153 @@ class taxonomyViz
 		.filter( (d) -> return d.x < width / 2)
 			.attr("x", 6 + sankey.nodeWidth())
 			.attr("text-anchor", "start");
+	clickLargeSnakeyNode: (d,i,taxonomySankey,svg) =>
+		infoPanel = d3.select("#taxonomy_container #sankeyInfo")
+		content = "<div class='sankeyInfobox'><div id='sankeyRemover'><i class='icon-remove icon-large'></i></div>"
+		if d.targetLinks.length == 0 
+			content += "<p>This is a source node.</p><p>It has " + d.sourceLinks.length + " branches.</p><p>Their distribution are: </p>"
+		else if d.sourceLinks.length == 0 
+			content += "<p>This is an end node.</p><p>Its absolute reads is " + d.targetLinks[0].absValue + ".</p></div>"
+		else 
+			sourceTotal = 0
+			for k in [0..d.sourceLinks.length-1] 
+				sourceTotal += d.sourceLinks[k].absValue					
+			content += "<p>It has " + d.sourceLinks.length + " branches.</p><p>The total reads is " + sourceTotal + "</p><p>Their distribution are: </p>"
+		content += "</div>"
+		infoPanel.html(content);
+		@drawSmallSankey(infoPanel,d,taxonomySankey, svg)
+		svg.transition().duration(750).ease("quad-in-out").style({"opacity":0, "z-index": -1})
+		infoPanel.style('z-index', 3).transition().duration(750).ease("quad-in-out").style({"opacity": 1})
+		$('#sankeyRemover').click () ->
+			infoPanel.transition().duration(750).ease("quad-in-out").style({"opacity":0, "z-index": -1})
+			svg.transition().duration(750).ease("quad-in-out").style({"opacity": 1, "z-index":1})
+	drawSmallSankey: (div,targetNode,originalSankey,originalSVG) -> 
+		
+		smlTaxonomySankey = new Object()
+		smlTaxonomySankey.nodes = []
+		smlTaxonomySankey.links = []
+
+		smallSankeyDimensions = {w: 600, h: 800}
+		smallSankeySVG = div.select('.sankeyInfobox').append('svg').attr('width', smallSankeyDimensions.w).attr('height', smallSankeyDimensions.h)
+		smlTaxonomySankey.nodes.push(_.clone(targetNode))
+		for node in targetNode.targetLinks
+			smlTaxonomySankey.nodes.push _.clone(node.source)
+			link = {source: smlTaxonomySankey.nodes.length - 1, target: 0, value: node.absValue}
+			smlTaxonomySankey.links.push(link)
+		for node in targetNode.sourceLinks
+			smlTaxonomySankey.nodes.push _.clone(node.target)
+			link = {source: 0, target: smlTaxonomySankey.nodes.length - 1, value: node.absValue}
+			smlTaxonomySankey.links.push(link)
+		color = globalColoring
+		smallSankey = d3.sankey().size([smallSankeyDimensions.w, smallSankeyDimensions.h - 100])
+			.nodeWidth(15).nodePadding(10)
+			.nodes(smlTaxonomySankey.nodes).links(smlTaxonomySankey.links)
+			.layout(128, smallSankeyDimensions.w)
+		path = smallSankey.link()
+		link = smallSankeySVG.append('g').selectAll('.link').data(smlTaxonomySankey.links)
+		link.enter().append('path').attr('class','link')
+		link.attr('d', path).style('fill', (d) ->
+			return color(d.target.name);
+		).sort((a,b) ->
+			return b.dy - a.dy
+		)
+
+		node = smallSankeySVG.append('g').selectAll('.node').data(smlTaxonomySankey.nodes)
+			.enter().append("g").attr("class", (d) ->
+				if isNaN(d.y)
+				  return 'nullnode';
+				else
+				  return 'node';
+		
+			).attr("transform", (d) ->
+				if !isNaN(d.y)
+					return "translate(" + d.x + "," + d.y + ")"
+				
+			)
+		node.append("rect").attr("height", (d) ->
+			if d.dy < 2
+				return 2;
+			else
+				return d.dy;
+		).attr("width", smallSankey.nodeWidth()).style("fill", (d, i) ->
+			return color(d.name);
+		).on('click', (d,i) =>
+			return @clickSmallSankeyNode(d,i, originalSankey,originalSVG)
+		);
+		node.append('rect').attr('height', (d) ->
+			originalNode = _.filter(originalSankey.nodes, (dd) -> return dd.name is d.name)
+			if originalNode.length > 1
+				console.error('more than one matching node')
+				console.error(originalNode)
+			originalNode = originalNode[0]
+			ratio = 1 - d.value / originalNode.value
+			if d.dy < 2
+				d.fillHeight = 2;
+			else
+				d.fillHeight = d.dy * ratio
+			return d.fillHeight
+
+		).attr('width', smallSankey.nodeWidth()).style('fill', 'rgba(255,255,255,0.8)')
+		.attr('y', (d) ->
+			return d.dy - d.fillHeight
+		).style('pointer-events','none')
+		node.append('text')
+			.attr("x", -6)
+			.attr("y",  (d) -> return d.dy / 2)
+			.attr("dy", ".35em")
+			.attr("text-anchor", "end")
+			.attr("transform", null)
+			.text( (d) -> return d.name)
+		.filter( (d) -> return d.x < width / 2)
+			.attr("x", 6 + smallSankey.nodeWidth())
+			.attr("text-anchor", "start");
+	clickSmallSankeyNode: (d,i,originalSankey,originalSVG) =>
+		originalData = _.filter(originalSankey.nodes, (dd) ->
+			return dd.name is d.name
+		)
+		if originalData.length > 1
+			console.error('more than one matching node found')
+			console.error originalData
+		else
+			originalData = originalData[0]
+		@clickLargeSnakeyNode(originalData, i, originalSankey, originalSVG)
+
+	sankeyFilterControl: (_nodesArr) ->
+		color = globalColoring
+		nodesArr = _nodesArr
+		availableTags = new Array(nodesArr.length)
+		for i in [0..nodesArr.length-1]  # more links
+			availableTags[i] = nodesArr[i]
+
+		$('#tags').keydown () -> if $('#tags').val().length < 4 then $('#autoCompleteList').fadeOut(200)
+		searchList = []
+		$('#autoCompleteList').fadeOut(800);
+
+		$( "#tags" ).autocomplete({ 
+			source: availableTags,
+			minLength: 2,
+			response: (evt, ui) ->
+				$('#autoCompleteList').html("");
+				searchList.length = 0
+				if ui.content.length > 0
+					for i in [0..ui.content.length-1]
+						searchList.push(ui.content[i].value)
+					content = '<i class="icon-remove icon-large" style="float:right; margin-right: 5px;" id = "iconRemover"></i><ul>'
+					for i in [0..searchList.length-1]
+						content += '<li><span style = "display:block; background-color:' + color(searchList[i]) + '; height: 12px; width: 12px; float: left; margin: 2px 0px;" ></span>&nbsp;&nbsp;'
+						content += searchList[i] + '</li>'
+					content += '</ul>'
+					$('#autoCompleteList').append(content)
+					$('#autoCompleteList ul li').each (index) ->
+						$(this).click () ->
+							console.log 'do something later!'
+
+					$('#iconRemover').click () -> $('#autoCompleteList').fadeOut(200)
+					$('#autoCompleteList').show()
+				else
+					$('#autoCompleteList').html("")
+					$('#autoCompleteList').hide()
+		})
 
 	#####################################################################################################################			 
 	############################################# Level Donut Chart #####################################################  
@@ -922,7 +1078,7 @@ class taxonomyViz
 
 		@fadeInOutCtrl()
 
-        # 1 Prepare data - find different categories under this groupable attr
+		# 1 Prepare data - find different categories under this groupable attr
 		groupable_array = []
 		for i in [0..selected_samples.length-1]
 			if groupable_array.indexOf( biom.columns[ selected_samples[i] ].metadata[cur_attribute] ) == -1 
@@ -1012,7 +1168,7 @@ class taxonomyViz
 				d3.selectAll('g.arc_' + donutID).style('opacity', 1)
 				# that.drawBasicRect(true, donutContainedSamp, donutID, null)
 			.on 'click', (d,i) ->
-			 	that.drawBasicRect(false, donutContainedSamp, donutID, i, $('#toggle_' + donutID).html() )
+				that.drawBasicRect(false, donutContainedSamp, donutID, i, $('#toggle_' + donutID).html() )
 
 		infoPanel = d3.select('#donut_' + donutID)
 			.append("div")
@@ -1192,7 +1348,7 @@ class taxonomyViz
 	drawBasicColumns: (attributes_array) -> 
 
 		@fadeInOutCtrl()
-        # 1 Plot     
+		# 1 Plot     
 		w = if sumEachCol.length < 80 then 1000 else sumEachCol.length * 18 + 200
 		h = 800
 		max_single = d3.max(sumEachCol)
@@ -1372,6 +1528,7 @@ class taxonomyViz
 			.attr("cx", (d) -> return d.x)
 			.attr("cy", (d) -> return d.y)
 			.attr("r", (d) -> return d.r)
+			.style("fill", '#ff8900')
 			# .on "click", (d) -> if node == d then return that.zoomBubble(vis, root) else return that.zoomBubble(vis, d)
 		vis.selectAll("text").data(nodes)
 			.enter().append("svg:text")
@@ -1380,6 +1537,7 @@ class taxonomyViz
 			.attr("y", (d) -> d.y += d.r * (Math.random() - 0.5); return d.y )  ## return d.y ## but d.y could be the same in most cases, so give it a random y position
 			.attr("font-size", (d) -> return fontScale( d.r / r) + "px")
 			.attr("text-anchor", "middle")
+			.style("fill",'#ff8900')
 			.style("opacity", (d) -> if d.r > 50 then return 0.8 else return 0 )
 			.text((d) -> return d.name )
 
@@ -1449,9 +1607,13 @@ class taxonomyViz
 				# 	"border": "1px solid #ff8900"
 				# })
 			if VizID == 2
-				console.log 'Need to do sth here!'
-				# $('#layer_6').hide()
-				# $('#layer_7').hide()
+				$('#tags').fadeIn(500)
+				$('#alertBox').fadeIn(500)
+				$('#layer_1').off('click'); # There's no 1 layer situation
+				$('#layer_6').off('click');
+				$('#layer_7').off('click');
+				$('#alertBox').html( "* " + unique_taxonomy_comb_count.length + " unique paths, cannot go deeper to the 6th or 7th layer.")
+
 			if VizID == 4
 				$('#PercentValue').fadeIn(500)
 				$('#legend_header').fadeIn(500)

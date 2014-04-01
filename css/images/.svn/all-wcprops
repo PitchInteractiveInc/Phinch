@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 57
-/svn/repo/!svn/ver/10657/ucdavis/SLOAN/_web/v5/css/images
+/svn/repo/!svn/ver/10693/ucdavis/SLOAN/_web/v5/css/images
 END
 circleOrange.png
 K 25
@@ -27,17 +27,17 @@ svn:wc:ra_dav:version-url
 V 70
 /svn/repo/!svn/ver/10657/ucdavis/SLOAN/_web/v5/css/images/collapse.png
 END
-class.png
-K 25
-svn:wc:ra_dav:version-url
-V 67
-/svn/repo/!svn/ver/10645/ucdavis/SLOAN/_web/v5/css/images/class.png
-END
 search.png
 K 25
 svn:wc:ra_dav:version-url
 V 68
 /svn/repo/!svn/ver/10634/ucdavis/SLOAN/_web/v5/css/images/search.png
+END
+class.png
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/repo/!svn/ver/10645/ucdavis/SLOAN/_web/v5/css/images/class.png
 END
 asc.png
 K 25
@@ -63,17 +63,17 @@ svn:wc:ra_dav:version-url
 V 68
 /svn/repo/!svn/ver/10645/ucdavis/SLOAN/_web/v5/css/images/phylum.png
 END
-genus.png
-K 25
-svn:wc:ra_dav:version-url
-V 67
-/svn/repo/!svn/ver/10645/ucdavis/SLOAN/_web/v5/css/images/genus.png
-END
 family.png
 K 25
 svn:wc:ra_dav:version-url
 V 68
 /svn/repo/!svn/ver/10645/ucdavis/SLOAN/_web/v5/css/images/family.png
+END
+genus.png
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/repo/!svn/ver/10645/ucdavis/SLOAN/_web/v5/css/images/genus.png
 END
 right_arrow.jpg
 K 25

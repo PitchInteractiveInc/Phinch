@@ -19,7 +19,7 @@ class readFile
 		false)
 
 		document.getElementById('loadTestFile').addEventListener('click', (evt) =>
-			testfile = 'http://phinch.org/data/testdata.biom'  ## Dev TODO http://phinch.org/data/testdata.biom
+			testfile = '../data/testdata.biom'  ## Dev TODO http://phinch.org/data/testdata.biom
 			rawFile = new XMLHttpRequest();
 			rawFile.open("GET", testfile, true);
 			$('#loadTestFile').html('Loading...');
