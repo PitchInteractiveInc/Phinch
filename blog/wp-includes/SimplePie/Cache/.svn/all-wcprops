@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/SimplePie/Cache
+END
+Base.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/SimplePie/Cache/Base.php
+END
+File.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/SimplePie/Cache/File.php
+END
+Memcache.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/SimplePie/Cache/Memcache.php
+END
+DB.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/SimplePie/Cache/DB.php
+END
+MySQL.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/SimplePie/Cache/MySQL.php
+END

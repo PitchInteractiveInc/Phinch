@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/js/tinymce
+END
+license.txt
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/js/tinymce/license.txt
+END
+tiny_mce.js
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/js/tinymce/tiny_mce.js
+END
+wp-tinymce.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/js/tinymce/wp-tinymce.php
+END
+mark_loaded_src.js
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/js/tinymce/mark_loaded_src.js
+END
+wp-mce-help.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/js/tinymce/wp-mce-help.php
+END
+tiny_mce_popup.js
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/js/tinymce/tiny_mce_popup.js
+END
+wp-tinymce-schema.js
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/js/tinymce/wp-tinymce-schema.js
+END
+wp-tinymce.js.gz
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repo/!svn/ver/10529/ucdavis/SLOAN/_web/v5/blog/wp-includes/js/tinymce/wp-tinymce.js.gz
+END

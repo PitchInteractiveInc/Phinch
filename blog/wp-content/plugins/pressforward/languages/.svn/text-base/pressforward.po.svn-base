@@ -1,0 +1,1117 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PressForward\n"
+"POT-Creation-Date: 2014-03-05 12:48-0500\n"
+"PO-Revision-Date: 2014-03-05 12:48-0500\n"
+"Last-Translator: Aram Zucker-Scharff <aramzs@hacktext.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: ./..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: includes/admin.php:56 includes/admin.php:57
+msgid "All Content"
+msgstr ""
+
+#: includes/admin.php:65 includes/admin.php:66
+msgid "Under Review"
+msgstr ""
+
+#: includes/admin.php:75 includes/admin.php:76
+msgid "Preferences"
+msgstr ""
+
+#: includes/admin.php:85 includes/admin.php:86
+msgid "Feeder"
+msgstr ""
+
+#: includes/admin.php:94 includes/admin.php:95
+msgid "Subscribed Feeds"
+msgstr ""
+
+#: includes/admin.php:102 includes/admin.php:103 includes/feeds.php:89
+msgid "Feed Tags"
+msgstr ""
+
+#: includes/admin.php:178
+msgid "Main Feed"
+msgstr ""
+
+#: includes/admin.php:190
+msgid "Module Feed"
+msgstr ""
+
+#: includes/admin.php:206
+msgid "Nominator Leaderboard"
+msgstr ""
+
+#: includes/admin.php:286
+msgid "Delete entire feed archive"
+msgstr ""
+
+#: includes/admin.php:287 includes/admin.php:288
+msgid "Show my nominations"
+msgstr ""
+
+#: includes/admin.php:288
+msgid "Show my starred"
+msgstr ""
+
+#: includes/admin.php:291
+msgid "Show all"
+msgstr ""
+
+#: includes/admin.php:300
+msgid "Archive before"
+msgstr ""
+
+#: includes/admin.php:312 includes/admin.php:317 includes/admin.php:996
+#: includes/admin.php:1001 includes/nomthis/nominate-this.php:405
+#: includes/nomthis/nominate-this.php:569
+msgid "Nominate This"
+msgstr ""
+
+#: includes/admin.php:313 includes/admin.php:997
+msgid ""
+"Nominate This is a bookmarklet: a little app that runs in your browser and "
+"lets you grab bits of the web."
+msgstr ""
+
+#: includes/admin.php:315 includes/admin.php:999
+msgid ""
+"Use Nominate This to clip text, images and videos from any web page. Then "
+"edit and add more straight from Nominate This before you save or publish it "
+"in a post on your site."
+msgstr ""
+
+#: includes/admin.php:316 includes/admin.php:1000
+#: includes/nomthis/gencode.php:10
+msgid ""
+"Drag-and-drop the following link to your bookmarks bar or right click it and "
+"add it to your favorites for a posting shortcut."
+msgstr ""
+
+#: includes/admin.php:319 includes/admin.php:1003
+#: includes/nomthis/gencode.php:13
+msgid ""
+"If your bookmarks toolbar is hidden: copy the code below, open your "
+"Bookmarks manager, create new bookmark, type Press This into the name field "
+"and paste the code into the URL field."
+msgstr ""
+
+#: includes/admin.php:348
+msgid "Loading"
+msgstr ""
+
+#: includes/admin.php:380 includes/nominations.php:90
+msgid "Nomination Count"
+msgstr ""
+
+#: includes/admin.php:382
+msgid "Archive"
+msgstr ""
+
+#: includes/admin.php:387
+msgid "Draft"
+msgstr ""
+
+#: includes/admin.php:392
+msgid "Nominated"
+msgstr ""
+
+#: includes/admin.php:395 includes/nominations.php:26
+#: includes/nomthis/nominate-this.php:573
+msgid "Nominate"
+msgstr ""
+
+#: includes/admin.php:546
+msgid "UNIX timestamp from source RSS"
+msgstr ""
+
+#: includes/admin.php:549
+msgid "UNIX timestamp last modified"
+msgstr ""
+
+#: includes/admin.php:552
+msgid "UNIX timestamp date nominated"
+msgstr ""
+
+#: includes/admin.php:555
+msgid "Slug for origin site"
+msgstr ""
+
+#: includes/admin.php:571 includes/feeds.php:59
+msgid "Feed"
+msgstr ""
+
+#: includes/admin.php:572
+msgid "Posted"
+msgstr ""
+
+#: includes/admin.php:573
+msgid "Retrieved"
+msgstr ""
+
+#: includes/admin.php:574
+msgid "Authors"
+msgstr ""
+
+#: includes/admin.php:575
+msgid "Origin"
+msgstr ""
+
+#: includes/admin.php:576
+msgid "Original Item"
+msgstr ""
+
+#: includes/admin.php:577 includes/nomthis/nominate-this.php:656
+#: includes/nomthis/nominate-this.php:660
+msgid "Tags"
+msgstr ""
+
+#: includes/admin.php:578
+msgid "Times repeated in source"
+msgstr ""
+
+#: includes/admin.php:581
+msgid "Number of nominations received"
+msgstr ""
+
+#: includes/admin.php:583
+msgid "First submitted by"
+msgstr ""
+
+#: includes/admin.php:585
+msgid "Nominated on"
+msgstr ""
+
+#: includes/admin.php:706
+msgid "Read Original"
+msgstr ""
+
+#: includes/admin.php:710
+msgid "Reset Readability"
+msgstr ""
+
+#: includes/admin.php:722
+msgid "Source"
+msgstr ""
+
+#: includes/admin.php:723 includes/nominations.php:103
+msgid "Item Tags"
+msgstr ""
+
+#: includes/admin.php:754 includes/under-review/under-review.php:23
+#, php-format
+msgid "Page %1$d"
+msgstr ""
+
+#: includes/admin.php:759 includes/nomthis/nominate-this.php:394
+#: modules/ab-subscribe/ab-subscribe.php:122
+msgid "Refresh"
+msgstr ""
+
+#: includes/admin.php:760 includes/under-review/under-review.php:28
+msgid "Full Screen"
+msgstr ""
+
+#: includes/admin.php:784 includes/under-review/under-review.php:56
+msgid "Sort by item date"
+msgstr ""
+
+#: includes/admin.php:785
+msgid "Sort by date entered feed"
+msgstr ""
+
+#: includes/admin.php:891
+msgid "Modules"
+msgstr ""
+
+#: includes/admin.php:893
+msgid ""
+"<strong>PressForward Modules</strong> are addons to alter or improve the "
+"functionality of the plugin."
+msgstr ""
+
+#: includes/admin.php:904
+msgid "Seconds to redirect user to source. (0 means no redirect)"
+msgstr ""
+
+#: includes/admin.php:916
+msgid "Show item author as source."
+msgstr ""
+
+#: includes/admin.php:919 includes/admin.php:977
+msgid "Save Changes"
+msgstr ""
+
+#: includes/admin.php:922
+msgid "User Control"
+msgstr ""
+
+#: includes/admin.php:929 includes/admin.php:1156
+msgid "PressForward Menu Group"
+msgstr ""
+
+#: includes/admin.php:933 includes/admin.php:1160
+msgid "All Content Menu"
+msgstr ""
+
+#: includes/admin.php:937 includes/admin.php:1164
+msgid "Under Review Menu"
+msgstr ""
+
+#: includes/admin.php:941 includes/admin.php:1168
+msgid "Preferences Menu"
+msgstr ""
+
+#: includes/admin.php:945 includes/admin.php:1172
+msgid "Feeder Menu"
+msgstr ""
+
+#: includes/admin.php:949 includes/admin.php:1176
+msgid "Add Nomination Menu"
+msgstr ""
+
+#: includes/admin.php:1015
+msgid "Save Options"
+msgstr ""
+
+#: includes/admin.php:1288
+msgid "No ID supplied for deletion"
+msgstr ""
+
+#: includes/feed-items.php:389
+msgid "All archives deleted."
+msgstr ""
+
+#: includes/feeds.php:58
+msgid "Feeds"
+msgstr ""
+
+#: includes/feeds.php:61
+msgid "All Feeds"
+msgstr ""
+
+#: includes/feeds.php:62
+msgid "Add New Feed"
+msgstr ""
+
+#: includes/feeds.php:63
+msgid "Edit Feed"
+msgstr ""
+
+#: includes/feeds.php:64
+msgid "New Feed"
+msgstr ""
+
+#: includes/feeds.php:65
+msgid "View Feed"
+msgstr ""
+
+#: includes/feeds.php:66
+msgid "Search Feeds"
+msgstr ""
+
+#: includes/feeds.php:67
+msgid "No feeds found"
+msgstr ""
+
+#: includes/feeds.php:68
+msgid "No feeds found in trash"
+msgstr ""
+
+#: includes/feeds.php:74
+msgid "Feeds imported by PressForward&#8217;s Feed Importer"
+msgstr ""
+
+#: includes/feeds.php:90
+msgid "Feed Tag"
+msgstr ""
+
+#: includes/feeds.php:91
+msgid "All Feed Tags"
+msgstr ""
+
+#: includes/feeds.php:92
+msgid "Edit Feed Tag"
+msgstr ""
+
+#: includes/feeds.php:93
+msgid "Update Feed Tag"
+msgstr ""
+
+#: includes/feeds.php:94
+msgid "Add New Feed Tag"
+msgstr ""
+
+#: includes/feeds.php:95
+msgid "New Feed Tag"
+msgstr ""
+
+#: includes/feeds.php:96
+msgid "Search Feed Tags"
+msgstr ""
+
+#: includes/feeds.php:287 includes/feeds.php:462
+msgid "The feed fails verification."
+msgstr ""
+
+#: includes/feeds.php:557
+msgid "Reset all Feed Retrieval Options"
+msgstr ""
+
+#: includes/feeds.php:563
+#, php-format
+msgid ""
+"Feeds Go? %1$d  Feeds iteration? %2$d  Going switch? %3$d  Ready to chunk? "
+"%4$d"
+msgstr ""
+
+#: includes/feeds.php:568
+msgid "Switch feeds to new retrieval setup"
+msgstr ""
+
+#: includes/functions.php:598
+msgid "Unique PressForward ID"
+msgstr ""
+
+#: includes/functions.php:599 includes/functions.php:607
+#: includes/functions.php:632 includes/functions.php:692
+msgid "Stores hashed ID based on title and URL of retrieved item"
+msgstr ""
+
+#: includes/functions.php:606
+msgid "DUPE Soon to be depreciated version of item_id"
+msgstr ""
+
+#: includes/functions.php:615
+msgid "The WordPress postID associated with the original item"
+msgstr ""
+
+#: includes/functions.php:616
+msgid "Stores hashed WP post_ID associated with the original item"
+msgstr ""
+
+#: includes/functions.php:623
+msgid "The WordPress postID associated with the nomination"
+msgstr ""
+
+#: includes/functions.php:624
+msgid "Stores postID associated with the nominated item"
+msgstr ""
+
+#: includes/functions.php:631
+msgid "DUPE Soon to be depreciated version of pf_item_post_id"
+msgstr ""
+
+#: includes/functions.php:640
+msgid "Title of the item's source"
+msgstr ""
+
+#: includes/functions.php:641 includes/functions.php:649
+msgid "Stores the title retrieved from the feed."
+msgstr ""
+
+#: includes/functions.php:648
+msgid "DUPE Soon to be depreciate version of source_title."
+msgstr ""
+
+#: includes/functions.php:657
+msgid "Date posted on the original site"
+msgstr ""
+
+#: includes/functions.php:658
+msgid "Stores the date the item was posted on the original site"
+msgstr ""
+
+#: includes/functions.php:665
+msgid "DUPE The soon to be depreciated version of item_date"
+msgstr ""
+
+#: includes/functions.php:666
+msgid "Stores the date given by the source."
+msgstr ""
+
+#: includes/functions.php:674
+msgid "Author(s) listed on the original site"
+msgstr ""
+
+#: includes/functions.php:675
+msgid "Stores array value containing authors listed in the source feed."
+msgstr ""
+
+#: includes/functions.php:682
+msgid "DUPE The soon to be depreciated version of item_author"
+msgstr ""
+
+#: includes/functions.php:683
+msgid "Stores a comma-separated set of authors as listed in the source feed"
+msgstr ""
+
+#: includes/functions.php:691 includes/functions.php:699
+msgid "Source link"
+msgstr ""
+
+#: includes/functions.php:700
+msgid "DUPE Soon to be depreciated version of item_link"
+msgstr ""
+
+#: includes/functions.php:708
+msgid "Featured image from source"
+msgstr ""
+
+#: includes/functions.php:709
+msgid "A featured image associated with the item, when it is available"
+msgstr ""
+
+#: includes/functions.php:716
+msgid "Time item was retrieved"
+msgstr ""
+
+#: includes/functions.php:717
+msgid "The datetime an item was added to WordPress via PressForward"
+msgstr ""
+
+#: includes/functions.php:724
+msgid "Time nominated"
+msgstr ""
+
+#: includes/functions.php:725
+msgid "The datetime the item was made a nomination"
+msgstr ""
+
+#: includes/functions.php:732
+msgid "Tags associated with the item by source"
+msgstr ""
+
+#: includes/functions.php:733
+msgid "An array of tags associated with the item, as created in the feed"
+msgstr ""
+
+#: includes/functions.php:740
+msgid "Times retrieved"
+msgstr ""
+
+#: includes/functions.php:741
+msgid ""
+"#Counts number of times the item has been collected from the multiple feeds "
+"(Ex: from origin feed and Twitter)"
+msgstr ""
+
+#: includes/functions.php:748 includes/nominations.php:24
+#: includes/nominations.php:275
+msgid "Nominations"
+msgstr ""
+
+#: includes/functions.php:749
+msgid "Counts number of times users have nominated an item"
+msgstr ""
+
+#: includes/functions.php:756
+msgid "The user who submitted the nomination"
+msgstr ""
+
+#: includes/functions.php:757
+msgid ""
+"The first user who submitted the nomination (if it has been nominated). User "
+"ID number"
+msgstr ""
+
+#: includes/functions.php:764
+msgid "Users who nominated this item"
+msgstr ""
+
+#: includes/functions.php:765
+msgid "Stores and array of all userIDs that nominated the item in an array"
+msgstr ""
+
+#: includes/functions.php:772
+msgid "Timestamp for the item"
+msgstr ""
+
+#: includes/functions.php:773
+msgid ""
+"A version of the item_date meta that's ready for sorting. Should be a Unix "
+"timestamp"
+msgstr ""
+
+#: includes/functions.php:780
+msgid "If the content is readable"
+msgstr ""
+
+#: includes/functions.php:781
+msgid "A check to determine if the content of the item has been made readable"
+msgstr ""
+
+#: includes/functions.php:788
+msgid "The originally retrieved description"
+msgstr ""
+
+#: includes/functions.php:789
+msgid "The original description, excerpt or content text given by the feed"
+msgstr ""
+
+#: includes/functions.php:796
+msgid "Word count of original item text"
+msgstr ""
+
+#: includes/functions.php:797
+msgid "Stores the count of the original words retrieved with the feed item"
+msgstr ""
+
+#: includes/module-base.php:107
+msgid "Enable "
+msgstr ""
+
+#: includes/module-base.php:112
+msgid "Yes"
+msgstr ""
+
+#: includes/module-base.php:113
+msgid "No"
+msgstr ""
+
+#: includes/nominations.php:25
+msgid "Nomination"
+msgstr ""
+
+#: includes/nominations.php:27
+msgid "Add New Nomination"
+msgstr ""
+
+#: includes/nominations.php:28
+msgid "Edit Nomination"
+msgstr ""
+
+#: includes/nominations.php:29
+msgid "New Nomination"
+msgstr ""
+
+#: includes/nominations.php:30
+msgid "View Nomination"
+msgstr ""
+
+#: includes/nominations.php:31
+msgid "Search Nominations"
+msgstr ""
+
+#: includes/nominations.php:32
+msgid "No nominations found"
+msgstr ""
+
+#: includes/nominations.php:33
+msgid "No nominations found in Trash"
+msgstr ""
+
+#: includes/nominations.php:35
+msgid ""
+"Posts from around the internet nominated for consideration to public posting"
+msgstr ""
+
+#: includes/nominations.php:63
+msgid "Nomination Data"
+msgstr ""
+
+#: includes/nominations.php:87
+msgid "Item ID"
+msgstr ""
+
+#: includes/nominations.php:92
+msgid "Submitted By"
+msgstr ""
+
+#: includes/nominations.php:94
+msgid "Feed Title"
+msgstr ""
+
+#: includes/nominations.php:97
+msgid "Posted by source on"
+msgstr ""
+
+#: includes/nominations.php:99
+msgid "Source Posted"
+msgstr ""
+
+#: includes/nominations.php:101
+msgid "Source Authors"
+msgstr ""
+
+#: includes/nominations.php:102
+msgid "Source Link"
+msgstr ""
+
+#: includes/nominations.php:102
+msgid "Original Post"
+msgstr ""
+
+#: includes/nominations.php:105 includes/nominations.php:278
+msgid "Date Nominated"
+msgstr ""
+
+#: includes/nominations.php:107
+msgid "Repeated in Feed"
+msgstr ""
+
+#: includes/nominations.php:235
+msgid "Nonce not recieved. Are you sure you should be archiving?"
+msgstr ""
+
+#: includes/nominations.php:240
+msgid "Archived."
+msgstr ""
+
+#: includes/nominations.php:253
+msgid "Link"
+msgstr ""
+
+#: includes/nominations.php:273
+msgid "Title"
+msgstr ""
+
+#: includes/nominations.php:274
+msgid "Last Modified"
+msgstr ""
+
+#: includes/nominations.php:276
+msgid "Nominated By"
+msgstr ""
+
+#: includes/nominations.php:277
+msgid "Original Author"
+msgstr ""
+
+#: includes/nominations.php:329 includes/readable.php:97
+msgid ""
+"Nonce check failed. Please ensure you're supposed to be nominating stories."
+msgstr ""
+
+#: includes/nominations.php:353
+msgid "External User"
+msgstr ""
+
+#: includes/nominations.php:378
+msgid "This item has already been nominated."
+msgstr ""
+
+#: includes/nominations.php:383
+msgid "This item has already been nominated"
+msgstr ""
+
+#: includes/nominations.php:462
+msgid "Nonce not recieved. Are you sure you should be drafting?"
+msgstr ""
+
+#: includes/readable.php:42
+msgid " This content failed Readability."
+msgstr ""
+
+#: includes/schema.php:52
+msgid "Feed Items"
+msgstr ""
+
+#: includes/schema.php:53
+msgid "Feed Item"
+msgstr ""
+
+#: includes/schema.php:55
+msgid "All Feed Items"
+msgstr ""
+
+#: includes/schema.php:56
+msgid "Add New Feed Item"
+msgstr ""
+
+#: includes/schema.php:57
+msgid "Edit Feed Item"
+msgstr ""
+
+#: includes/schema.php:58
+msgid "New Feed Item"
+msgstr ""
+
+#: includes/schema.php:59
+msgid "View Feed Item"
+msgstr ""
+
+#: includes/schema.php:60
+msgid "Search Feed Items"
+msgstr ""
+
+#: includes/schema.php:61
+msgid "No feed items found"
+msgstr ""
+
+#: includes/schema.php:62
+msgid "No feed items found in trash"
+msgstr ""
+
+#: includes/schema.php:68
+msgid "Feed items imported by PressForward&#8217;s RSS Importer"
+msgstr ""
+
+#: includes/schema.php:78
+msgid "Feed Item Tags"
+msgstr ""
+
+#: includes/schema.php:79
+msgid "Feed Item Tag"
+msgstr ""
+
+#: includes/schema.php:80
+msgid "All Feed Item Tags"
+msgstr ""
+
+#: includes/schema.php:81
+msgid "Edit Feed Item Tag"
+msgstr ""
+
+#: includes/schema.php:82
+msgid "Update Feed Item Tag"
+msgstr ""
+
+#: includes/schema.php:83
+msgid "Add New Feed Item Tag"
+msgstr ""
+
+#: includes/schema.php:84
+msgid "New Feed Item Tag"
+msgstr ""
+
+#: includes/schema.php:85
+msgid "Search Feed Item Tags"
+msgstr ""
+
+#: includes/slurp.php:42
+msgid "Half-hour"
+msgstr ""
+
+#: includes/slurp.php:595
+msgid "Beginning the retrieval process"
+msgstr ""
+
+#: includes/slurp.php:598
+msgid "Iterate switched to going."
+msgstr ""
+
+#: includes/slurp.php:600
+msgid "Iterate option not switched."
+msgstr ""
+
+#: includes/slurp.php:616
+msgid "Created new metastate."
+msgstr ""
+
+#: includes/slurp.php:618
+msgid "Metastate saved and active for check."
+msgstr ""
+
+#: includes/slurp.php:623 includes/slurp.php:661
+msgid "The sources are already being retrieved."
+msgstr ""
+
+#: includes/slurp.php:626
+msgid "The sources are stuck."
+msgstr ""
+
+#: includes/slurp.php:650
+msgid ""
+"The meta-state is too old. It is now reset. Next time, we should start over."
+msgstr ""
+
+#: includes/nomthis/gencode.php:6 includes/nomthis/gencode.php:11
+msgid "Press This"
+msgstr ""
+
+#: includes/nomthis/gencode.php:7
+msgid ""
+"Press This is a bookmarklet: a little app that runs in your browser and lets "
+"you grab bits of the web."
+msgstr ""
+
+#: includes/nomthis/gencode.php:9
+msgid ""
+"Use Press This to clip text, images and videos from any web page. Then edit "
+"and add more straight from Press This before you save or publish it in a "
+"post on your site."
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:33
+msgid "Cheatin&#8217; uh?"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:53
+msgid "You are not allowed to edit this post."
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:230
+msgid "Embed Code"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:233
+msgid "Insert Video"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:233
+#: includes/nomthis/nominate-this.php:263
+#: includes/nomthis/nominate-this.php:394 modules/comments/comments.php:198
+msgid "Cancel"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:249
+#: includes/nomthis/nominate-this.php:763
+msgid "Description"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:259
+msgid "Click to insert."
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:263
+msgid "Insert Image"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:333
+msgid "Unable to retrieve images or no images on page."
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:394
+msgid "Add Photos"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:394
+msgid "click images to select"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:394
+msgid "Add from URL"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:575
+msgid "Send to Draft"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:578
+msgid "Submit for Review"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:583
+msgid "Enter Authors"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:591
+msgid "Post Format:"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:606
+msgid "Categories"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:612
+msgid "Most Used"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:628
+msgid "You cannot modify this Taxonomy."
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:634
+#, php-format
+msgid "+ %s"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:669
+msgid "Choose from the most used tags"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:689
+msgid "Your post has been saved."
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:690
+msgid "View post"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:691
+msgid "Edit Post"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:692
+msgid "Close Window"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:730
+msgid "via "
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:738
+msgid "Add:"
+msgstr ""
+
+#: includes/nomthis/nominate-this.php:760
+msgid "URL"
+msgstr ""
+
+#: includes/under-review/under-review.php:57
+msgid "Sort by date nominated"
+msgstr ""
+
+#: includes/under-review/under-review.php:58
+msgid "Sort by nominations"
+msgstr ""
+
+#: includes/under-review/under-review.php:60
+msgid "Show only archived"
+msgstr ""
+
+#: includes/under-review/under-review.php:62
+msgid "Show non-archived"
+msgstr ""
+
+#: includes/under-review/under-review.php:64
+msgid "Show archived"
+msgstr ""
+
+#: includes/under-review/under-review.php:70
+msgid "Archive all"
+msgstr ""
+
+#: modules/ab-subscribe/ab-subscribe.php:33
+msgid "No blogs found. Try refreshing the academicblogs.org list."
+msgstr ""
+
+#: modules/ab-subscribe/ab-subscribe.php:42
+msgid "Category"
+msgstr ""
+
+#: modules/ab-subscribe/ab-subscribe.php:50
+msgid "Subcategory"
+msgstr ""
+
+#: modules/ab-subscribe/ab-subscribe.php:54
+msgid "Blog"
+msgstr ""
+
+#: modules/ab-subscribe/ab-subscribe.php:117
+#, php-format
+msgid ""
+"The list of feeds from academicblogs.org was last refreshed at <strong>%d</"
+"strong>. Click the Refresh button to do a refresh right now."
+msgstr ""
+
+#: modules/comments/comments.php:35 modules/comments/comments.php:36
+msgid "Internal Commenting"
+msgstr ""
+
+#: modules/comments/comments.php:131
+msgid "You do not have permission to access this area."
+msgstr ""
+
+#: modules/comments/comments.php:186
+msgid "Respond to this post"
+msgstr ""
+
+#: modules/comments/comments.php:186
+msgid "Respond to this Post"
+msgstr ""
+
+#: modules/comments/comments.php:196
+msgid "Submit Response"
+msgstr ""
+
+#: modules/comments/comments.php:238
+msgid "Reply to this comment"
+msgstr ""
+
+#: modules/comments/comments.php:238
+msgid "Reply"
+msgstr ""
+
+#: modules/comments/comments.php:260
+#, php-format
+msgid ""
+"<span class=\"comment-author\">%1$s</span><span class=\"meta\"> said on %2$s "
+"at %3$s</span>"
+msgstr ""
+
+#: modules/comments/comments.php:282
+msgid ""
+"Nonce check failed. Please ensure you're supposed to be adding editorial "
+"comments."
+msgstr ""
+
+#: modules/comments/comments.php:294
+msgid ""
+"Sorry, you don't have the privileges to add editorial comments. Please talk "
+"to your Administrator."
+msgstr ""
+
+#: modules/comments/comments.php:299
+msgid "Please enter a comment."
+msgstr ""
+
+#: modules/comments/comments.php:359
+msgid ""
+"There was a problem of some sort. Try again or contact your administrator."
+msgstr ""
+
+#: modules/debugger/debugger.php:22 modules/debugger/debugger.php:23
+msgid "View Log"
+msgstr ""
+
+#: modules/foo/foo.php:21 modules/foo/foo.php:22
+msgid "Foo"
+msgstr ""
+
+#: modules/opml-subscribe/opml-subscribe.php:125
+msgid "Subscribe to OPML"
+msgstr ""
+
+#: modules/opml-subscribe/opml-subscribe.php:128
+msgid "*Complete URL for an OPML subscription"
+msgstr ""
+
+#: modules/rss-import/rss-import.php:220
+msgid "No author."
+msgstr ""
+
+#: modules/rss-import/rss-import.php:235
+msgid "Add Single RSS Feed"
+msgstr ""
+
+#: modules/rss-import/rss-import.php:238
+msgid "*Complete URL or RSS path"
+msgstr ""
+
+#: modules/rss-import/rss-import.php:243
+msgid "Add OPML File"
+msgstr ""
+
+#: modules/rss-import/rss-import.php:246
+msgid "*Drop link to OPML here. No HTTPS allowed."
+msgstr ""
+
+#: modules/rss-import/rss-import.php:263
+msgid "No feeds added."
+msgstr ""
+
+#: modules/rss-import/rss-import.php:332
+msgid "Nonce check failed. Please ensure you're supposed to be removing feeds."
+msgstr ""
+
+#: modules/rss-import/rss-import.php:351
+msgid "The feedlist failed to update."
+msgstr ""
+
+#: modules/rss-import/rss-import.php:353
+msgid " has been removed from your feedlist."
+msgstr ""
+
+#: modules/rss-import/rss-import.php:358
+msgid "Error"
+msgstr ""

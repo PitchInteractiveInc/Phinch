@@ -1,0 +1,201 @@
+
+/* Susy Variables */
+@media screen {
+  * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  input[type=text] {
+    padding: 2px 4px;
+    height: auto;
+  }
+
+  input[type=checkbox] {
+    margin-right: 5px;
+    display: inline;
+    vertical-align: top;
+  }
+
+  #app-banner {
+    background: rgba(0, 0, 0, 0.025);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    *zoom: 1;
+    padding: 20px 40px;
+  }
+  #app-banner * {
+    margin: 0;
+  }
+  #app-banner .title {
+    float: left;
+  }
+  #app-banner h1 {
+    margin: 0;
+    display: inline;
+    font-size: 14px;
+  }
+  #app-banner #h-after {
+    color: #999;
+  }
+  #app-banner h1,
+  #app-banner .refresh {
+    font-size: 14px;
+    line-height: 1em;
+    margin: 0;
+  }
+  #app-banner ul {
+    float: right;
+    text-align: right;
+    display: inline;
+  }
+  #app-banner ul li {
+    display: inline;
+  }
+  #app-banner form {
+    float: right;
+    display: inline;
+    text-align: right;
+  }
+  #app-banner form * {
+    display: inline;
+  }
+  #app-banner form label {
+    display: none;
+  }
+
+  .display {
+    overflow: hidden;
+    *zoom: 1;
+    width: 100%;
+    display: block;
+  }
+
+  #tools {
+    float: right;
+    width: 25%;
+    padding: 40px;
+  }
+  #tools h2 {
+    font-size: 1.125em;
+    line-height: 1.55556em;
+  }
+  #tools #settings {
+    display: block;
+    text-decoration: none;
+    font-size: 1.125em;
+    line-height: 1.55556em;
+    font-weight: bold;
+  }
+
+  #entries {
+    float: left;
+    width: 75%;
+    padding: 40px;
+  }
+  #entries .display {
+    overflow: hidden;
+    *zoom: 1;
+    margin-bottom: 20px;
+  }
+  #entries footer {
+    font-size: 87.5%;
+    color: #999;
+    font-weight: bold;
+  }
+  #entries article.feed-item {
+    font-size: 0.875em;
+    line-height: 2em;
+  }
+  .grid #entries article.feed-item {
+    float: left;
+    width: 30%;
+    height: 300px;
+    margin-right: 2%;
+    margin-bottom: 2%;
+    border: 1px dotted #cccccc;
+    padding: 2%;
+    background: #fafafa;
+  }
+  .grid #entries article.feed-item:hover {
+    background: #fff;
+  }
+  .grid #entries article.feed-item header {
+    overflow: hidden;
+    *zoom: 1;
+    margin-bottom: 1.5em;
+  }
+  .grid #entries article.feed-item header h1 {
+    font-size: 1.125em;
+    line-height: 1.55556em;
+  }
+  .grid #entries article.feed-item.open {
+    font-size: 1em;
+    line-height: 1.75em;
+    float: none;
+    width: 100%;
+    height: auto;
+    margin-right: 0;
+    border-bottom: 1px dotted #cccccc;
+    padding-bottom: 2em;
+  }
+  .grid #entries article.feed-item.open h1 {
+    font-size: 1.75em;
+    line-height: 2em;
+  }
+  .grid #entries article.feed-item.open .content {
+    margin-bottom: 1.75em;
+  }
+  .list #entries article.feed-item {
+    border-bottom: 1px dotted #cccccc;
+    margin: 0;
+    padding: 10px 0;
+    overflow: hidden;
+    *zoom: 1;
+  }
+  .list #entries article.feed-item header {
+    display: inline;
+    float: left;
+    width: 25%;
+  }
+  .list #entries article.feed-item header h1 {
+    font-size: 1em;
+    line-height: 1.75em;
+    margin-top: 0;
+  }
+  .list #entries article.feed-item .content {
+    display: inline;
+    float: left;
+    width: 50%;
+    margin: 0 2%;
+  }
+  .list #entries article.feed-item footer {
+    display: inline;
+    float: left;
+    width: 20%;
+  }
+  .list #entries article.feed-item.open {
+    font-size: 1em;
+    line-height: 1.75em;
+  }
+  .list #entries article.feed-item.open header,
+  .list #entries article.feed-item.open .content,
+  .list #entries article.feed-item.open footer {
+    display: block;
+    float: none;
+    width: auto;
+    margin: 0;
+  }
+  .list #entries article.feed-item.open header {
+    margin-bottom: 1.5em;
+  }
+  .list #entries article.feed-item.open h1 {
+    font-size: 1.75em;
+    line-height: 2em;
+  }
+}

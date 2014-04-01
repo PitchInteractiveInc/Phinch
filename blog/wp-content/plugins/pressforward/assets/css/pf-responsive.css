@@ -1,0 +1,66 @@
+
+/* Ultra Large desktop */
+@media (min-width: 2000px) {
+	.pressforward .grid #entries article.feed-item {
+		width: 23%;
+	}
+	
+	.pressforward .grid.full #entries article.feed-item {
+		width: 18%;
+	}	
+}
+
+/* Large-ish desktop */
+@media (min-width: 1491px) and (max-width: 1999px) {
+	.pressforward .grid #entries article.feed-item {
+		width: 31%;
+	}
+	
+	.pressforward .grid.full #entries article.feed-item {
+		width: 23%;
+	}	
+}
+ 
+/* Portrait tablet to landscape and desktop 
+@media all and (min-width: 1176px) and (max-width: 1299px) { 
+	.pressforward .grid #entries article.feed-item {
+		width: 48%;
+	}
+
+	.pressforward .grid.full #entries article.feed-item {
+		width: 31%;
+	}
+}
+*/
+@media all and (min-width: 1051px) and (max-width: 1390px) { 
+	.pressforward .grid #entries article.feed-item {
+		width: 48%;
+	}
+
+	.pressforward .grid.full #entries article.feed-item {
+		width: 31%;
+	}
+}
+ 
+/* Landscape phone to portrait tablet */
+@media all and (max-width: 1050px) { 
+	.pressforward .modal-sidebar {
+		display: none;
+	}
+	.pressforward .grid #entries article.feed-item {
+		width: 100%;
+	}	
+	.pressforward .grid.full #entries article.feed-item {
+		width: 48%;
+	}	
+}
+ 
+/* Landscape phones and down */
+@media all and (max-width: 800px) { 
+	.pressforward .grid #entries article.feed-item {
+		width: 100%;
+	}	
+	.pressforward .grid.full #entries article.feed-item {
+		width: 100%;
+	}	
+}
