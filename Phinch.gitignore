@@ -1,0 +1,22 @@
+# Blog setting
+
+.htaccess
+blog/wp-content/uploads/
+blog/wp-content/blogs.dir/
+blog/wp-content/upgrade/
+blog/wp-content/backup-db/
+blog/wp-content/advanced-cache.php
+blog/wp-content/wp-cache-config.php
+blog/sitemap.xml
+blog/*.log
+blog/wp-content/cache/
+blog/wp-content/backups/
+blog/sitemap.xml.gz
+blog/wp-config.php
+
+#OS junk files
+[Tt]humbs.db
+*.DS_Store
+
+#Subversion files
+.svn
