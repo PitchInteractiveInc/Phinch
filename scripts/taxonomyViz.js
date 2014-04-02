@@ -1049,7 +1049,7 @@
       infoPanel = d3.select("#taxonomy_container #sankeyInfo");
       content = "<div class='sankeyInfobox'><div id='sankeyRemover'><i class='icon-remove icon-large'></i></div>";
       if (d.targetLinks.length === 0) {
-        content += "<p>This is a source node.</p><p>It has " + d.sourceLinks.length + " branches.</p><p>Their distribution are: </p>";
+        content += "<p>This is a source node. It has " + d.sourceLinks.length + " branches.</p><p>Their distribution are: </p>";
       } else if (d.sourceLinks.length === 0) {
         content += "<p>This is an end node.</p><p>Its absolute reads is " + d.targetLinks[0].absValue + ".</p></div>";
       } else {
@@ -1057,7 +1057,7 @@
         for (k = _i = 0, _ref = d.sourceLinks.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; k = 0 <= _ref ? ++_i : --_i) {
           sourceTotal += d.sourceLinks[k].absValue;
         }
-        content += "<p>It has " + d.sourceLinks.length + " branches.</p><p>The total reads is " + sourceTotal + "</p><p>Their distribution are: </p>";
+        content += "<p>It has " + d.sourceLinks.length + " branches. The total reads is " + sourceTotal + "</p><p>Their distribution are: </p>";
       }
       content += "</div>";
       infoPanel.html(content);
@@ -1082,17 +1082,21 @@
     };
 
     taxonomyViz.prototype.drawSmallSankey = function(div, targetNode, originalSankey, originalSVG) {
-      var color, link, node, path, smallSankey, smallSankeyDimensions, smallSankeySVG, smlTaxonomySankey, _i, _j, _len, _len1, _ref, _ref1,
+      var acceptableHeight, color, divHeight, divLarge, link, maxDivHeight, maxNodesOnSide, minHeight, node, nodeHeight, path, smallSankey, smallSankeyDimensions, smallSankeySVG, smlTaxonomySankey, targetHeight, _i, _j, _len, _len1, _ref, _ref1,
         _this = this;
       smlTaxonomySankey = new Object();
       smlTaxonomySankey.nodes = [];
       smlTaxonomySankey.links = [];
-      smallSankeyDimensions = {
-        w: 600,
-        h: 800
-      };
-      smallSankeySVG = div.select('.sankeyInfobox').append('svg').attr('width', smallSankeyDimensions.w).attr('height', smallSankeyDimensions.h);
       smlTaxonomySankey.nodes.push(_.clone(targetNode));
+      minHeight = 600;
+      targetHeight = 600;
+      maxNodesOnSide = 1;
+      if (targetNode.targetLinks.length > maxNodesOnSide) {
+        maxNodesOnSide = targetNode.targetLinks.length;
+      }
+      if (targetNode.sourceLinks.length > maxNodesOnSide) {
+        maxNodesOnSide = targetNode.sourceLinks.length;
+      }
       _ref = targetNode.targetLinks;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         node = _ref[_i];
@@ -1115,8 +1119,32 @@
         };
         smlTaxonomySankey.links.push(link);
       }
+      nodeHeight = 12;
+      acceptableHeight = maxNodesOnSide * nodeHeight;
+      if (acceptableHeight > targetHeight) {
+        targetHeight = acceptableHeight;
+      }
+      divHeight = targetHeight + 80;
+      maxDivHeight = 800;
+      divLarge = false;
+      if (divHeight > maxDivHeight) {
+        divHeight = maxDivHeight;
+        divLarge = true;
+      }
+      d3.select('.sankeyInfobox').style('height', divHeight + 'px').style('overflow-y', function() {
+        if (divLarge) {
+          return 'scroll';
+        } else {
+          return 'visible';
+        }
+      });
+      smallSankeyDimensions = {
+        w: 600,
+        h: targetHeight
+      };
+      smallSankeySVG = div.select('.sankeyInfobox').append('svg').attr('width', smallSankeyDimensions.w).attr('height', smallSankeyDimensions.h);
       color = globalColoring;
-      smallSankey = d3.sankey().size([smallSankeyDimensions.w, smallSankeyDimensions.h - 100]).nodeWidth(15).nodePadding(10).nodes(smlTaxonomySankey.nodes).links(smlTaxonomySankey.links).layout(128, smallSankeyDimensions.w);
+      smallSankey = d3.sankey().size([smallSankeyDimensions.w, smallSankeyDimensions.h - 10]).nodeWidth(15).nodePadding(10).nodes(smlTaxonomySankey.nodes).links(smlTaxonomySankey.links).layout(128, smallSankeyDimensions.w);
       path = smallSankey.link();
       link = smallSankeySVG.append('g').selectAll('.link').data(smlTaxonomySankey.links);
       link.enter().append('path').attr('class', 'link');

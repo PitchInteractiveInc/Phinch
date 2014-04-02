@@ -926,14 +926,14 @@ class taxonomyViz
 		infoPanel = d3.select("#taxonomy_container #sankeyInfo")
 		content = "<div class='sankeyInfobox'><div id='sankeyRemover'><i class='icon-remove icon-large'></i></div>"
 		if d.targetLinks.length == 0 
-			content += "<p>This is a source node.</p><p>It has " + d.sourceLinks.length + " branches.</p><p>Their distribution are: </p>"
+			content += "<p>This is a source node. It has " + d.sourceLinks.length + " branches.</p><p>Their distribution are: </p>"
 		else if d.sourceLinks.length == 0 
 			content += "<p>This is an end node.</p><p>Its absolute reads is " + d.targetLinks[0].absValue + ".</p></div>"
 		else 
 			sourceTotal = 0
 			for k in [0..d.sourceLinks.length-1] 
 				sourceTotal += d.sourceLinks[k].absValue					
-			content += "<p>It has " + d.sourceLinks.length + " branches.</p><p>The total reads is " + sourceTotal + "</p><p>Their distribution are: </p>"
+			content += "<p>It has " + d.sourceLinks.length + " branches. The total reads is " + sourceTotal + "</p><p>Their distribution are: </p>"
 		content += "</div>"
 		infoPanel.html(content);
 		@drawSmallSankey(infoPanel,d,taxonomySankey, svg)
@@ -948,9 +948,14 @@ class taxonomyViz
 		smlTaxonomySankey.nodes = []
 		smlTaxonomySankey.links = []
 
-		smallSankeyDimensions = {w: 600, h: 800}
-		smallSankeySVG = div.select('.sankeyInfobox').append('svg').attr('width', smallSankeyDimensions.w).attr('height', smallSankeyDimensions.h)
 		smlTaxonomySankey.nodes.push(_.clone(targetNode))
+		minHeight = 600
+		targetHeight = 600
+		maxNodesOnSide = 1
+		if targetNode.targetLinks.length > maxNodesOnSide
+			maxNodesOnSide = targetNode.targetLinks.length
+		if targetNode.sourceLinks.length > maxNodesOnSide
+			maxNodesOnSide = targetNode.sourceLinks.length
 		for node in targetNode.targetLinks
 			smlTaxonomySankey.nodes.push _.clone(node.source)
 			link = {source: smlTaxonomySankey.nodes.length - 1, target: 0, value: node.absValue}
@@ -959,8 +964,29 @@ class taxonomyViz
 			smlTaxonomySankey.nodes.push _.clone(node.target)
 			link = {source: 0, target: smlTaxonomySankey.nodes.length - 1, value: node.absValue}
 			smlTaxonomySankey.links.push(link)
+
+		nodeHeight = 12
+		acceptableHeight = maxNodesOnSide * nodeHeight
+		if acceptableHeight > targetHeight
+			targetHeight = acceptableHeight
+
+		divHeight = targetHeight + 80
+		maxDivHeight = 800
+		divLarge = false
+		if divHeight > maxDivHeight
+			divHeight = maxDivHeight
+			divLarge = true
+		d3.select('.sankeyInfobox').style('height', divHeight + 'px').style('overflow-y', () ->
+			if divLarge
+				return 'scroll'
+			else
+				return 'visible'
+		)
+		smallSankeyDimensions = {w: 600, h: targetHeight}
+		smallSankeySVG = div.select('.sankeyInfobox').append('svg').attr('width', smallSankeyDimensions.w).attr('height', smallSankeyDimensions.h)
+		
 		color = globalColoring
-		smallSankey = d3.sankey().size([smallSankeyDimensions.w, smallSankeyDimensions.h - 100])
+		smallSankey = d3.sankey().size([smallSankeyDimensions.w, smallSankeyDimensions.h - 10])
 			.nodeWidth(15).nodePadding(10)
 			.nodes(smlTaxonomySankey.nodes).links(smlTaxonomySankey.links)
 			.layout(128, smallSankeyDimensions.w)
