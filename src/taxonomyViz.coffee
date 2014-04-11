@@ -27,6 +27,7 @@ class taxonomyViz
 	selected_attributes_units_array = []
 	selected_phinchID_array = []
 	globalColoring = d3.scale.category20()
+
 	constructor: (_VizID) ->
 		VizID = _VizID
 		db.open(
@@ -265,6 +266,7 @@ class taxonomyViz
 				alert("Groupable chart not available for this dataset!")
 		else if VizID == 4
 			if selected_attributes_array.length > 0 
+				$('#attributes_dropdown').html("")
 				for i in [0..selected_attributes_array.length-1]
 					$('#attributes_dropdown').append('<option>' + selected_attributes_array[i] + '</option>');
 				if $('#attributes_dropdown option:first').text() != undefined 
@@ -1130,18 +1132,23 @@ class taxonomyViz
 
 		# 3 Plot Pie for each category 
 		d3.select('#taxonomy_container').attr("width", 1200).attr("height", 250 * groupable_array.length + 200)
+		alphagroupble_array = _.clone(groupable_array).sort()
+
+		console.log groupable_array
+		console.log alphagroupble_array
+
 		for i in [0..groupable_array.length-1]
 			donutArr = []
 			for j in [0..selected_new_data_matrix_onLayer.length-1]
 				donutArr.push( selected_new_data_matrix_onLayer[j][i] )
-			@drawBasicDonut( i, groupable_array[i], donutArr, count[i])
+			@drawBasicDonut( i, groupable_array[i], donutArr, count[i], alphagroupble_array.indexOf(groupable_array[i]))
 
 		# console.log groupable_array
 		# console.log count	
 		
-	drawBasicDonut: ( donutID, donutName, donutData, donutContainedSamp ) -> 
+	drawBasicDonut: ( donutID, donutName, donutData, donutContainedSamp, posID ) -> 
 
-		radius = 125
+		radius = 100
 		yScale = d3.scale.pow().exponent(.4).domain([0, d3.max(donutData)]).range([0, 100]) # linear 
 		arc = d3.svg.arc() 
 			.outerRadius(radius)
@@ -1154,6 +1161,7 @@ class taxonomyViz
 		d3.select('#taxonomy_container').append('div')
 			.attr("id", "donut_" + donutID)
 			.attr("class", "donutDiv")
+			.style('top', (250 + posID * 290) + 'px')	
 		svg = d3.select('#donut_' + donutID).append('svg')
 			.attr("width", 300)
 			.attr("height", 255)
@@ -1238,9 +1246,9 @@ class taxonomyViz
 
 		# 4 draw each column chart
 		if toggleStandard == 'dynamic'
-			yScale = d3.scale.pow().exponent(.5).domain([0, d3.max(rectArr)]).range([2, 185])
+			yScale = d3.scale.pow().exponent(.5).domain([0, d3.max(rectArr)]).range([2, 160])
 		else 
-			yScale = d3.scale.pow().exponent(.5).domain([0, standardizedValue]).range([2, 185])
+			yScale = d3.scale.pow().exponent(.5).domain([0, standardizedValue]).range([2, 160])
 
 		eachBarWidth = 800 / containedSamp.length
 		if eachBarWidth < 10 # too many samples contained, too narrow 
@@ -1252,25 +1260,25 @@ class taxonomyViz
 				.attr('height', (d) -> return yScale(d))
 				.attr('width', eachBarWidth - 3 )
 				.attr("x", (d,i) -> return eachBarWidth * i + 50 )
-				.attr("y", (d,i) -> return 190 - yScale(d))
+				.attr("y", (d,i) -> return 170 - yScale(d))
 				.style("fill", (d,i) -> if totalFlag then return '#ff8900' else return fillCol[selectedTaxnomy%20] )
 			rectContainedSamp.selectAll('text')
 				.data(containedSamp)
 			.enter().append('text')
-				.text( (d,i) -> return String(selected_phinchID_array[i]).substring(0,9) )
-				.attr('x', (d,i) -> return eachBarWidth * (i + 0.5) + 50 )
+				.text( (d,i) -> return String(selected_phinchID_array[i]))  # .substring(0,9) 
+ 				.attr('x', (d,i) -> return eachBarWidth * (i + 0.5) + 50 )
 				.attr('y', 200)
 				.attr('width', eachBarWidth )
 				.attr('text-anchor', 'end')
 				.attr("font-size", "9px")
 				.attr('fill', '#444')
-				.attr("transform", (d, i) -> return "translate( " + (eachBarWidth / 3.3 * i - 120) + "," + (100 + i * 0.71 * eachBarWidth + eachBarWidth / 3 ) + ")rotate(-45)")
+				.attr("transform", (d, i) -> return "translate( " + (eachBarWidth / 3.3 * i - 120) + "," + (80 + i * 0.71 * eachBarWidth + eachBarWidth / 3 ) + ")rotate(-45)")
 
 			rule = rectContainedSamp.selectAll('g.rule')
 				.data(yScale.ticks(10))
 			.enter().append('g')
 				.attr('class','rule')
-				.attr('transform', (d) -> return "translate(0," + ( 192 - yScale(d) ) + ")" )	
+				.attr('transform', (d) -> return "translate(0," + ( 172 - yScale(d) ) + ")" )	
 			rule.append('line')
 				.attr('x1', 45)
 				.attr('x2', 870)
@@ -1347,7 +1355,8 @@ class taxonomyViz
 				content += '<p><b>' + attributes_array[i] + '</b>:&nbsp;&nbsp;' 
 				if count[i].length > 0
 					for j in [0..count[i].length-1]
-						content += selected_phinchID_array[count[i][j]] + ' (' + count[i][j] + '), '
+						# content += selected_phinchID_array[count[i][j]] + ' (' + count[i][j] + '), '
+						content += count[i][j] + ', '
 				else
 					content += 'no samples'
 				content += '</p>'
@@ -1375,7 +1384,7 @@ class taxonomyViz
 
 		@fadeInOutCtrl()
 		# 1 Plot     
-		w = if sumEachCol.length < 80 then 1000 else sumEachCol.length * 18 + 200
+		w = if sumEachCol.length < 80 then 600 else sumEachCol.length * 18
 		h = 800
 		max_single = d3.max(sumEachCol)
 		margin = {top: 20, right: 20, bottom: 20, left: 100}

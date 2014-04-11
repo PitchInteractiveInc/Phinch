@@ -117,7 +117,7 @@ input[type=checkbox]:checked + label:before {
 }
 
 .footer_copyright {
-	margin-left: 10px; 
+	padding-left: 20px;
 	font-size: 12px;
 	line-height: 50px;
 	margin: 0;
@@ -1164,6 +1164,7 @@ rect.pane {
 	height: 270px;
 	margin-left: 50px;
 	margin-top: 15px;
+	position: absolute;
 }
 .panelCombSample {
 	float: left;
@@ -1403,3 +1404,6 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-zoom-out:before { content: "\f010"; }
 .icon-file-text-o:before { content: "\f0f6"; }
 .icon-fa-times:before { content: "\f00d"; }
+.icon-fa-users:before { content: "\f03a"; }
+
+

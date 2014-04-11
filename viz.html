@@ -57,6 +57,8 @@
                 [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss]-[Z]</br>
                 For example, metadata for a sample collected at 2:30pm EST on May 4, 2007 would be entered as: 2007-04-05T14:30:00-05:00</br></br>
                 Similarly, any geographic coordinates or GPS data must be entered as <a href="http://en.wikipedia.org/wiki/Decimal_degrees" target="_blank"></a>decimal degrees (the format used by GoogleMaps, e.g. -90.017926).  We recommend using separate columns labeled “Latitude” and “Longitude” in your original sample metadata mapping file, to ensure that GPS metadata is correctly detected.</br></br>
+
+                To label your samples with human-readable IDs in the visualizations, include a column in your metadata mapping file with the header labelled as “phinch”. These IDs will be pulled through into the visualizations to populate graph axes. If this column is not included, an arbitrary numerical ID will be assigned to each sample.</br></br>
                 
                 <span>Compatibility with older QIIME file formats</span></br></br>
                 If you want to visualize biological data currently formatted as a tab-delimited text file (e.g. the style of OTU tables produced by older versions of QIIME), <a href="https://github.com/biom-format/biom-format/blob/df81277857a553e7e5c9679924e09861d8a5f61f/doc/documentation/biom_conversion.rst" target="_blank">please refer to this documentation for conversion instructions</a>. Phinch supports both "sparse" and "dense" BIOM formats (although <b>sparse .biom files are highly recommended, since the file size is much smaller</b>).</br></br>
@@ -164,8 +166,8 @@
 
     </section>
 
-<!--         <section class = "footer">
-        <p class = "footer_copyright">Copyright © 2014 Phinch. Phinch is supported by the <a href="http://www.sloan.org/" target="_blank">Alfred P. Sloan Foundation</a>. This content is released under <a href="http://opensource.org/licenses/BSD-2-Clause" target="_blank">The BSD 2-Clause License</a>. <span><a href="https://github.com/shujianbu/phinch" target="_blank"><i class="icon-github icon-large"></i>&nbsp;&nbsp;&nbsp;Fork me on Github</a></span></p>
+<!--     <section class = "footer">
+        <p class = "footer_copyright">Copyright © 2014 Phinch. Phinch is supported by the <a href="http://www.sloan.org/" target="_blank">Alfred P. Sloan Foundation</a>. This content is released under <a href="http://opensource.org/licenses/BSD-2-Clause" target="_blank">The BSD 2-Clause License</a>. <span><a href="https://groups.google.com/forum/#!forum/phinch" target="_blank"><i class="icon-fa-users icon-large"></i>&nbsp;&nbsp;Google Group</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/shujianbu/phinch" target="_blank"><i class="icon-github icon-large"></i>&nbsp;&nbsp;Github</a></span></p>
     </section> -->
 
     <script src="lib/jquery-1.10.1.min.js"></script>

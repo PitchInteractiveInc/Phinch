@@ -709,7 +709,7 @@
           this.selected_sample.splice(this.selected_sample.indexOf(delete_index[i]), 1);
         }
       }
-      content = "<table id='myTable'><thead><tr><th class = 'headerID myTableHeader'>Phinch ID</th><th class = 'headerID myTableHeader'>Biom Sample ID" + "</th><th class='myTableHeader'>Sample Name</th><th class='headerCount myTableHeader'>Sequence Reads</th></thead>";
+      content = "<table id='myTable'><thead><tr><th class = 'headerID myTableHeader'>Sample Name</th><th class = 'headerID myTableHeader'>Biom Sample ID" + "</th><th class='myTableHeader'>Sample Name</th><th class='headerCount myTableHeader'>Sequence Reads</th></thead>";
       if (this.selected_sample.length > 0) {
         for (i = _x = 0, _ref15 = this.selected_sample.length - 1; 0 <= _ref15 ? _x <= _ref15 : _x >= _ref15; i = 0 <= _ref15 ? ++_x : --_x) {
           content += '<tr><td contenteditable="true" id="phinchID_' + this.selected_sample[i] + '">' + phinchID_array[this.selected_sample[i]] + '</td><td>' + (this.selected_sample[i] + 1) + '</td><td>' + columns_sample_name_array[this.selected_sample[i]] + '</td><td>' + format(columns_sample_count_list[this.selected_sample[i]]) + '</td></tr>';
