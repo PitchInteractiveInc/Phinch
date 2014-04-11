@@ -242,6 +242,7 @@ class taxonomyViz
 		# console.log new_data_matrix_onLayer
 
 		if VizID == 0
+			@rightClick()
 			@filterControl()
 			@drawD3Bar()
 		else if VizID == 1
@@ -416,9 +417,11 @@ class taxonomyViz
 				content += '<div><span class="PanelTtlAvg">total avg: ' + ( 100 / sumEachCol.length).toFixed(2)  + '%</span>, this sample percent: ' + (d.y / sumEachTax[d.i] * 100).toFixed(2) + '%</div></div>'		
 				infoPanel.html(content)
 				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px" })
+				delePanel.style( { "visibility": "hidden"})
 			.on 'mouseout', (d,i) -> 
 				infoPanel.style( { "visibility": "hidden"})
-			.on 'click', (d,i) ->
+				# delePanel.style( { "visibility": "hidden"})
+			.on 'contextmenu', (d,i) ->
 				content = '' 
 				content = '<b><i>Remove sample '+ d.x + '?</i></b>&nbsp;&nbsp;<i class="icon-remove icon-large" id = "iconRemoverPanel"></i><div>'
 				if deleteSampleArr.length > 0
@@ -450,13 +453,18 @@ class taxonomyViz
 			.data(x.domain())
 		.enter().append('text')
 			.text (d,i) ->
-				return String(selected_phinchID_array[i]).substring(0,15) # if i%2 == 1 then
+				return String(selected_phinchID_array[i]).substr(-12) # if i%2 == 1 then
 			.attr('x', - 13)
 			.attr 'y', (d,i) -> 
 					return 14 * i + 9
 			.attr('text-anchor', 'end')
 			.attr("font-size", "10px")
-			.attr('fill', '#444')	
+			.attr('fill', '#444')
+			.on 'mouseover', (d,i) ->
+				infoPanel.html(String(selected_phinchID_array[i]))
+				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px" })
+			.on 'mouseout', (d,i) ->
+				infoPanel.style( { "visibility": "hidden"})			
 
 		# add title & x-axis 
 		svg.append("text")
@@ -599,6 +607,15 @@ class taxonomyViz
 					$('#autoCompleteList').hide()
 		})
 
+	rightClick: () ->
+		if (document.addEventListener)
+			document.addEventListener('contextmenu', (e) -> 
+				e.preventDefault();
+			, false)
+		else 
+			document.addEventListener('oncontextmenu', (e) ->
+				window.event.returnValue = false;
+			, false)
 
 	#####################################################################################################################         
 	##############################################  Bubble Chart  #######################################################         
@@ -689,7 +706,8 @@ class taxonomyViz
 
 		if bubbleView
 			force = d3.layout.force()
-				.gravity( 0.025 * LayerID ) # Math.min(0.025 * LayerID, 0.125)
+				.gravity( 0.1 ) # 0.025 * LayerID
+				.charge((d) -> return - Math.pow(d.radius,2.0) / 8)
 				.nodes(nodes)
 				.on("tick", (e) -> 
 					node.attr("cx", (d) -> return d.x )
@@ -757,7 +775,7 @@ class taxonomyViz
 				txtrect = infoPanel.select('svg').selectAll('text').data(selected_samples)
 
 				txtrect.enter().append('text')
-					.text( (d,i) -> return String(selected_phinchID_array[i]).substring(0,6) )
+					.text( (d,i) -> return String(selected_phinchID_array[i]).substr(-6) )
 					.attr("x", (d,i) -> return ( (i % 5) * 160 + 50 ) + 'px' )
 					.attr("y", (d,i) -> return 25 * Math.floor(i / 5) + 30 + 'px' )
 					.attr("text-anchor", 'end')
@@ -862,9 +880,6 @@ class taxonomyViz
 			# console.log taxonomySankey.nodes
 			# console.log taxonomySankey.links
 
-		# add search function
-		@sankeyFilterControl(nodesArr)
-
 		# clean canvas
 		width = 1200
 		height = 20 * unique_taxonomy_comb_onLayer.length 
@@ -924,6 +939,10 @@ class taxonomyViz
 		.filter( (d) -> return d.x < width / 2)
 			.attr("x", 6 + sankey.nodeWidth())
 			.attr("text-anchor", "start");
+
+		# add search function
+		@sankeyFilterControl(nodesArr, taxonomySankey, svg)
+
 	clickLargeSnakeyNode: (d,i,taxonomySankey,svg) =>
 		infoPanel = d3.select("#taxonomy_container #sankeyInfo")
 		content = "<div class='sankeyInfobox'><div id='sankeyRemover'><i class='icon-remove icon-large'></i></div>"
@@ -944,6 +963,7 @@ class taxonomyViz
 		$('#sankeyRemover').click () ->
 			infoPanel.transition().duration(750).ease("quad-in-out").style({"opacity":0, "z-index": -1})
 			svg.transition().duration(750).ease("quad-in-out").style({"opacity": 1, "z-index":1})
+
 	drawSmallSankey: (div,targetNode,originalSankey,originalSVG) -> 
 		
 		smlTaxonomySankey = new Object()
@@ -1050,6 +1070,7 @@ class taxonomyViz
 		.filter( (d) -> return d.x < width / 2)
 			.attr("x", 6 + smallSankey.nodeWidth())
 			.attr("text-anchor", "start");
+
 	clickSmallSankeyNode: (d,i,originalSankey,originalSVG) =>
 		originalData = _.filter(originalSankey.nodes, (dd) ->
 			return dd.name is d.name
@@ -1061,7 +1082,9 @@ class taxonomyViz
 			originalData = originalData[0]
 		@clickLargeSnakeyNode(originalData, i, originalSankey, originalSVG)
 
-	sankeyFilterControl: (_nodesArr) ->
+	sankeyFilterControl: (_nodesArr, taxonomySankey, svg) ->
+		that = this
+
 		color = globalColoring
 		nodesArr = _nodesArr
 		availableTags = new Array(nodesArr.length)
@@ -1089,7 +1112,9 @@ class taxonomyViz
 					$('#autoCompleteList').append(content)
 					$('#autoCompleteList ul li').each (index) ->
 						$(this).click () ->
-							console.log 'do something later!'
+							for m in[0..taxonomySankey.nodes.length-1]
+							 	if taxonomySankey.nodes[m].name == $(this)[0].textContent.substr(2) # find the node and node id
+							 		that.clickLargeSnakeyNode(taxonomySankey.nodes[m], m, taxonomySankey, svg)
 
 					$('#iconRemover').click () -> $('#autoCompleteList').fadeOut(200)
 					$('#autoCompleteList').show()
@@ -1506,11 +1531,12 @@ class taxonomyViz
 	############################################### Bubble by OTU #######################################################  
 	#####################################################################################################################  
 
-	drawOTUBubble: () -> 
+	drawOTUBubble: () ->
+		
 		@fadeInOutCtrl()
 		
 		# 0 Prepare the data 
-		data = new Object() 
+		data = {}
 		data.name = 'BIOM'
 		data.children = new Array(unique_taxonomy_comb_onLayer.length)
 		for i in [0..unique_taxonomy_comb_onLayer.length-1]
@@ -1552,9 +1578,21 @@ class taxonomyViz
 			.append('svg:g')
 			.attr("transform", "translate(" + (w - r) / 2 + ", 10)")
 
-		console.log data; 
-		node = data;
-		root = data;
+		# 2 Filter 
+		threshold = 1000
+		filteredData = {}
+		filteredData.name = 'BIOM'
+		filteredData.children = []
+		for i in [0..data.children.length-1]
+			if data.children[i].counter > threshold
+				filteredData.children.push(data.children[i])
+
+		# console.log data;
+		# console.log filteredData;
+
+		# 3 Viz
+		node = filteredData;
+		root = filteredData;
 		nodes = pack.nodes(root);
 		that = this
 		vis.selectAll("circle").data(nodes)
@@ -1576,7 +1614,7 @@ class taxonomyViz
 			.style("opacity", (d) -> if d.r > 50 then return 0.8 else return 0 )
 			.text((d) -> return d.name )
 
-		d3.select(window).on("click", () -> that.zoomBubble(vis, root) )
+		# d3.select(window).on("click", () -> that.zoomBubble(vis, root) )
 
 	zoomBubble: (vis, d) -> 
 		r = 1000
@@ -1599,7 +1637,6 @@ class taxonomyViz
 
 		node = d
 		d3.event.stopPropagation()
-
 
 	#####################################################################################################################         
 	###############################################   UTILITIES   #######################################################  

@@ -390,6 +390,7 @@
         new_data_matrix_onLayer = new_data_matrix;
       }
       if (VizID === 0) {
+        this.rightClick();
         this.filterControl();
         return this.drawD3Bar();
       } else if (VizID === 1) {
@@ -551,16 +552,19 @@
         }
         content += '<div><span class="PanelTtlAvg">total avg: ' + (100 / sumEachCol.length).toFixed(2) + '%</span>, this sample percent: ' + (d.y / sumEachTax[d.i] * 100).toFixed(2) + '%</div></div>';
         infoPanel.html(content);
-        return infoPanel.style({
+        infoPanel.style({
           "visibility": "visible",
           top: (d3.event.pageY - 10) + "px",
           left: (d3.event.pageX + 10) + "px"
+        });
+        return delePanel.style({
+          "visibility": "hidden"
         });
       }).on('mouseout', function(d, i) {
         return infoPanel.style({
           "visibility": "hidden"
         });
-      }).on('click', function(d, i) {
+      }).on('contextmenu', function(d, i) {
         var content, k, _i, _ref;
         content = '';
         content = '<b><i>Remove sample ' + d.x + '?</i></b>&nbsp;&nbsp;<i class="icon-remove icon-large" id = "iconRemoverPanel"></i><div>';
@@ -600,10 +604,21 @@
         });
       });
       label = svg.selectAll('text').data(x.domain()).enter().append('text').text(function(d, i) {
-        return String(selected_phinchID_array[i]).substring(0, 15);
+        return String(selected_phinchID_array[i]).substr(-12);
       }).attr('x', -13).attr('y', function(d, i) {
         return 14 * i + 9;
-      }).attr('text-anchor', 'end').attr("font-size", "10px").attr('fill', '#444');
+      }).attr('text-anchor', 'end').attr("font-size", "10px").attr('fill', '#444').on('mouseover', function(d, i) {
+        infoPanel.html(String(selected_phinchID_array[i]));
+        return infoPanel.style({
+          "visibility": "visible",
+          top: (d3.event.pageY - 10) + "px",
+          left: (d3.event.pageX + 10) + "px"
+        });
+      }).on('mouseout', function(d, i) {
+        return infoPanel.style({
+          "visibility": "hidden"
+        });
+      });
       svg.append("text").attr('y', -35).attr("font-size", "11px").text('Sequence Reads').attr('transform', function(d) {
         return "translate(" + y(max_single) / 2 + ", 0)";
       });
@@ -752,6 +767,18 @@
       });
     };
 
+    taxonomyViz.prototype.rightClick = function() {
+      if (document.addEventListener) {
+        return document.addEventListener('contextmenu', function(e) {
+          return e.preventDefault();
+        }, false);
+      } else {
+        return document.addEventListener('oncontextmenu', function(e) {
+          return window.event.returnValue = false;
+        }, false);
+      }
+    };
+
     taxonomyViz.prototype.drawTaxonomyBubble = function() {
       var adjust_max, adjust_min, comb_name, comb_name_list, force, i, infoPanel, j, maxRowHeight, max_single, node, nodes, radius_scale, removePanel, tooltip, vis, viz_series, _i, _j, _k, _l, _m, _n, _ref, _ref1, _ref2, _ref3, _ref4,
         _this = this;
@@ -814,7 +841,9 @@
         }
       }
       if (bubbleView) {
-        force = d3.layout.force().gravity(0.025 * LayerID).nodes(nodes).on("tick", function(e) {
+        force = d3.layout.force().gravity(0.1).charge(function(d) {
+          return -Math.pow(d.radius, 2.0) / 8;
+        }).nodes(nodes).on("tick", function(e) {
           return node.attr("cx", function(d) {
             return d.x;
           }).attr("cy", function(d) {
@@ -890,7 +919,7 @@
         valrect = infoPanel.select('svg').selectAll('text').data(viz_series[d.id]);
         txtrect = infoPanel.select('svg').selectAll('text').data(selected_samples);
         txtrect.enter().append('text').text(function(d, i) {
-          return String(selected_phinchID_array[i]).substring(0, 6);
+          return String(selected_phinchID_array[i]).substr(-6);
         }).attr("x", function(d, i) {
           return ((i % 5) * 160 + 50) + 'px';
         }).attr("y", function(d, i) {
@@ -992,7 +1021,6 @@
           link.value = link.absValue;
         }
       }
-      this.sankeyFilterControl(nodesArr);
       width = 1200;
       height = 20 * unique_taxonomy_comb_onLayer.length;
       margin = {
@@ -1036,13 +1064,14 @@
       }).on("click", function(d, i) {
         return _this.clickLargeSnakeyNode(d, i, taxonomySankey, svg);
       });
-      return node.append("text").attr("x", -6).attr("y", function(d) {
+      node.append("text").attr("x", -6).attr("y", function(d) {
         return d.dy / 2;
       }).attr("dy", ".35em").attr("text-anchor", "end").attr("transform", null).text(function(d) {
         return d.name;
       }).filter(function(d) {
         return d.x < width / 2;
       }).attr("x", 6 + sankey.nodeWidth()).attr("text-anchor", "start");
+      return this.sankeyFilterControl(nodesArr, taxonomySankey, svg);
     };
 
     taxonomyViz.prototype.clickLargeSnakeyNode = function(d, i, taxonomySankey, svg) {
@@ -1219,8 +1248,9 @@
       return this.clickLargeSnakeyNode(originalData, i, originalSankey, originalSVG);
     };
 
-    taxonomyViz.prototype.sankeyFilterControl = function(_nodesArr) {
-      var availableTags, color, i, nodesArr, searchList, _i, _ref;
+    taxonomyViz.prototype.sankeyFilterControl = function(_nodesArr, taxonomySankey, svg) {
+      var availableTags, color, i, nodesArr, searchList, that, _i, _ref;
+      that = this;
       color = globalColoring;
       nodesArr = _nodesArr;
       availableTags = new Array(nodesArr.length);
@@ -1254,7 +1284,16 @@
             $('#autoCompleteList').append(content);
             $('#autoCompleteList ul li').each(function(index) {
               return $(this).click(function() {
-                return console.log('do something later!');
+                var m, _l, _ref3, _results;
+                _results = [];
+                for (m = _l = 0, _ref3 = taxonomySankey.nodes.length - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; m = 0 <= _ref3 ? ++_l : --_l) {
+                  if (taxonomySankey.nodes[m].name === $(this)[0].textContent.substr(2)) {
+                    _results.push(that.clickLargeSnakeyNode(taxonomySankey.nodes[m], m, taxonomySankey, svg));
+                  } else {
+                    _results.push(void 0);
+                  }
+                }
+                return _results;
               });
             });
             $('#iconRemover').click(function() {
@@ -1625,9 +1664,9 @@
     };
 
     taxonomyViz.prototype.drawOTUBubble = function() {
-      var data, flag, fontScale, h, i, j, node, nodes, pack, r, root, rowID, that, vis, w, x, y, _i, _j, _k, _l, _ref, _ref1, _ref2, _ref3;
+      var data, filteredData, flag, fontScale, h, i, j, node, nodes, pack, r, root, rowID, that, threshold, vis, w, x, y, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3, _ref4;
       this.fadeInOutCtrl();
-      data = new Object();
+      data = {};
       data.name = 'BIOM';
       data.children = new Array(unique_taxonomy_comb_onLayer.length);
       for (i = _i = 0, _ref = unique_taxonomy_comb_onLayer.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
@@ -1668,9 +1707,17 @@
         return Math.sqrt(d.size);
       });
       vis = d3.select("#taxonomy_container").append("svg:svg").attr("width", 1200).attr("height", 1100).append('svg:g').attr("transform", "translate(" + (w - r) / 2 + ", 10)");
-      console.log(data);
-      node = data;
-      root = data;
+      threshold = 1000;
+      filteredData = {};
+      filteredData.name = 'BIOM';
+      filteredData.children = [];
+      for (i = _m = 0, _ref4 = data.children.length - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; i = 0 <= _ref4 ? ++_m : --_m) {
+        if (data.children[i].counter > threshold) {
+          filteredData.children.push(data.children[i]);
+        }
+      }
+      node = filteredData;
+      root = filteredData;
       nodes = pack.nodes(root);
       that = this;
       vis.selectAll("circle").data(nodes).enter().append("svg:circle").attr("class", function(d) {
@@ -1686,7 +1733,7 @@
       }).attr("r", function(d) {
         return d.r;
       }).style("fill", '#ff8900');
-      vis.selectAll("text").data(nodes).enter().append("svg:text").attr("class", function(d) {
+      return vis.selectAll("text").data(nodes).enter().append("svg:text").attr("class", function(d) {
         if (d.children !== null) {
           return 'parent';
         } else {
@@ -1707,9 +1754,6 @@
         }
       }).text(function(d) {
         return d.name;
-      });
-      return d3.select(window).on("click", function() {
-        return that.zoomBubble(vis, root);
       });
     };
 
