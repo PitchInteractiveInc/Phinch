@@ -418,7 +418,6 @@
         }
       } else if (VizID === 4) {
         if (selected_attributes_array.length > 0) {
-          $('#attributes_dropdown').html("");
           for (i = _q = 0, _ref8 = selected_attributes_array.length - 1; 0 <= _ref8 ? _q <= _ref8 : _q >= _ref8; i = 0 <= _ref8 ? ++_q : --_q) {
             $('#attributes_dropdown').append('<option>' + selected_attributes_array[i] + '</option>');
           }
@@ -1270,7 +1269,7 @@
     };
 
     taxonomyViz.prototype.drawTaxonomyDonuts = function(cur_attribute) {
-      var alphagroupble_array, arr_id, count, donutArr, groupable_array, i, j, selected_new_data_matrix_onLayer, _i, _j, _k, _l, _m, _n, _o, _p, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _results;
+      var arr_id, count, donutArr, groupable_array, i, j, selected_new_data_matrix_onLayer, _i, _j, _k, _l, _m, _n, _o, _p, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _results;
       this.fadeInOutCtrl();
       groupable_array = [];
       for (i = _i = 0, _ref = selected_samples.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
@@ -1297,30 +1296,27 @@
         count[groupable_array.indexOf(biom.columns[selected_samples[i]].metadata[cur_attribute])].push(selected_samples[i]);
       }
       d3.select('#taxonomy_container').attr("width", 1200).attr("height", 250 * groupable_array.length + 200);
-      alphagroupble_array = _.clone(groupable_array).sort();
-      console.log(groupable_array);
-      console.log(alphagroupble_array);
       _results = [];
       for (i = _o = 0, _ref6 = groupable_array.length - 1; 0 <= _ref6 ? _o <= _ref6 : _o >= _ref6; i = 0 <= _ref6 ? ++_o : --_o) {
         donutArr = [];
         for (j = _p = 0, _ref7 = selected_new_data_matrix_onLayer.length - 1; 0 <= _ref7 ? _p <= _ref7 : _p >= _ref7; j = 0 <= _ref7 ? ++_p : --_p) {
           donutArr.push(selected_new_data_matrix_onLayer[j][i]);
         }
-        _results.push(this.drawBasicDonut(i, groupable_array[i], donutArr, count[i], alphagroupble_array.indexOf(groupable_array[i])));
+        _results.push(this.drawBasicDonut(i, groupable_array[i], donutArr, count[i]));
       }
       return _results;
     };
 
-    taxonomyViz.prototype.drawBasicDonut = function(donutID, donutName, donutData, donutContainedSamp, posID) {
+    taxonomyViz.prototype.drawBasicDonut = function(donutID, donutName, donutData, donutContainedSamp) {
       var arc, g, infoPanel, pie, radius, svg, that, yScale,
         _this = this;
-      radius = 100;
+      radius = 125;
       yScale = d3.scale.pow().exponent(.4).domain([0, d3.max(donutData)]).range([0, 100]);
       arc = d3.svg.arc().outerRadius(radius).innerRadius(50);
       pie = d3.layout.pie().sort(null).value(function(d) {
         return yScale(d);
       });
-      d3.select('#taxonomy_container').append('div').attr("id", "donut_" + donutID).attr("class", "donutDiv").style('top', (250 + posID * 290) + 'px');
+      d3.select('#taxonomy_container').append('div').attr("id", "donut_" + donutID).attr("class", "donutDiv");
       svg = d3.select('#donut_' + donutID).append('svg').attr("width", 300).attr("height", 255).style("float", "left").append("g").attr("transform", "translate(" + 125 + "," + 125 + ")");
       svg.append('text').attr('dy', '.35em').attr('y', '-7').style('text-anchor', 'middle').attr("font-size", "12px").text(donutName);
       svg.append('text').attr('dy', '.35em').style('text-anchor', 'middle').attr("font-size", "14px").attr("font-weight", "bold").attr('y', '7').text(d3.sum(donutData));
@@ -1377,9 +1373,9 @@
         standardizedValue = d3.max(rectArr);
       }
       if (toggleStandard === 'dynamic') {
-        yScale = d3.scale.pow().exponent(.5).domain([0, d3.max(rectArr)]).range([2, 160]);
+        yScale = d3.scale.pow().exponent(.5).domain([0, d3.max(rectArr)]).range([2, 185]);
       } else {
-        yScale = d3.scale.pow().exponent(.5).domain([0, standardizedValue]).range([2, 160]);
+        yScale = d3.scale.pow().exponent(.5).domain([0, standardizedValue]).range([2, 185]);
       }
       eachBarWidth = 800 / containedSamp.length;
       if (eachBarWidth < 10) {
@@ -1392,7 +1388,7 @@
         }).attr('width', eachBarWidth - 3).attr("x", function(d, i) {
           return eachBarWidth * i + 50;
         }).attr("y", function(d, i) {
-          return 170 - yScale(d);
+          return 190 - yScale(d);
         }).style("fill", function(d, i) {
           if (totalFlag) {
             return '#ff8900';
@@ -1401,14 +1397,14 @@
           }
         });
         rectContainedSamp.selectAll('text').data(containedSamp).enter().append('text').text(function(d, i) {
-          return String(selected_phinchID_array[i]);
+          return String(selected_phinchID_array[i]).substring(0, 9);
         }).attr('x', function(d, i) {
           return eachBarWidth * (i + 0.5) + 50;
         }).attr('y', 200).attr('width', eachBarWidth).attr('text-anchor', 'end').attr("font-size", "9px").attr('fill', '#444').attr("transform", function(d, i) {
-          return "translate( " + (eachBarWidth / 3.3 * i - 120) + "," + (80 + i * 0.71 * eachBarWidth + eachBarWidth / 3) + ")rotate(-45)";
+          return "translate( " + (eachBarWidth / 3.3 * i - 120) + "," + (100 + i * 0.71 * eachBarWidth + eachBarWidth / 3) + ")rotate(-45)";
         });
         rule = rectContainedSamp.selectAll('g.rule').data(yScale.ticks(10)).enter().append('g').attr('class', 'rule').attr('transform', function(d) {
-          return "translate(0," + (172 - yScale(d)) + ")";
+          return "translate(0," + (192 - yScale(d)) + ")";
         });
         rule.append('line').attr('x1', 45).attr('x2', 870).style("stroke", function(d) {
           if (d) {
@@ -1491,7 +1487,7 @@
           content += '<p><b>' + attributes_array[i] + '</b>:&nbsp;&nbsp;';
           if (count[i].length > 0) {
             for (j = _t = 0, _ref11 = count[i].length - 1; 0 <= _ref11 ? _t <= _ref11 : _t >= _ref11; j = 0 <= _ref11 ? ++_t : --_t) {
-              content += count[i][j] + ', ';
+              content += selected_phinchID_array[count[i][j]] + ' (' + count[i][j] + '), ';
             }
           } else {
             content += 'no samples';
@@ -1524,7 +1520,7 @@
     taxonomyViz.prototype.drawBasicColumns = function(attributes_array) {
       var h, label, margin, max_single, rect, rule, svg, taxonomy, tooltip, w, x, y;
       this.fadeInOutCtrl();
-      w = sumEachCol.length < 80 ? 600 : sumEachCol.length * 18;
+      w = sumEachCol.length < 80 ? 1000 : sumEachCol.length * 18 + 200;
       h = 800;
       max_single = d3.max(sumEachCol);
       margin = {
