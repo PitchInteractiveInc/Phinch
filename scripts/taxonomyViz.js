@@ -1089,7 +1089,6 @@
       if (d.targetLinks.length === 0) {
         content += "<p>" + d.name + " is a source node. It has " + d.sourceLinks.length + " branches.</p><p>Their distributions are: </p>";
       } else if (d.sourceLinks.length === 0) {
-        console.log(d);
         content += "<p>" + d.name + " is an end node. Its absolute reads is " + d.targetLinks[0].absValue + ".</p></div>";
       } else {
         sourceTotal = 0;
