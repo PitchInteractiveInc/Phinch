@@ -991,7 +991,6 @@
           }
         }
         max_single = d3.max(sumEachTax);
-        console.log('max_single: ' + max_single);
         for (i = _k = 0, _ref2 = unique_taxonomy_comb_onLayer.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
           for (j = _l = 0, _ref3 = LayerID - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; j = 0 <= _ref3 ? ++_l : --_l) {
             if (nodesArr.indexOf(unique_taxonomy_comb_onLayer[i][j]) === -1) {
@@ -1088,15 +1087,16 @@
       infoPanel = d3.select("#taxonomy_container #sankeyInfo");
       content = "<div class='sankeyInfobox'><div id='sankeyRemover'><i class='icon-remove icon-large'></i></div>";
       if (d.targetLinks.length === 0) {
-        content += "<p>This is a source node. It has " + d.sourceLinks.length + " branches.</p><p>Their distributions are: </p>";
+        content += "<p>" + d.name + " is a source node. It has " + d.sourceLinks.length + " branches.</p><p>Their distributions are: </p>";
       } else if (d.sourceLinks.length === 0) {
-        content += "<p>This is an end node.</p><p>Its absolute reads is " + d.targetLinks[0].absValue + ".</p></div>";
+        console.log(d);
+        content += "<p>" + d.name + " is an end node. Its absolute reads is " + d.targetLinks[0].absValue + ".</p></div>";
       } else {
         sourceTotal = 0;
         for (k = _i = 0, _ref = d.sourceLinks.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; k = 0 <= _ref ? ++_i : --_i) {
           sourceTotal += d.sourceLinks[k].absValue;
         }
-        content += "<p>It has " + d.sourceLinks.length + " branches. The total reads is " + sourceTotal + "</p><p>Their distributions are: </p>";
+        content += "<p>" + d.name + " has " + d.sourceLinks.length + " branches. Its total reads is " + sourceTotal + ".</p><p>Their distributions are: </p>";
       }
       content += "</div>";
       infoPanel.html(content);

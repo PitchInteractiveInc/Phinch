@@ -846,7 +846,7 @@ class taxonomyViz
 					sumEachTax[i] += new_data_matrix_onLayer[i][selected_samples[j]]
 			
 			max_single = d3.max( sumEachTax )
-			console.log 'max_single: ' + max_single
+			# console.log 'max_single: ' + max_single
 			
 			# yScaleReverse = d3.scale.linear().domain([0, 10]).range([0, Math.pow(max_single,0.2)])
 
@@ -950,15 +950,16 @@ class taxonomyViz
 	clickLargeSnakeyNode: (d,i,taxonomySankey,svg) =>
 		infoPanel = d3.select("#taxonomy_container #sankeyInfo")
 		content = "<div class='sankeyInfobox'><div id='sankeyRemover'><i class='icon-remove icon-large'></i></div>"
-		if d.targetLinks.length == 0 
-			content += "<p>This is a source node. It has " + d.sourceLinks.length + " branches.</p><p>Their distributions are: </p>"
-		else if d.sourceLinks.length == 0 
-			content += "<p>This is an end node.</p><p>Its absolute reads is " + d.targetLinks[0].absValue + ".</p></div>"
+		if d.targetLinks.length == 0
+			content += "<p>" + d.name + " is a source node. It has " + d.sourceLinks.length + " branches.</p><p>Their distributions are: </p>"
+		else if d.sourceLinks.length == 0
+			console.log d
+			content += "<p>" + d.name + " is an end node. Its absolute reads is " + d.targetLinks[0].absValue + ".</p></div>"
 		else 
 			sourceTotal = 0
 			for k in [0..d.sourceLinks.length-1] 
 				sourceTotal += d.sourceLinks[k].absValue					
-			content += "<p>It has " + d.sourceLinks.length + " branches. The total reads is " + sourceTotal + "</p><p>Their distributions are: </p>"
+			content += "<p>" + d.name + " has " + d.sourceLinks.length + " branches. Its total reads is " + sourceTotal + ".</p><p>Their distributions are: </p>"
 		content += "</div>"
 		infoPanel.html(content);
 		@drawSmallSankey(infoPanel,d,taxonomySankey, svg)
