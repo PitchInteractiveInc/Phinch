@@ -812,14 +812,23 @@
       infoPanel = d3.select("#taxonomy_container").append("div").attr("id", "pinch_panel").style("visibility", "hidden");
       removePanel = d3.select("#taxonomy_container").append('div').attr('id', "removePanel").style("visibility", "hidden");
       removePanel.append('i').attr('class', 'icon-remove icon-large');
+      $('#bubbleSliderLeft').html(Math.max(1, d3.min(vizdata)));
+      $('#bubbleSliderRight').html(d3.max(vizdata));
       $('#bubbleSlider').slider({
         range: true,
-        min: 1,
+        min: Math.max(1, d3.min(vizdata)),
         max: d3.max(vizdata),
         values: [1, d3.max(vizdata)],
         slide: function(event, ui) {
-          console.log(ui.values[0]);
-          return console.log(ui.values[1]);
+          $('#bubbleSliderLeft').html(ui.values[0]);
+          $('#bubbleSliderRight').html(ui.values[1]);
+          return d3.selectAll('.node').transition().duration(750).ease("quad").style('opacity', function(d, i) {
+            if (d.value < ui.values[0] || d.value > ui.values[1]) {
+              return '0';
+            } else {
+              return '0.6';
+            }
+          });
         }
       });
       nodes = [];
@@ -879,7 +888,7 @@
       }).style("fill", function(d, i) {
         return fillCol[d.id % 20];
       }).style({
-        opacity: '1',
+        opacity: '0.6',
         stroke: 'none'
       }).on('mouseover', function(d, i) {
         d3.select(this).style({
@@ -895,7 +904,7 @@
         });
       }).on('mouseout', function(d) {
         d3.select(this).style({
-          opacity: '1',
+          opacity: '0.6',
           stroke: 'none'
         });
         return tooltip.style("visibility", "hidden");
@@ -1079,7 +1088,7 @@
       infoPanel = d3.select("#taxonomy_container #sankeyInfo");
       content = "<div class='sankeyInfobox'><div id='sankeyRemover'><i class='icon-remove icon-large'></i></div>";
       if (d.targetLinks.length === 0) {
-        content += "<p>This is a source node. It has " + d.sourceLinks.length + " branches.</p><p>Their distribution are: </p>";
+        content += "<p>This is a source node. It has " + d.sourceLinks.length + " branches.</p><p>Their distributions are: </p>";
       } else if (d.sourceLinks.length === 0) {
         content += "<p>This is an end node.</p><p>Its absolute reads is " + d.targetLinks[0].absValue + ".</p></div>";
       } else {
@@ -1087,7 +1096,7 @@
         for (k = _i = 0, _ref = d.sourceLinks.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; k = 0 <= _ref ? ++_i : --_i) {
           sourceTotal += d.sourceLinks[k].absValue;
         }
-        content += "<p>It has " + d.sourceLinks.length + " branches. The total reads is " + sourceTotal + "</p><p>Their distribution are: </p>";
+        content += "<p>It has " + d.sourceLinks.length + " branches. The total reads is " + sourceTotal + "</p><p>Their distributions are: </p>";
       }
       content += "</div>";
       infoPanel.html(content);
@@ -1840,6 +1849,11 @@
           }
           if (VizID === 1) {
             $('#ListBubble').fadeIn(500);
+            $('#slider').fadeIn(500);
+            $('.ui-slider-horizontal .ui-slider-handle').css({
+              "margin-top": "3px",
+              "border": "1px solid #ff8900"
+            });
           }
           if (VizID === 2) {
             $('#tags').fadeIn(500);
@@ -1852,7 +1866,10 @@
           if (VizID === 4) {
             $('#PercentValue').fadeIn(500);
             $('#legend_header').fadeIn(500);
-            return $('#count_header').fadeIn(500);
+            $('#count_header').fadeIn(500);
+          }
+          if (VizID === 5) {
+            return $('#layerSwitch').hide();
           }
         }
       });

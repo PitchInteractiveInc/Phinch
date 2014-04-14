@@ -671,19 +671,23 @@ class taxonomyViz
 			.style("visibility", "hidden")
 		removePanel.append('i').attr('class', 'icon-remove icon-large')
 
-
-		# adjust min max should later be input field 
-
-
 		# create a min max slider 
+		$('#bubbleSliderLeft').html( Math.max(1, d3.min(vizdata)) );
+		$('#bubbleSliderRight').html(d3.max(vizdata));
 		$('#bubbleSlider').slider({
 			range: true,
-			min: 1,
+			min: Math.max(1, d3.min(vizdata)),
 			max: d3.max(vizdata),
 			values: [1, d3.max(vizdata)],
 			slide: (event, ui) =>
-				console.log ui.values[0]
-				console.log ui.values[1]				
+				$('#bubbleSliderLeft').html(ui.values[0]);
+				$('#bubbleSliderRight').html(ui.values[1]);
+				d3.selectAll('.node').transition().duration(750).ease("quad").style('opacity',(d,i) ->
+					if d.value < ui.values[0] or d.value > ui.values[1]
+						return '0';
+					else
+						return '0.6';
+				)
 		});
 		
 		nodes = []
@@ -738,14 +742,14 @@ class taxonomyViz
 			.attr("cy", (d) -> return d.y )
 			.attr("r", (d) -> d.radius)
 			.style("fill", (d, i) -> return fillCol[d.id%20] )
-			.style({opacity:'1',stroke: 'none'})
+			.style({opacity:'0.6',stroke: 'none'})
 			.on('mouseover', (d, i) ->
 				d3.select(this).style({opacity:'1', stroke: '#000', 'stroke-width': '3' })
 				tooltip.html( "Taxonomy: " + d.name + "<br/><br/> Total Reads: " + d.value ) # vizdata[i]
 				tooltip.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px" })
 			)
 			.on('mouseout', (d) ->
-				d3.select(this).style({opacity:'1',stroke: 'none'})
+				d3.select(this).style({opacity:'0.6',stroke: 'none'})
 				tooltip.style("visibility", "hidden")
 			)
 			.on 'click', (d,i) -> 
@@ -947,14 +951,14 @@ class taxonomyViz
 		infoPanel = d3.select("#taxonomy_container #sankeyInfo")
 		content = "<div class='sankeyInfobox'><div id='sankeyRemover'><i class='icon-remove icon-large'></i></div>"
 		if d.targetLinks.length == 0 
-			content += "<p>This is a source node. It has " + d.sourceLinks.length + " branches.</p><p>Their distribution are: </p>"
+			content += "<p>This is a source node. It has " + d.sourceLinks.length + " branches.</p><p>Their distributions are: </p>"
 		else if d.sourceLinks.length == 0 
 			content += "<p>This is an end node.</p><p>Its absolute reads is " + d.targetLinks[0].absValue + ".</p></div>"
 		else 
 			sourceTotal = 0
 			for k in [0..d.sourceLinks.length-1] 
 				sourceTotal += d.sourceLinks[k].absValue					
-			content += "<p>It has " + d.sourceLinks.length + " branches. The total reads is " + sourceTotal + "</p><p>Their distribution are: </p>"
+			content += "<p>It has " + d.sourceLinks.length + " branches. The total reads is " + sourceTotal + "</p><p>Their distributions are: </p>"
 		content += "</div>"
 		infoPanel.html(content);
 		@drawSmallSankey(infoPanel,d,taxonomySankey, svg)
@@ -1673,11 +1677,11 @@ class taxonomyViz
 				$('#legend_header').fadeIn(500)
 			if VizID == 1
 				$('#ListBubble').fadeIn(500)
-				# $('#bubbleSlider').fadeIn(500)
-				# $('.ui-slider-horizontal .ui-slider-handle').css({
-				# 	"margin-top": "3px",
-				# 	"border": "1px solid #ff8900"
-				# })
+				$('#slider').fadeIn(500)
+				$('.ui-slider-horizontal .ui-slider-handle').css({
+					"margin-top": "3px",
+					"border": "1px solid #ff8900"
+				})
 			if VizID == 2
 				$('#tags').fadeIn(500)
 				$('#alertBox').fadeIn(500)
@@ -1685,11 +1689,12 @@ class taxonomyViz
 				$('#layer_6').off('click');
 				$('#layer_7').off('click');
 				$('#alertBox').html( "* " + unique_taxonomy_comb_count.length + " unique paths, cannot go deeper to the 6th or 7th layer.")
-
 			if VizID == 4
 				$('#PercentValue').fadeIn(500)
 				$('#legend_header').fadeIn(500)
 				$('#count_header').fadeIn(500)
+			if VizID == 5
+				$('#layerSwitch').hide()
 		})
 
 window.taxonomyViz = taxonomyViz

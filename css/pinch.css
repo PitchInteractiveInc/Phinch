@@ -932,13 +932,25 @@ rect.pane {
 	background: #ff8900;
 }
 
-#bubbleSlider {
+#slider {
 	display: none;
+	width: 180px;
+	margin-left: 1010px;
+	margin-top: -35px;
+	color: #ff8900;
+	font-size: 12px;
+}
+#bubbleSlider {
 	width: 175px;
-	margin-left: 980px;
 	border: 2px solid #ff8900;
 	position: absolute;
-	margin-top: 20px;	
+}
+#bubbleSliderLeft {
+	margin-bottom: 4px;
+}
+#bubbleSliderRight {
+	float: right;
+	margin-top: -20px;
 }
 
 #alertBox {
