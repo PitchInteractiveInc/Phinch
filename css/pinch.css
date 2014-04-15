@@ -1417,5 +1417,8 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-file-text-o:before { content: "\f0f6"; }
 .icon-fa-times:before { content: "\f00d"; }
 .icon-fa-users:before { content: "\f03a"; }
-
+.icon-fa-level-up:before {  content: "\f102"; font-weight: bold; }
+.icon-fa-level-down:before {content: "\f103"; font-weight: bold; }
+.icon-fa-level-up:hover { color: #ff8900; cursor: pointer;}
+.icon-fa-level-down:hover { color: #ff8900; cursor: pointer;}
 

@@ -16,6 +16,7 @@ class taxonomyViz
 	standardizedValue = 0
 	deleteOTUArr = []
 	deleteSampleArr = []
+	selectedSampleCopy = [] # array after deletion
 	new_data_matrix = []
 	unique_taxonomy_comb = []
 	columns_sample_name_array = []
@@ -392,6 +393,8 @@ class taxonomyViz
 		rect = taxonomy.selectAll('rect')
 			.data(Object)
 		.enter().append('rect')
+			.attr 'class', (d,i) -> 
+				return 'sample_' + i
 			.attr 'y', (d, i) -> 
 					return 14 * i
 			.attr 'x', (d, i) -> 
@@ -448,6 +451,10 @@ class taxonomyViz
 							deleteSampleArr.push(thisSampID)
 						that.drawD3Bar()
 
+		# to keep track of the swap positions 
+		swapPosArr = [0..selectedSampleCopy.length-1]
+		# console.log swapPosArr
+
 		# add y-axis
 		label = svg.selectAll('text')
 			.data(x.domain())
@@ -455,16 +462,56 @@ class taxonomyViz
 			.text (d,i) ->
 				return String(selected_phinchID_array[i]).substr(-12) # if i%2 == 1 then
 			.attr('x', - 13)
-			.attr 'y', (d,i) -> 
+			.attr('class', (d,i) -> return 'sampleTxt_' + i )
+			.attr 'y', (d,i) ->
 					return 14 * i + 9
 			.attr('text-anchor', 'end')
 			.attr("font-size", "10px")
 			.attr('fill', '#444')
 			.on 'mouseover', (d,i) ->
-				infoPanel.html(String(selected_phinchID_array[i]))
-				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px" })
-			.on 'mouseout', (d,i) ->
-				infoPanel.style( { "visibility": "hidden"})			
+				infoPanel.html('<div><i class="icon-fa-level-up icon-large" id="moveup_' + i + '"></i>&nbsp;&nbsp;' + String(selected_phinchID_array[selectedSampleCopy[i]]) + '&nbsp;&nbsp;<i class="icon-fa-level-down icon-large" id="movedown_' + i + '"></i></div>')
+				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 5) + "px", left: (d3.event.pageX + 5) + "px" })
+
+				$('.icon-fa-level-up').click( (e) ->
+
+					swaperId  = parseInt(e.target.id.replace('moveup_',''));  # 9
+					swaperPos = swapPosArr.indexOf(swaperId);          # 8
+					
+					if swaperPos != 0
+						swapeePos = swaperPos - 1;                     # 7
+						swapeeId  = swapPosArr[swapeePos];             # 3
+
+						d3.selectAll('.sample_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swapeePos )
+						d3.selectAll('.sample_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swaperPos )
+
+						d3.select('.sampleTxt_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swapeePos + 9)
+						d3.select('.sampleTxt_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swaperPos + 9)
+
+						swapPosArr[swapeePos] = swaperId;
+						swapPosArr[swaperPos] = swapeeId;
+
+				)
+				$('.icon-fa-level-down').click( (e) ->
+
+					swaperId  = parseInt(e.target.id.replace('movedown_','')); 
+					swaperPos = swapPosArr.indexOf(swaperId);      
+					
+					if swaperPos != swapPosArr.length-1
+						swapeePos = swaperPos + 1;                     
+						swapeeId  = swapPosArr[swapeePos];             
+
+						d3.selectAll('.sample_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swapeePos )
+						d3.selectAll('.sample_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swaperPos )
+
+						d3.select('.sampleTxt_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swapeePos + 9)
+						d3.select('.sampleTxt_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swaperPos + 9)
+
+						swapPosArr[swapeePos] = swaperId;
+						swapPosArr[swaperPos] = swapeeId;
+
+				)
+			# .on 'mouseout', (d,i) ->
+			# 	infoPanel.style( { "visibility": "hidden"})
 
 		# add title & x-axis 
 		svg.append("text")

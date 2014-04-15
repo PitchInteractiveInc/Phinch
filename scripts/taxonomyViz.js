@@ -4,7 +4,7 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   taxonomyViz = (function() {
-    var LayerID, VizID, biom, bubbleView, columns_sample_name_array, deleteOTUArr, deleteSampleArr, fillCol, format, globalColoring, groupable, layerNameArr, map_array, new_data_matrix, new_data_matrix_onLayer, percentage, selected_attributes_array, selected_attributes_units_array, selected_phinchID_array, selected_samples, standardizedValue, sumEachCol, sumEachTax, unique_taxonomy_comb, unique_taxonomy_comb_count, unique_taxonomy_comb_onLayer, vizdata;
+    var LayerID, VizID, biom, bubbleView, columns_sample_name_array, deleteOTUArr, deleteSampleArr, fillCol, format, globalColoring, groupable, layerNameArr, map_array, new_data_matrix, new_data_matrix_onLayer, percentage, selectedSampleCopy, selected_attributes_array, selected_attributes_units_array, selected_phinchID_array, selected_samples, standardizedValue, sumEachCol, sumEachTax, unique_taxonomy_comb, unique_taxonomy_comb_count, unique_taxonomy_comb_onLayer, vizdata;
 
     biom = null;
 
@@ -37,6 +37,8 @@
     deleteOTUArr = [];
 
     deleteSampleArr = [];
+
+    selectedSampleCopy = [];
 
     new_data_matrix = [];
 
@@ -440,7 +442,7 @@
     };
 
     taxonomyViz.prototype.drawD3Bar = function() {
-      var i, j, selectedSampleCopy, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3, _ref4;
+      var i, j, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3, _ref4;
       selectedSampleCopy = selected_samples.slice(0);
       vizdata = null;
       vizdata = new Array(new_data_matrix_onLayer.length);
@@ -484,7 +486,7 @@
     };
 
     taxonomyViz.prototype.drawBasicBars = function() {
-      var delePanel, divCont, h, i, infoPanel, label, legendArr, margin, max_single, rect, rule, svg, taxonomy, temp, that, w, x, y, _i, _j, _k, _ref, _ref1, _ref2;
+      var delePanel, divCont, h, i, infoPanel, label, legendArr, margin, max_single, rect, rule, svg, swapPosArr, taxonomy, temp, that, w, x, y, _i, _j, _k, _l, _ref, _ref1, _ref2, _ref3, _results;
       that = this;
       this.fadeInOutCtrl();
       w = 1200;
@@ -525,7 +527,9 @@
           return fillCol[i % 20];
         }).style('opacity', 1);
       });
-      rect = taxonomy.selectAll('rect').data(Object).enter().append('rect').attr('y', function(d, i) {
+      rect = taxonomy.selectAll('rect').data(Object).enter().append('rect').attr('class', function(d, i) {
+        return 'sample_' + i;
+      }).attr('y', function(d, i) {
         return 14 * i;
       }).attr('x', function(d, i) {
         if (!percentage) {
@@ -603,20 +607,69 @@
           });
         });
       });
+      swapPosArr = (function() {
+        _results = [];
+        for (var _i = 0, _ref = selectedSampleCopy.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; 0 <= _ref ? _i++ : _i--){ _results.push(_i); }
+        return _results;
+      }).apply(this);
       label = svg.selectAll('text').data(x.domain()).enter().append('text').text(function(d, i) {
         return String(selected_phinchID_array[i]).substr(-12);
-      }).attr('x', -13).attr('y', function(d, i) {
+      }).attr('x', -13).attr('class', function(d, i) {
+        return 'sampleTxt_' + i;
+      }).attr('y', function(d, i) {
         return 14 * i + 9;
       }).attr('text-anchor', 'end').attr("font-size", "10px").attr('fill', '#444').on('mouseover', function(d, i) {
-        infoPanel.html(String(selected_phinchID_array[i]));
-        return infoPanel.style({
+        infoPanel.html('<div><i class="icon-fa-level-up icon-large" id="moveup_' + i + '"></i>&nbsp;&nbsp;' + String(selected_phinchID_array[selectedSampleCopy[i]]) + '&nbsp;&nbsp;<i class="icon-fa-level-down icon-large" id="movedown_' + i + '"></i></div>');
+        infoPanel.style({
           "visibility": "visible",
-          top: (d3.event.pageY - 10) + "px",
-          left: (d3.event.pageX + 10) + "px"
+          top: (d3.event.pageY - 5) + "px",
+          left: (d3.event.pageX + 5) + "px"
         });
-      }).on('mouseout', function(d, i) {
-        return infoPanel.style({
-          "visibility": "hidden"
+        $('.icon-fa-level-up').click(function(e) {
+          var swapeeId, swapeePos, swaperId, swaperPos;
+          swaperId = parseInt(e.target.id.replace('moveup_', ''));
+          swaperPos = swapPosArr.indexOf(swaperId);
+          if (swaperPos !== 0) {
+            swapeePos = swaperPos - 1;
+            swapeeId = swapPosArr[swapeePos];
+            d3.selectAll('.sample_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', function() {
+              return 14 * swapeePos;
+            });
+            d3.selectAll('.sample_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', function() {
+              return 14 * swaperPos;
+            });
+            d3.select('.sampleTxt_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', function() {
+              return 14 * swapeePos + 9;
+            });
+            d3.select('.sampleTxt_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', function() {
+              return 14 * swaperPos + 9;
+            });
+            swapPosArr[swapeePos] = swaperId;
+            return swapPosArr[swaperPos] = swapeeId;
+          }
+        });
+        return $('.icon-fa-level-down').click(function(e) {
+          var swapeeId, swapeePos, swaperId, swaperPos;
+          swaperId = parseInt(e.target.id.replace('movedown_', ''));
+          swaperPos = swapPosArr.indexOf(swaperId);
+          if (swaperPos !== swapPosArr.length - 1) {
+            swapeePos = swaperPos + 1;
+            swapeeId = swapPosArr[swapeePos];
+            d3.selectAll('.sample_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', function() {
+              return 14 * swapeePos;
+            });
+            d3.selectAll('.sample_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', function() {
+              return 14 * swaperPos;
+            });
+            d3.select('.sampleTxt_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', function() {
+              return 14 * swapeePos + 9;
+            });
+            d3.select('.sampleTxt_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', function() {
+              return 14 * swaperPos + 9;
+            });
+            swapPosArr[swapeePos] = swaperId;
+            return swapPosArr[swaperPos] = swapeeId;
+          }
         });
       });
       svg.append("text").attr('y', -35).attr("font-size", "11px").text('Sequence Reads').attr('transform', function(d) {
@@ -646,7 +699,7 @@
         }
       });
       legendArr = [];
-      for (i = _i = 0, _ref = sumEachTax.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      for (i = _j = 0, _ref1 = sumEachTax.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
         temp = new Object();
         temp.originalID = i;
         temp.value = sumEachTax[i];
@@ -656,11 +709,11 @@
       this.createLegend(legendArr);
       divCont = '';
       if (!percentage) {
-        for (i = _j = 0, _ref1 = sumEachCol.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+        for (i = _k = 0, _ref2 = sumEachCol.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
           divCont += '<div class="fake" style="width:' + y(sumEachCol[i]) + 'px;"></div>';
         }
       } else {
-        for (i = _k = 0, _ref2 = sumEachCol.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
+        for (i = _l = 0, _ref3 = sumEachCol.length - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
           divCont += '<div class="fake" style="width:' + y(max_single) + 'px;"></div>';
         }
       }
