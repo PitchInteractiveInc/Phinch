@@ -504,8 +504,8 @@
       y = d3.scale.linear().domain([0, max_single]).range([0, w - margin.right - margin.left - 50]);
       format = d3.format(',d');
       svg = d3.select("#taxonomy_container").append("svg").attr("width", w).attr("height", h).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-      infoPanel = d3.select("#taxonomy_container").append("div").attr("class", "tooltipOverSmallThumb").style("visibility", "hidden");
-      delePanel = d3.select("#taxonomy_container").append("div").attr("class", "tooltipOverSmallThumb").style("visibility", "hidden");
+      infoPanel = d3.select("#taxonomy_container").append("div").attr("class", "basicTooltip").style("visibility", "hidden");
+      delePanel = d3.select("#taxonomy_container").append("div").attr("class", "basicTooltip").style("visibility", "hidden");
       taxonomy = svg.selectAll('g.taxonomy').data(vizdata).enter().append('g').attr('class', 'taxonomy').style('fill', function(d, i) {
         return fillCol[i % 20];
       }).on('mouseover', function(d, i) {
@@ -833,7 +833,7 @@
     };
 
     taxonomyViz.prototype.drawTaxonomyBubble = function() {
-      var adjust_max, adjust_min, comb_name, comb_name_list, force, i, infoPanel, j, maxRowHeight, max_single, node, nodes, radius_scale, removePanel, tooltip, vis, viz_series, _i, _j, _k, _l, _m, _n, _ref, _ref1, _ref2, _ref3, _ref4,
+      var adjust_max, adjust_min, bubbleRemover, comb_name, comb_name_list, force, i, infoPanel, j, maxRowHeight, max_single, node, nodes, radius_scale, tooltip, vis, viz_series, _i, _j, _k, _l, _m, _n, _ref, _ref1, _ref2, _ref3, _ref4,
         _this = this;
       this.fadeInOutCtrl();
       viz_series = new Array(unique_taxonomy_comb_onLayer.length);
@@ -861,10 +861,10 @@
         comb_name_list[i] = comb_name;
       }
       vis = d3.select("#taxonomy_container").append("svg").attr("width", 1000).attr("height", 1000).attr("style", "margin: 20px 0 0 50px;");
-      tooltip = d3.select("#taxonomy_container").append("div").attr("id", "pinch_tooltip").style("visibility", "hidden");
-      infoPanel = d3.select("#taxonomy_container").append("div").attr("id", "pinch_panel").style("visibility", "hidden");
-      removePanel = d3.select("#taxonomy_container").append('div').attr('id', "removePanel").style("visibility", "hidden");
-      removePanel.append('i').attr('class', 'icon-remove icon-large');
+      tooltip = d3.select("#taxonomy_container").append("div").attr("id", "bubbleTooltip").attr("class", 'basicTooltip').style("visibility", "hidden");
+      infoPanel = d3.select("#taxonomy_container").append("div").attr("id", "bubblePanel").style("visibility", "hidden");
+      bubbleRemover = d3.select("#taxonomy_container").append('div').attr('id', "bubbleRemover").style("visibility", "hidden");
+      bubbleRemover.append('i').attr('class', 'icon-remove icon-large');
       $('#bubbleSliderLeft').html(Math.max(1, d3.min(vizdata)));
       $('#bubbleSliderRight').html(d3.max(vizdata));
       $('#bubbleSlider').slider({
@@ -974,9 +974,9 @@
         }).transition().attr('r', '0').duration(750).delay(750).ease("quad-in-out");
         y = d3.scale.linear().domain([0, d3.max(viz_series[d.id])]).range([1, 115]);
         infoPanel.style("visibility", "visible");
-        removePanel.style("visibility", 'visible');
+        bubbleRemover.style("visibility", 'visible');
         curColor = d3.select(this).style("fill");
-        infoPanel.html('<div class="taxonomyHeader">' + d.name.substring(0, 70) + '&nbsp;&nbsp;' + format(d3.sum(viz_series[d.id])) + ' Reads &nbsp;<span>SAMPLE DISTRIRBUTION</span></div><svg width="813px" style="float: right; padding: 0 20px; border: 1px solid #c8c8c8; border-top: none;" height="' + Math.ceil(viz_series[d.id].length / 5 + 1) * 25 + '"></svg>');
+        infoPanel.html('<div class="bubbleTaxHeader">' + d.name.substring(0, 70) + '&nbsp;&nbsp;' + format(d3.sum(viz_series[d.id])) + ' Reads &nbsp;<span>SAMPLE DISTRIRBUTION</span></div><svg width="813px" style="float: right; padding: 0 20px; border: 1px solid #c8c8c8; border-top: none;" height="' + Math.ceil(viz_series[d.id].length / 5 + 1) * 25 + '"></svg>');
         barrect = infoPanel.select('svg').selectAll('rect').data(viz_series[d.id]);
         valrect = infoPanel.select('svg').selectAll('text').data(viz_series[d.id]);
         txtrect = infoPanel.select('svg').selectAll('text').data(selected_samples);
@@ -1007,10 +1007,10 @@
           return 25 * Math.floor(i / 5) + 31 + 'px';
         }).attr("text-anchor", 'end').attr("font-size", "10px").attr("fill", "#bbb");
       });
-      return d3.select('#removePanel').on('click', function(d) {
+      return d3.select('#bubbleRemover').on('click', function(d) {
         tooltip.style("display", "block");
         infoPanel.style("visibility", "hidden");
-        removePanel.style("visibility", 'hidden');
+        bubbleRemover.style("visibility", 'hidden');
         if (bubbleView) {
           force.resume();
         }
@@ -1638,7 +1638,7 @@
       })).rangeRoundBands([0, w - margin.right - margin.left]);
       y = d3.scale.linear().domain([0, max_single]).range([0, h - margin.top - margin.bottom]);
       svg = d3.select("#taxonomy_container").append("svg").attr("width", w).attr("height", h + 100).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-      tooltip = d3.select("#taxonomy_container").append("div").attr("class", "tooltipOverSmallThumb").style("visibility", "hidden");
+      tooltip = d3.select("#taxonomy_container").append("div").attr("class", "basicTooltip").style("visibility", "hidden");
       taxonomy = svg.selectAll('g.taxonomy').data(vizdata).enter().append('g').attr('class', 'taxonomy').style('fill', function(d, i) {
         return fillCol[i % 20];
       }).on('mouseover', function(d, i) {
@@ -1650,7 +1650,7 @@
           'fill': fillCol[i % 20]
         });
       });
-      rect = taxonomy.selectAll('rect').data(Object).enter().append('rect').attr('class', 'pane').attr('x', function(d, i) {
+      rect = taxonomy.selectAll('rect').data(Object).enter().append('rect').attr('x', function(d, i) {
         if (sumEachCol.length < 80) {
           return x(d.x) + i * 3;
         } else {
@@ -1878,11 +1878,11 @@
 
     taxonomyViz.prototype.fadeInOutCtrl = function() {
       $('#taxonomy_container').html("");
-      $('#loadingLarge').css('opacity', '1');
-      return $('#loadingLarge').animate({
+      $('#loadingIcon').css('opacity', '1');
+      return $('#loadingIcon').animate({
         opacity: 0
       }, {
-        duration: 2000,
+        duration: 800,
         specialEasing: {
           width: "easeInOutQuad"
         },

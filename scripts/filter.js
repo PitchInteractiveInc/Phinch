@@ -66,10 +66,10 @@
           _this.generateColumnsValues();
           _this.generateDate();
           $("#file_details").append("ANALYZING &nbsp;<span>" + filename.substring(0, 52) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Samples &nbsp;<em>" + format(biom.shape[1]) + "</em>");
-          $('#export').click(function() {
+          $('#goExport').click(function() {
             return _this.downloadPhinch(0);
           });
-          $('#gallery').click(function() {
+          $('#goGallery').click(function() {
             return _this.downloadPhinch(1);
           });
           _this.generateLeftDates();
@@ -334,13 +334,13 @@
               content += "<div style='display: none;' id = 'expend_collapse_dates_" + (m + 1) + "'>" + "<div class= 'biom_valid_att_thumbnail_dates' id='thumb_dates_" + (m + 1) + "'></div>";
               content += "<div class='biom_valid_att_slider' id='slider_dates_" + (m + 1) + "'></div>";
               if (this.sorted_number_date_array_d[m][0].length < 9) {
-                content += "<p class='range_left_dates' id='range_dates_" + (m + 1) + "_left'>" + moment(this.sorted_number_date_array_d[m][0], "YYYYMMDD").format("YYYY-MM-DD") + "</p>";
-                content += "<p class='range_right_dates' id='range_dates_" + (m + 1) + "_right'>" + moment(this.sorted_number_date_array_d[m][this.sorted_number_date_array_d[m].length - 1], "YYYYMMDD").format("YYYY-MM-DD") + "</p>";
+                content += "<p class='range range_left_dates' id='range_dates_" + (m + 1) + "_left'>" + moment(this.sorted_number_date_array_d[m][0], "YYYYMMDD").format("YYYY-MM-DD") + "</p>";
+                content += "<p class='range range_right_dates' id='range_dates_" + (m + 1) + "_right'>" + moment(this.sorted_number_date_array_d[m][this.sorted_number_date_array_d[m].length - 1], "YYYYMMDD").format("YYYY-MM-DD") + "</p>";
                 min_timestamp = moment(this.sorted_number_date_array_d[m][0], "YYYYMMDD").utc().format("X");
                 max_timestamp = moment(this.sorted_number_date_array_d[m][this.sorted_number_date_array_d[m].length - 1], "YYYYMMDD").utc().format("X");
               } else {
-                content += "<p class='range_left_dates' id='range_dates_" + (m + 1) + "_left'>" + moment(this.sorted_number_date_array_d[m][0], "YYYYMMDDHHmmss").format("YYYY-MM-DD<br/>HH:mm:ss") + "</p>";
-                content += "<p class='range_right_dates' id='range_dates_" + (m + 1) + "_right'>" + moment(this.sorted_number_date_array_d[m][this.sorted_number_date_array_d[m].length - 1], "YYYYMMDDHHmmss").format("YYYY-MM-DD<br/>HH:mm:ss") + "</p>";
+                content += "<p class='range range_left_dates' id='range_dates_" + (m + 1) + "_left'>" + moment(this.sorted_number_date_array_d[m][0], "YYYYMMDDHHmmss").format("YYYY-MM-DD<br/>HH:mm:ss") + "</p>";
+                content += "<p class='range range_right_dates' id='range_dates_" + (m + 1) + "_right'>" + moment(this.sorted_number_date_array_d[m][this.sorted_number_date_array_d[m].length - 1], "YYYYMMDDHHmmss").format("YYYY-MM-DD<br/>HH:mm:ss") + "</p>";
                 min_timestamp = moment(this.sorted_number_date_array_d[m][0], "YYYYMMDDHHmmss Z").utc().format("X");
                 max_timestamp = moment(this.sorted_number_date_array_d[m][this.sorted_number_date_array_d[m].length - 1], "YYYYMMDDHHmmss Z").utc().format("X");
               }
@@ -408,12 +408,12 @@
             }
             content += "<div class = 'icon-expand-collapse-c' id= 'expend_collapse_icon_" + (i + 1) + "'><i class='icon-expand-alt'></i></div>";
             content += "<div class='biom_valid_att_thumbnail_sm' id='thumb_sm_" + (i + 1) + "'></div>";
-            content += "<p class='range_new' id='range_" + (i + 1) + "_new'></p>";
+            content += "<p class='range range_new' id='range_" + (i + 1) + "_new'></p>";
             content += "<div style='display: none;' id = 'expend_collapse_" + (i + 1) + "'>" + "<div class='biom_valid_att_thumbnail' id='thumb_" + (i + 1) + "'></div>";
             content += "<div class='biom_valid_att_slider' id='slider_" + (i + 1) + "'></div>";
             content += "<div class='blackSticks'></div>";
-            content += "<p class='range_left' id='range_" + (i + 1) + "_left'></p>";
-            content += "<p class='range_right' id='range_" + (i + 1) + "_right'></p>";
+            content += "<p class='range range_left' id='range_" + (i + 1) + "_left'></p>";
+            content += "<p class='range range_right' id='range_" + (i + 1) + "_right'></p>";
             content += "<p class='biom_valid_notes' id='att_note_" + (i + 1) + "'></p></div>";
             $('#numeric_att').append("<div>" + content + "</div>");
             $('#expend_collapse_icon_' + (i + 1)).click(function(event) {
@@ -866,7 +866,7 @@
       max_single = d3.max(each_numeric_linechart1);
       y = d3.scale.linear().domain([0, max_single]).range([1, size[1]]);
       eachBarWidth = (size[0] + 2) / each_numeric_linechart1.length - 2;
-      tooltipOverPanel = d3.select(div).append("div").attr('class', 'tooltipOverSmallThumb').style("visibility", "hidden");
+      tooltipOverPanel = d3.select(div).append("div").attr('class', 'basicTooltip').style("visibility", "hidden");
       tempViz = d3.select(div).append("svg").attr("width", size[0]).attr("height", size[1]);
       return tempBar = tempViz.selectAll('rect').data(each_numeric_linechart1).enter().append("rect").attr('height', function(d) {
         return y(d);

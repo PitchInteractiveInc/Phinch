@@ -39,8 +39,8 @@ class filter
 
 				# Build
 				$("#file_details").append( "ANALYZING &nbsp;<span>" + filename.substring(0,52) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Samples &nbsp;<em>" + format(biom.shape[1]) + "</em>")
-				$('#export').click( () => @downloadPhinch(0) )
-				$('#gallery').click( () => @downloadPhinch(1) )
+				$('#goExport').click( () => @downloadPhinch(0) )
+				$('#goGallery').click( () => @downloadPhinch(1) )
 				@generateLeftDates()
 				@generateLeftNumeric()
 				@generateLeftNonNumeric()
@@ -236,13 +236,13 @@ class filter
 						content += "<div class='biom_valid_att_slider' id='slider_dates_" + (m+1) + "'></div>"
 
 						if @sorted_number_date_array_d[m][0].length < 9 
-							content += "<p class='range_left_dates' id='range_dates_" + (m+1) + "_left'>" + moment(@sorted_number_date_array_d[m][0], "YYYYMMDD").format("YYYY-MM-DD") + "</p>"
-							content += "<p class='range_right_dates' id='range_dates_" + (m+1) + "_right'>" + moment(@sorted_number_date_array_d[m][@sorted_number_date_array_d[m].length-1], "YYYYMMDD").format("YYYY-MM-DD") + "</p>"
+							content += "<p class='range range_left_dates' id='range_dates_" + (m+1) + "_left'>" + moment(@sorted_number_date_array_d[m][0], "YYYYMMDD").format("YYYY-MM-DD") + "</p>"
+							content += "<p class='range range_right_dates' id='range_dates_" + (m+1) + "_right'>" + moment(@sorted_number_date_array_d[m][@sorted_number_date_array_d[m].length-1], "YYYYMMDD").format("YYYY-MM-DD") + "</p>"
 							min_timestamp = moment(@sorted_number_date_array_d[m][0], "YYYYMMDD").utc().format("X")
 							max_timestamp = moment(@sorted_number_date_array_d[m][@sorted_number_date_array_d[m].length-1], "YYYYMMDD").utc().format("X")
 						else 
-							content += "<p class='range_left_dates' id='range_dates_" + (m+1) + "_left'>" + moment(@sorted_number_date_array_d[m][0], "YYYYMMDDHHmmss").format("YYYY-MM-DD<br/>HH:mm:ss") + "</p>"
-							content += "<p class='range_right_dates' id='range_dates_" + (m+1) + "_right'>" + moment(@sorted_number_date_array_d[m][@sorted_number_date_array_d[m].length-1], "YYYYMMDDHHmmss").format("YYYY-MM-DD<br/>HH:mm:ss") + "</p>"
+							content += "<p class='range range_left_dates' id='range_dates_" + (m+1) + "_left'>" + moment(@sorted_number_date_array_d[m][0], "YYYYMMDDHHmmss").format("YYYY-MM-DD<br/>HH:mm:ss") + "</p>"
+							content += "<p class='range range_right_dates' id='range_dates_" + (m+1) + "_right'>" + moment(@sorted_number_date_array_d[m][@sorted_number_date_array_d[m].length-1], "YYYYMMDDHHmmss").format("YYYY-MM-DD<br/>HH:mm:ss") + "</p>"
 							min_timestamp = moment(@sorted_number_date_array_d[m][0], "YYYYMMDDHHmmss Z").utc().format("X")
 							max_timestamp = moment(@sorted_number_date_array_d[m][@sorted_number_date_array_d[m].length-1], "YYYYMMDDHHmmss Z").utc().format("X")
 
@@ -301,12 +301,12 @@ class filter
 
 					content += "<div class = 'icon-expand-collapse-c' id= 'expend_collapse_icon_" + (i+1) + "'><i class='icon-expand-alt'></i></div>" 
 					content += "<div class='biom_valid_att_thumbnail_sm' id='thumb_sm_" + (i+1) + "'></div>"
-					content += "<p class='range_new' id='range_" + (i+1) + "_new'></p>"
+					content += "<p class='range range_new' id='range_" + (i+1) + "_new'></p>"
 					content += "<div style='display: none;' id = 'expend_collapse_" + (i+1) + "'>" + "<div class='biom_valid_att_thumbnail' id='thumb_" + (i+1) + "'></div>" 
 					content += "<div class='biom_valid_att_slider' id='slider_" + (i+1) + "'></div>" 
 					content += "<div class='blackSticks'></div>"
-					content += "<p class='range_left' id='range_" + (i+1) + "_left'></p>" 
-					content += "<p class='range_right' id='range_" + (i+1) + "_right'></p>" 
+					content += "<p class='range range_left' id='range_" + (i+1) + "_left'></p>" 
+					content += "<p class='range range_right' id='range_" + (i+1) + "_right'></p>" 
 					content += "<p class='biom_valid_notes' id='att_note_" + (i+1) + "'></p></div>" 
 
 					$('#numeric_att').append("<div>" + content + "</div>")
@@ -339,7 +339,6 @@ class filter
 					content = ""
 					content += "<input type='checkbox' name='non_numeric_check_group' id='non_numeric_check_" + (i+1)  + "' /><label for='non_numeric_check_" + (i+1) + "'></label><span class = 'biom_valid_attr'>" + no_data_attributes_array[i] + "</span>"
 					$('#non_numeric_att').append("<div>" + content + "</div>")
-
 					$('#non_numeric_check_' + (i+1)).click () => @livePreview()
 
 	generateLeftGroupable: () ->
@@ -687,7 +686,7 @@ class filter
 
 		tooltipOverPanel = d3.select(div)
 			.append("div")
-			.attr('class', 'tooltipOverSmallThumb')
+			.attr('class', 'basicTooltip')
 			.style("visibility", "hidden")
 
 		tempViz = d3.select(div).append("svg")

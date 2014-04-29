@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>PHINCH</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="css/pinch.css">
+    <link rel="stylesheet" href="css/utility.css">
+    <link rel="stylesheet" href="css/viz.css">
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-50346302-1']);
@@ -20,23 +17,15 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
     </script>
-    <!--[if lt IE 9]>
-        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <script>window.html5 || document.write('<script src="lib/html5shiv.js"><\/script>')</script>
-    <![endif]-->
 </head>
 
 <body>
-    <!--[if lt IE 7]>
-        <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-    <![endif]-->
-
     <section id = "head_sec">
         <p class = "logo"><a href="index.html"><img src="img/phinch-logo.jpg" height="50px"></a></p>
         <h3>GRAPH GALLERY</h3>
         <p id="help">HELP</p>
         <div id="dialog-modal">
-            <h4>How to Use</h4>
+            <h2>How to Use</h2>
             <p class="descPara">
 
                 <span>Instructions</span></br></br>
@@ -80,7 +69,7 @@
     
     <section id = "NotSupported">
         <br /> <br />
-        <h1>Not Supported</h1>
+        <h1>NOT SUPPORTED</h1>
         <p>The browser you are using does not support <a href="https://developer.mozilla.org/en-US/docs/IndexedDB" target="_blank">IndexedDB</a>, which is required for the Phinch framework!</p>
     </section>
 
@@ -89,32 +78,26 @@
         <hr width="100%">
         </br></br>
 
-        <!-- Graph 1 -->
         <div class="col3">
             <p class = "graphGalleryTitle"><span>Taxonomy Bar Chart</span></p>
             <img src="img/gallery_1.png">
         </div>
-         <!-- Graph 2 -->
         <div class="col3">
             <p class = "graphGalleryTitle"><span>Bubble Chart</span></p>
             <img src="img/gallery_2.png">
         </div>
-        <!-- Graph 3 -->
         <div class="col3">
             <p class = "graphGalleryTitle"><span>Sankey Diagram</span></p>
             <img src="img/gallery_3.png">
         </div>
-        <!-- Graph 4 -->
         <div class="col3">
             <p class = "graphGalleryTitle"><span>Donut Partition</span></p>
             <img src="img/gallery_4.png">
         </div>
-        <!-- Graph 5 -->
         <div class="col3">
             <p class = "graphGalleryTitle"><span>Attributes Column Chart</span></p>
             <img src="img/gallery_5.png">
         </div>
-        <!-- Graph 6 -->
         <div class="col3">
             <p class = "graphGalleryTitle"><span>Bubble Chart By OTU</span></p>
             <img src="img/gallery_6.png">
@@ -137,12 +120,12 @@
             <div class="line"></div>
             <div class="progressLine"></div>
             
-            <div id="PercentValue">
+            <div id="PercentValue" class="switchGroup">
                 <button id = "valueBtn" class="clicked">VALUE</button>
                 <button id = "percentBtn">%</button>
             </div>
 
-            <div id="ListBubble">
+            <div id="ListBubble" class="switchGroup">
                 <button id = "bubbleBtn" class="clicked">BUBBLE</button>
                 <button id = "listBtn">LIST</button>
             </div>
@@ -157,7 +140,8 @@
         </div>
 
         <div id="taxonomy_container"></div>
-        <img src="img/loadinglarge.gif" id="loadingLarge">
+        <div id="loadingIcon"><i class="icon-spinner icon-spin icon-large icon-4x"></i></div>
+
         <input type="text" name="search" placeholder="  search..." id = 'tags'>
         <div id = "autoCompleteList"></div>
         <div id="fake_taxonomy_container"></div>
@@ -191,10 +175,9 @@
     <script>
     if ( !( navigator.userAgent.match(/Chrome/i) || navigator.userAgent.match(/Firefox/i) || navigator.userAgent.match(/Safari/) ) || !window.File || !window.FileReader || !window.FileList || !window.Blob ){
         alert('Please use Chrome or Firefox or Safari! Your browser does not support the Phinch framework!');
-        $('#Page1').hide();
         $('#NotSupported').show();
-        $('#top_sec').animate({height:50}, 200);
-        $('#recent').hide();
+        $('#head_sec').animate({height:50}, 200);
+        $('#viz_container').hide();
     }   else {
 
         $( "#GraphGallery .col3" ).each( function(index) {

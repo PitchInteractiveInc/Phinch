@@ -22,8 +22,7 @@ class readFile
 			testfile = '../data/testdata.biom'  ## Dev TODO http://phinch.org/data/testdata.biom
 			rawFile = new XMLHttpRequest();
 			rawFile.open("GET", testfile, true);
-			$('#loadTestFile').html('Loading...');
-			$('#loadTestFile').addClass('loadingSmall');
+			$('#loadTestFile').html('Loading...&nbsp;&nbsp;<i class="icon-spinner icon-spin icon-large"></i>');
 
 			rawFile.onreadystatechange = () =>
 				if rawFile.readyState == 4
@@ -45,7 +44,6 @@ class readFile
 		fileDrag.addEventListener('dragleave', @dragFileProc, false)
 		fileDrag.addEventListener('drop', @dragFileProc, false)
 		fileDrag.addEventListener('drop', @handleFileSelect, false)
-
 
 	checkFile: (files) ->
 		if files.length == 0

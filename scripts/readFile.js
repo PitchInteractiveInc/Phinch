@@ -46,8 +46,7 @@
         testfile = '../data/testdata.biom';
         rawFile = new XMLHttpRequest();
         rawFile.open("GET", testfile, true);
-        $('#loadTestFile').html('Loading...');
-        $('#loadTestFile').addClass('loadingSmall');
+        $('#loadTestFile').html('Loading...&nbsp;&nbsp;<i class="icon-spinner icon-spin icon-large"></i>');
         rawFile.onreadystatechange = function() {
           var biomToStore, d;
           if (rawFile.readyState === 4) {

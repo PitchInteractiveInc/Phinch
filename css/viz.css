@@ -1,0 +1,410 @@
+
+/* Top Section */
+
+#goBackFilter { float: left; margin: 20px; width: 204px; height: 50px; border: none; background-image: url('images/left_arrow.jpg');}
+#goBackGallery { width: 204px; border: none; background-image: url('images/left_arrow.jpg');}
+
+.col3 { float: left; width: 31%;  height: auto; min-height: 250px; margin: 0% 10px 2% 10px; border: 2px solid #ccc; font-size: 17px; color: #6f6f6f;}
+.col3:hover { cursor: pointer; border: 2px solid #ff8900; background-color: #ff8900; color: #ffffff; -webkit-transition:.4s; -moz-transition:.4s; -o-transition:.4s; transition:.4s;}
+.col3 img { width: 100%; display: inline-block; border-top: 2px #ccc solid;}
+.graphGalleryTitle { width: 100%; height: 25px; float: left; text-align: center;}
+
+#taxonomy_container { width: 100%; opacity: 0;}
+#loadingIcon { position: absolute; top: 400px; left: 600px; opacity: 0;}
+
+/* Layer Switch Part */
+
+#layerSwitch { display: none;  width: 802px; height: 36px; background-color: #f2f2f2; margin: -13px 0px 0px 20px;}
+.line { width: 685px; height: 3px; background-color: #e4e4e4; position: absolute; margin-top: 18px; margin-left: 55px;}
+.progressLine { width: 120px; height: 3px; background-color: #ff8900; position: absolute; margin-top: 18px; margin-left: 57px;}
+.circle { position: relative; width: 80px; height: 65px; float: left; z-index: 3; background: url('images/circle.png') no-repeat; margin: -30px 17px 0px 17px;}
+.circle:hover { cursor: pointer; -o-transition:.6s; -ms-transition:.6s; -moz-transition:.6s; -webkit-transition:.6s; transition: .6s;}
+.selected_layer { background: url('images/circleOrange.png') no-repeat !important;}
+#layer_1:hover { background: url('images/kingdom.png') no-repeat; }
+#layer_2:hover { background: url('images/phylum.png') no-repeat; }
+#layer_3:hover { background: url('images/class.png') no-repeat; }
+#layer_4:hover { background: url('images/order.png') no-repeat; }
+#layer_5:hover { background: url('images/family.png') no-repeat; }
+#layer_6:hover { background: url('images/genus.png') no-repeat; }
+#layer_7:hover { background: url('images/species.png') no-repeat; }
+
+/* Button Switch */
+
+.switchGroup { display: none; position: absolute; border: 2px solid #ff8900; height: 32px; margin-left: 830px;}
+.switchGroup button { border: none; margin: 0; height: 32px; color: #ff8900; background: #fff; padding: 0 10px; font-weight: bold; font-size: 12px; }
+.switchGroup .clicked { color: #fff; background: #ff8900; -o-transition: background .6s; -ms-transition: background .6s; -moz-transition: background .6s; -webkit-transition: background .6s; transition: background  .6s; }
+
+/* Legend */
+
+#legend_header {
+	display: none;
+	position: fixed;
+	top: 350px;
+	right: 0px;
+	width: 146px;
+	height: 30px;
+	border: 2px solid #ff8900;
+	border-right: none;
+	color: #ff8900;
+	font-weight: bold;
+	text-align: center;
+	line-height: 30px;
+}
+#legend_header:hover {
+	cursor: pointer;
+}
+#legend_container {
+	opacity: 0;
+	position: fixed;
+	top: 384px;
+	right: 0;
+	border-left: 1px solid #c3c3c3;
+	border-bottom: 1px solid #c3c3c3;
+	background: rgba(255,255,255,0.6);
+}
+#legend_container p {
+	padding-left: 20px;
+	font-size: 13px;
+	margin: 10px 0 0 0;
+}
+#legend_container ul {
+	font-size: 12px;
+	line-height: 16px;
+	list-style: none;
+	margin: 10px 20px;
+	padding: 0;
+}
+
+/* Auto-Complete Sections */
+
+#tags {
+	display: none;
+	width: 200px;
+	height: 32px;
+	position: absolute;
+	right: 20px;
+	top: 191px;
+	font-size: 15px;
+	border: 1px solid #bbb;
+	background: url('images/search.png') no-repeat right center;
+}
+
+#autoCompleteList { 
+	display: none;
+	position: absolute;
+	right: 20px;
+	top: 240px;
+	font-size: 12px; 
+	line-height: 16px; 
+	border-radius: 3px; 
+	background: rgba(255,255,255,0.9); 
+	color: #000; 
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4); 
+	-moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	overflow-y: scroll;
+	max-height: 400px;
+	z-index: 1;
+}
+#autoCompleteList ul {
+	list-style: none;
+	padding: 0 20px;
+}
+#autoCompleteList ul li:hover{
+	background: rgba(239,193,79,0.6);
+	cursor: pointer;
+}
+
+/* 1 Taxonomy Bar Chart */
+
+#deleteSampleArr {
+	list-style: none;
+	padding: 0 10px;
+}
+#deleteSampleArr li:hover {
+	background: rgba(239,193,79,0.6);
+	cursor: pointer;
+}
+
+.PanelHead {
+	font-size: 12px;
+	margin-bottom: 2px;
+	color: #444;
+	text-align: center;
+	margin: 0 10px 10px 10px;
+}
+.PanelRule {
+	height: 2px;
+	margin: 5px 10%;
+	background: #ddd;
+	width: 80%;
+}
+.PanelvaluesContainer {
+	padding-top: 7px;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-size: 11px;
+	text-align: center;
+}
+.PanelValue {
+	float: left;
+	top: 28px;
+	width: 33%;
+}
+.PanelTtl {
+	float: left;
+	width: 33%;
+}
+.PanelPercent {
+	float: left;
+	width: 33%;
+	margin-bottom: 10px;
+}
+.PanelSlider {
+	background-color: #ff8900;
+	height: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.PanelTrueValue {
+	background-color: rgba(68,68,68,0.3);
+	height: 16px;
+	margin-top: -23px;
+}
+.PanelTtlAvg {
+	color: #ff8900;
+	font-weight: bold;
+}
+#fake_taxonomy_container {
+	position: absolute;
+	top: 270px;
+	left: 50px;
+	z-index: -1;
+}
+.fake {
+	height: 12px;
+	margin-bottom: 2px;
+	background-color: rgba(0,0,0,0); 
+}
+#outline {
+	display: none;
+	position: fixed;
+	right: 0px;
+	top: 420px;
+	cursor: default !important;
+}
+
+/* 2 Bubble Chart */
+
+#bubbleTooltip { width: 300px; line-height: 16px; overflow-wrap: break-word;}
+#bubblePanel { position: absolute; top: 288px; left: 200px; width: 880px; text-align: left; background: rgba(255,255,255,0.9);}
+#bubbleRemover { position:absolute; top:298px; left: 1050px; cursor: pointer;}
+
+.bubbleTaxHeader { width: 860px; height: 40px; line-height: 40px; padding-left: 50px; font-weight: bold; background: url('images/header.png') no-repeat;}
+.bubbleTaxHeader span { color: #c3c3c3;}
+
+#slider {
+	display: none;
+	width: 180px;
+	margin-left: 1010px;
+	margin-top: -35px;
+	color: #ff8900;
+	font-size: 12px;
+}
+#bubbleSlider {
+	width: 175px;
+	border: 2px solid #ff8900;
+	position: absolute;
+}
+#bubbleSliderLeft {
+	margin-bottom: 4px;
+}
+#bubbleSliderRight {
+	float: right;
+	margin-top: -20px;
+}
+
+/* 3 Sankey Diagram */
+
+#alertBox {
+	display: none;
+	width: 350px;
+	height: 33px;
+	color: #ff8900;
+	margin-left: 415px;
+	line-height: 33px;
+	font-size: 12px;
+	font-style: italic;
+}
+
+.nullnode {
+	display: none;
+}
+.node rect {
+	fill-opacity: .6;
+	shape-rendering: crispEdges;
+}
+.node rect:hover {
+	cursor: pointer;
+	fill-opacity: 1;
+}
+
+.node text {
+	pointer-events: none;
+	text-shadow: 0 1px 0 #fff;
+	font-size: 10px;
+}
+.link {
+	fill-opacity: .2;
+}
+.link:hover {
+	fill-opacity: .6;
+	cursor: pointer;
+}
+
+#sankeyInfo {
+	position: fixed;
+	top: 50px;
+	width: 100%;
+	height: 750px;
+	margin-top: 100px;
+	background: rgba(255,255,255,0.9);
+	color: #000;	
+}
+.sankeyInfobox {
+	width: 800px;
+	height: 850px;
+	padding: 0 20px;
+	border: 1px solid #c8c8c8;
+	margin: 0 auto;
+	margin-top: -100px;
+	background-color:white;
+	position: relative;
+}
+
+#sankeyRemover {
+	cursor: pointer;
+	width: 15px;
+	height: 20px;
+	margin: 15px;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+/* 4 Donut Partition */
+
+.donutDiv {
+	width: 1200px;
+	height: 270px;
+	margin-left: 50px;
+	margin-top: 15px;
+	position: absolute;
+}
+.panelCombSample {
+	float: left;
+	width: 880px;
+	height: 235px;
+	margin-top: 10px;
+	font-size: 12px;
+	padding: 5px;
+	border-radius: 3px;
+	background: rgba(255,255,255,0.9);
+	color: #000;
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	-moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	border: 1px solid rgba(200,200,200,0.85);
+	text-align: right;
+	overflow: hidden;
+}
+
+.containedTaxonomy {
+	padding-right: 20px;
+	font-style: italic;
+}
+
+.toggleStandard {
+	background: #ff8900;
+	cursor: pointer;
+	margin-right: 10px;
+	padding: 0 5px;
+} 
+
+
+/* 5 Attributes Column Chart */
+
+#attributes_dropdown {
+	position: absolute;
+	top: 115px;
+	right: 20px;
+	height: 32px;
+	border: 2px solid #ff8900;
+}
+
+#count_header {
+	display: none;
+	position: fixed;
+	top: 600px;
+	right: 0px;
+	width: 146px;
+	height: 30px;
+	border: 2px solid #ff8900;
+	border-right: none;
+	color: #ff8900;
+	font-weight: bold;
+	text-align: center;
+	line-height: 30px;
+}
+#count_header:hover {
+	cursor: pointer;
+}
+#count_container {
+	opacity: 0;
+	position: fixed;
+	top: 634px;
+	right: 0;
+	border-left: 1px solid #c3c3c3;
+	border-bottom: 1px solid #c3c3c3;
+	background: rgba(255,255,255,0.6);
+	width: 400px;
+	overflow-wrap: break-word;
+	padding-bottom: 10px;
+}
+
+#count_container span {
+	font-size: 14px; 
+	font-weight: bold;
+	color: #ff8900;
+	text-align: center;
+	display: block;
+	margin: 5px 0;
+}
+#count_container p {
+	margin: 0;
+	font-size: 12px;
+	padding: 1px 20px;	
+}
+
+
+/* 6 Bubble Chart By OTU */
+
+circle {
+	fill: #ff8900;
+	stroke: #999;
+	/*pointer-events: all;*/
+}
+
+circle.parent {
+	fill: #ff8900;
+	fill-opacity: .1;
+	/*stroke: steelblue;*/
+}
+
+circle.parent:hover {
+	stroke: #ff7f0e;
+	stroke-width: 2px;
+}
+
+circle.child {
+	pointer-events: none;
+}
+

@@ -359,13 +359,13 @@ class taxonomyViz
 		# add small panel when click 
 		infoPanel = d3.select("#taxonomy_container")
 			.append("div")
-			.attr("class", "tooltipOverSmallThumb")
+			.attr("class", "basicTooltip")
 			.style("visibility", "hidden")
 
 		# add the deletion panel
 		delePanel = d3.select("#taxonomy_container")
 			.append("div")
-			.attr("class", "tooltipOverSmallThumb")
+			.attr("class", "basicTooltip")
 			.style("visibility", "hidden")
 
 		# add main viz svg
@@ -704,19 +704,20 @@ class taxonomyViz
 
 		tooltip = d3.select("#taxonomy_container")
 			.append("div")
-			.attr("id", "pinch_tooltip")
+			.attr("id", "bubbleTooltip")
+			.attr("class", 'basicTooltip')
 			.style("visibility", "hidden")
 
 		infoPanel = d3.select("#taxonomy_container")
 			.append("div")
-			.attr("id", "pinch_panel")
+			.attr("id", "bubblePanel")
 			.style("visibility", "hidden")
 
-		removePanel = d3.select("#taxonomy_container")
+		bubbleRemover = d3.select("#taxonomy_container")
 			.append('div')
-			.attr('id',"removePanel")
+			.attr('id',"bubbleRemover")
 			.style("visibility", "hidden")
-		removePanel.append('i').attr('class', 'icon-remove icon-large')
+		bubbleRemover.append('i').attr('class', 'icon-remove icon-large')
 
 		# create a min max slider 
 		$('#bubbleSliderLeft').html( Math.max(1, d3.min(vizdata)) );
@@ -818,9 +819,9 @@ class taxonomyViz
 
 				y = d3.scale.linear().domain([0, d3.max(viz_series[d.id])]).range([1,115]) # max_single # standardized 
 				infoPanel.style("visibility", "visible")
-				removePanel.style("visibility",'visible')
+				bubbleRemover.style("visibility",'visible')
 				curColor = d3.select(this).style("fill")
-				infoPanel.html('<div class="taxonomyHeader">' + d.name.substring(0,70) + '&nbsp;&nbsp;' + format(d3.sum(viz_series[d.id])) + ' Reads &nbsp;<span>SAMPLE DISTRIRBUTION</span></div><svg width="813px" style="float: right; padding: 0 20px; border: 1px solid #c8c8c8; border-top: none;" height="' + Math.ceil(viz_series[d.id].length / 5 + 1) * 25 + '"></svg>') # height="100px"
+				infoPanel.html('<div class="bubbleTaxHeader">' + d.name.substring(0,70) + '&nbsp;&nbsp;' + format(d3.sum(viz_series[d.id])) + ' Reads &nbsp;<span>SAMPLE DISTRIRBUTION</span></div><svg width="813px" style="float: right; padding: 0 20px; border: 1px solid #c8c8c8; border-top: none;" height="' + Math.ceil(viz_series[d.id].length / 5 + 1) * 25 + '"></svg>') # height="100px"
 				barrect = infoPanel.select('svg').selectAll('rect').data(viz_series[d.id])
 				valrect = infoPanel.select('svg').selectAll('text').data(viz_series[d.id])
 				txtrect = infoPanel.select('svg').selectAll('text').data(selected_samples)
@@ -855,10 +856,10 @@ class taxonomyViz
 					.attr("font-size", "10px")
 					.attr("fill", "#bbb")
 
-		d3.select('#removePanel').on 'click', (d) ->
+		d3.select('#bubbleRemover').on 'click', (d) ->
 			tooltip.style("display", "block")
 			infoPanel.style("visibility", "hidden")
-			removePanel.style("visibility",'hidden')
+			bubbleRemover.style("visibility",'hidden')
 			if bubbleView
 				force.resume() 
 			d3.selectAll(".node").transition()
@@ -1480,7 +1481,7 @@ class taxonomyViz
 		# add tooltip 
 		tooltip = d3.select("#taxonomy_container")
 			.append("div")
-			.attr("class", "tooltipOverSmallThumb")
+			.attr("class", "basicTooltip")
 			.style("visibility", "hidden")
 
 		# add main viz svg
@@ -1498,7 +1499,6 @@ class taxonomyViz
 		rect = taxonomy.selectAll('rect')
 			.data(Object)
 		.enter().append('rect')
-			.attr('class', 'pane')
 			.attr('x', (d, i) -> 
 				if sumEachCol.length < 80 
 					return x(d.x) + i * 3 
@@ -1711,8 +1711,8 @@ class taxonomyViz
 	fadeInOutCtrl: () -> 
 
 		$('#taxonomy_container').html("")
-		$('#loadingLarge').css('opacity','1')
-		$('#loadingLarge').animate( {opacity: 0}, {duration: 2000, specialEasing: {width: "easeInOutQuad"}, complete: () ->
+		$('#loadingIcon').css('opacity','1')
+		$('#loadingIcon').animate( {opacity: 0}, {duration: 800, specialEasing: {width: "easeInOutQuad"}, complete: () ->
 			
 			$('#taxonomy_container').animate( {opacity: 1}, {duration: 2000} )
 			$('#layerSwitch').fadeIn(500)
