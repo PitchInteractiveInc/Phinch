@@ -107,11 +107,19 @@
 }
 #autoCompleteList ul {
 	list-style: none;
-	padding: 0 20px;
+	padding: 15px 10px 0px 15px;
+}
+#autoCompleteList ul li {
+	padding: 5px 0;
 }
 #autoCompleteList ul li:hover{
 	background: rgba(239,193,79,0.6);
 	cursor: pointer;
+}
+#autoCompleteList ul em {
+	color: #ff8900;
+	float: right;
+	font-style: normal;
 }
 
 /* 1 Taxonomy Bar Chart */
@@ -154,15 +162,33 @@
 	padding: 5px 10px;
 	background: #fff;
 }
-
-#deleteSampleArr {
-	list-style: none;
-	padding: 0 10px;
+.hideSample:hover {
+	cursor: pointer;
 }
 
-#deleteSampleArr li:hover {
-	background: rgba(239,193,79,0.6);
+#deleteSampleArr {
+	margin: 0px 0px 0px 20px;
+}
+#deleteSampleArr span {
+	color: #ff8900;
 	cursor: pointer;
+}
+#deleteSampleArr ul {
+	opacity: 0;
+	width: 400px;
+	list-style: none;
+	margin-top: -5px;
+	padding: 20px 0 0 0;
+}
+#deleteSampleArr ul li {
+	padding: 5px 10px;	
+}
+#deleteSampleArr ul li span {
+	float: right;
+}
+#iconRemover4SampleDiv {
+	opacity: 0;
+	margin-left: 380px; position: absolute; z-index: 3; 
 }
 
 #fake_taxonomy_container {

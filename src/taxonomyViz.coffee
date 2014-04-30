@@ -337,11 +337,42 @@ class taxonomyViz
 		that = this
 		@fadeInOutCtrl()
 
-		# clean canvas     
+		# 1 draw the delete sample section
+		if deleteSampleArr.length > 0
+			content = '<ul class="basicTooltip">'
+			for k in [0..deleteSampleArr.length-1]
+				content += '<li>Sample ' + deleteSampleArr[k] + ', ' + String(selected_phinchID_array[deleteSampleArr[k]]) + '<span id = "delete_' + deleteSampleArr[k] + '">show</span></li>'
+			content += '</ul>'
+
+			d3.select("#taxonomy_container").append("div")
+				.attr('id', 'deleteSampleArr')
+				.html('<p>' + deleteSampleArr.length + ' samples hidden&nbsp;&nbsp;<span>show all</span></p><i class="icon-remove icon-large" id = "iconRemover4SampleDiv"></i>' + content)
+
+			$('#deleteSampleArr p span').on('click',(e) ->
+				d3.selectAll('#deleteSampleArr ul').transition().duration(200).ease("quad").style('opacity',1);
+				d3.selectAll('#iconRemover4SampleDiv').transition().duration(250).ease("quad").style('opacity',1);
+			)
+
+			$('#iconRemover4SampleDiv').on('click',(e) ->
+				d3.selectAll('#deleteSampleArr ul').transition().duration(250).ease("quad").style('opacity',0);
+				d3.selectAll('#iconRemover4SampleDiv').transition().duration(200).ease("quad").style('opacity',0);
+			)
+
+			$('#deleteSampleArr ul li').each (index) ->
+				$(this).click () ->
+					thisSampID = parseInt( $(this)[0].children[0].id.replace('delete_',''))
+					deleteSampleArr.splice(deleteSampleArr.indexOf(thisSampID),1)
+					updateContent = ''
+					for k in [0..deleteSampleArr.length-1]
+						updateContent += '<li>Sample ' + deleteSampleArr[k] + ', ' + String(selected_phinchID_array[deleteSampleArr[k]]) + '<span id = "delete_' + deleteSampleArr[k] + '">show</span></li>'
+					d3.select('#deleteSampleArr ul').html(updateContent)					
+					that.drawD3Bar()
+
+		# 2 clean canvas     
 		w = 1200 
 		h = sumEachCol.length * 14 + 200
 		max_single = d3.max(sumEachCol)
-		margin = {top: 100, right: 20, bottom: 20, left: 100}
+		margin = {top: 75, right: 20, bottom: 20, left: 100}
 		x = d3.scale.ordinal()
 			.domain(vizdata[0].map( (d) -> return d.x ))
 			.rangeRoundBands([0, h - margin.top - margin.bottom])
@@ -356,26 +387,25 @@ class taxonomyViz
 		.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-		# add small panel when click 
+		# 3 add small panel when click 
 		infoPanel = d3.select("#taxonomy_container")
 			.append("div")
 			.attr("class", "basicTooltip")
 			.style("visibility", "hidden")
 
-		# add the deletion panel
+		# 4 add the deletion panel
 		delePanel = d3.select("#taxonomy_container")
 			.append("div")
-			.attr("class", "basicTooltip")
+			.attr("class", "basicTooltipFlat")
 			.style("visibility", "hidden")
 
-		# add main viz svg
+		# 5 add main viz svg
 		taxonomy = svg.selectAll('g.taxonomy')
 			.data(vizdata)
 		.enter().append('g')
 			.attr('class', 'taxonomy')
 			.style('fill', (d,i) -> return fillCol[i%20]  )
 			.on 'mouseover', (d,i) ->
-				# d3.select(this).style({ 'fill': d3.rgb(fillCol[i%20]).darker() })
 				index = i
 				d3.selectAll('g.taxonomy')
 					.style 'fill', (d,i) ->
@@ -389,7 +419,7 @@ class taxonomyViz
 			.on 'mouseout', (d,i) -> 
 				d3.selectAll('g.taxonomy').style( 'fill', (d,i) -> return fillCol[i%20]).style('opacity', 1)
 
-		# add each bar
+		# 6 add each bar
 		rect = taxonomy.selectAll('rect')
 			.data(Object)
 		.enter().append('rect')
@@ -418,45 +448,24 @@ class taxonomyViz
 				# content += '<div class="PanelInfo">AVERAGE TAXONOMY OCCURENCE ACROSS ALL SAMPLES<br/><span>' + ( 100 / sumEachCol.length).toFixed(2) + '%</span></div>'
 				# content += '<progress max="100" value="' + (100 / sumEachCol.length).toFixed(2) + '"></progress>'
 				content += '<br/><br/>'
-
 				infoPanel.html(content)
-				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px", "background": "rgba(255,255,255,0.9)" })
+				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY + 8) + "px", left: (d3.event.pageX + 8) + "px", "background": "rgba(255,255,255,0.9)" })
 				delePanel.style( { "visibility": "hidden"})
 			.on 'mouseout', (d,i) -> 
 				infoPanel.style( { "visibility": "hidden"})
-				# delePanel.style( { "visibility": "hidden"})
 			.on 'contextmenu', (d,i) ->
-				content = '' 
-				content = '<b><i>Remove sample '+ d.x + '?</i></b>&nbsp;&nbsp;<i class="icon-remove icon-large" id = "iconRemoverPanel"></i><div>'
-				if deleteSampleArr.length > 0
-					content += '<br/>Deleted samples: <ul id = "deleteSampleArr">'
-					for k in [0..deleteSampleArr.length-1]
-						content += '<li><input type="checkbox" id="delete_' + deleteSampleArr[k] + '" checked /><label style="margin-top: 1px;" for="delete_' + deleteSampleArr[k] + '"></label>&nbsp;&nbsp;Sample ' + deleteSampleArr[k] + '</li>'
-					content += '</ul></div>'
-				delePanel.html(content)
-				delePanel.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px", "background": "rgba(255,255,255,0.9)" })
 				infoPanel.style( { "visibility": "hidden"})
+				delePanel.html('<div class="hideSample">HIDE SAMPLE</div>')
+				delePanel.style( { "visibility": "visible", top: (d3.event.pageY + 15) + "px", left: (d3.event.pageX - 15) + "px" })
 
-				$('#iconRemoverPanel').click () -> 
+				$('.hideSample').click () ->
 					deleteSampleArr.push(d.x)
 					that.drawD3Bar()
-					
-				$('#deleteSampleArr li').each (index) ->
-					$(this).click () ->
-						thisSampID = parseInt( $(this)[0].children[0].id.replace('delete_',''))
-						if $('#delete_' + thisSampID).is(':checked')					
-							$('#delete_' + thisSampID).prop("checked", false)
-							deleteSampleArr.splice(deleteSampleArr.indexOf(thisSampID),1)
-						else
-							$('#delete_' + thisSampID).prop("checked", true)
-							deleteSampleArr.push(thisSampID)
-						that.drawD3Bar()
 
-		# to keep track of the swap positions 
+		# 7 to keep track of the swap positions 
 		swapPosArr = [0..selectedSampleCopy.length-1]
-		# console.log swapPosArr
 
-		# add y-axis
+		# 8 add y-axis
 		label = svg.append('g').selectAll('text')
 			.data(x.domain())
 		.enter().append('text')
@@ -470,22 +479,22 @@ class taxonomyViz
 			.attr("font-size", "10px")
 			.attr('fill', '#444')
 			.on 'mouseout', (d,i) ->
-				d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[selectedSampleCopy[i]]).substr(0,12))
-				# infoPanel.style( { "visibility": "hidden"})
+				d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[i]).substr(0,12)) # update texts 
 			.on 'mouseover', (d,i) ->
-				d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[selectedSampleCopy[i]]))
+				d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[i])) # update texts, full length
+				delePanel.html('<div style="height:15px;"><i class="icon-fa-level-up icon-2x" id="moveup_' + i + '"></i></div><div><i class="icon-fa-level-down icon-2x" id="movedown_' + i + '"></i></div><div class="hideSample">HIDE SAMPLE</div>')
+				delePanel.style( { "visibility": "visible", top: (d3.event.pageY ) + "px", left: (d3.event.pageX + 5) + "px" })
 
-				infoPanel.html('<div style="height:15px;"><i class="icon-fa-level-up icon-2x" id="moveup_' + i + '"></i></div><div><i class="icon-fa-level-down icon-2x" id="movedown_' + i + '"></i></div><div class="hideSample">HIDE SAMPLE</div>')
-				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 5) + "px", left: (d3.event.pageX + 5) + "px", "background": "rgba(255,255,255,0)" })
+				$('.hideSample').click (e) ->
+					deleteSampleArr.push(d) # d is the index here! 
+					that.drawD3Bar()
 
 				$('.icon-fa-level-up').click( (e) ->
-
-					swaperId  = parseInt(e.target.id.replace('moveup_',''));  # 9
-					swaperPos = swapPosArr.indexOf(swaperId);          		  # 8
-					
+					swaperId  = parseInt(e.target.id.replace('moveup_',''));  
+					swaperPos = swapPosArr.indexOf(swaperId);          		  
 					if swaperPos != 0
-						swapeePos = swaperPos - 1;                     # 7
-						swapeeId  = swapPosArr[swapeePos];             # 3
+						swapeePos = swaperPos - 1;                     
+						swapeeId  = swapPosArr[swapeePos]; 
 
 						d3.selectAll('.sample_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swapeePos )
 						d3.selectAll('.sample_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swaperPos )
@@ -495,10 +504,8 @@ class taxonomyViz
 
 						swapPosArr[swapeePos] = swaperId;
 						swapPosArr[swaperPos] = swapeeId;
-
 				)
 				$('.icon-fa-level-down').click( (e) ->
-
 					swaperId  = parseInt(e.target.id.replace('movedown_','')); 
 					swaperPos = swapPosArr.indexOf(swaperId);      
 					
@@ -514,10 +521,9 @@ class taxonomyViz
 
 						swapPosArr[swapeePos] = swaperId;
 						swapPosArr[swaperPos] = swapeeId;
-
 				)
 
-		# add title & x-axis 
+		# 9 add title & x-axis 
 		svg.append("text")
 			.attr('y', -35)
 			.attr("font-size", "11px")
@@ -546,7 +552,7 @@ class taxonomyViz
 				else 
 					return Math.round( i / (y.ticks(10).length) * 100 ) + '%'
 
-		# create legend 
+		# 10 create legend 
 		legendArr = [] 
 		for i in [0..sumEachTax.length-1]
 			temp = new Object() 
@@ -557,7 +563,7 @@ class taxonomyViz
 
 		@createLegend(legendArr)
 
-		# create fake divs for minimap
+		# 11 create fake divs for minimap
 		divCont = ''
 		if !percentage
 			for i in [0..sumEachCol.length-1]
@@ -569,7 +575,7 @@ class taxonomyViz
 		$('#fake_taxonomy_container').html(divCont)
 		$('#viz_container').append('<canvas id="outline" width="150" height="' + (window.innerHeight - 280) + '"></canvas>')
 
-		# create a minimap
+		# 12 create a minimap
 		if selected_samples.length > 20 
 			$('#outline').fracs('outline', {
 				crop: true,
@@ -616,20 +622,17 @@ class taxonomyViz
 					for i in [0..ui.content.length-1]
 						searchList.push(ui.content[i].value)
 					# searchList.sort( (a,b) -> return a.length - b.length )
-					content = '<i class="icon-remove icon-large" style="float:right; margin-right: 5px;" id = "iconRemover"></i><ul>'
+					content = '<i class="icon-remove icon-large" style="float:right; margin: 5px 10px 0 0;" id = "iconRemover"></i><ul>'
 					for i in [0..searchList.length-1]
 						if deleteOTUArr.indexOf(i) != -1 
 							content += '<li><span style = "display:block; background-color:#aaa; height: 12px; width: 12px; float: left; margin: 2px 0px;" ></span>&nbsp;&nbsp;'
-							content += '<input type="checkbox" id="search_' + i + '"/><label style="margin-top: 1px;" for="search_' + i + '"></label>&nbsp;&nbsp;&nbsp;'
+							content += searchList[i] + '&nbsp;&nbsp;<em id="search_' + i + '">show</em></li>'
 						else
 							content += '<li><span style = "display:block; background-color:' + fillCol[ availableTags.indexOf(searchList[i]) % 20] + '; height: 12px; width: 12px; float: left; margin: 2px 0px;" ></span>&nbsp;&nbsp;'
-							content += '<input type="checkbox" id="search_' + i + '" checked /><label style="margin-top: 1px;" for="search_' + i + '"></label>&nbsp;&nbsp;&nbsp;'
-						content += searchList[i] + '</li>'
+							content += searchList[i] + '&nbsp;&nbsp;<em id="search_' + i + '">hide</em></li>'
 					content += '</ul>'
 					$('#autoCompleteList').append(content)
-
 					$('#autoCompleteList ul li').each (index) ->
-						# that = this
 						$(this).mouseout () -> 
 							d3.selectAll('g.taxonomy').filter((d,i) -> (i is index) )
 								.style('fill', fillCol[index%20] )							
@@ -639,13 +642,13 @@ class taxonomyViz
 								.style('fill', d3.rgb( fillCol[index%20] ).darker() )
 
 						$(this).click () ->
-							if $('#search_' + index).is(':checked')
-								$('#search_' + index).prop("checked", false)
+							if $('#search_' + index).html() == 'hide'
+								$('#search_' + index).html('show') 
 								$(this).find('span').css('background-color', '#aaa')
 								$(this).css('color', '#aaa')
 								deleteOTUArr.push( index )
 							else
-								$('#search_' + index).prop("checked", true)
+								$('#search_' + index).html('hide') 
 								$(this).find('span').css('background-color', fillCol[index%20] )		
 								$(this).css('color', '#000')
 								deleteOTUArr.splice( deleteOTUArr.indexOf(index), 1)

@@ -486,14 +486,43 @@
     };
 
     taxonomyViz.prototype.drawBasicBars = function() {
-      var delePanel, divCont, h, i, infoPanel, label, legendArr, margin, max_single, rect, rule, svg, swapPosArr, taxonomy, temp, that, w, x, y, _i, _j, _k, _l, _ref, _ref1, _ref2, _ref3, _results;
+      var content, delePanel, divCont, h, i, infoPanel, k, label, legendArr, margin, max_single, rect, rule, svg, swapPosArr, taxonomy, temp, that, w, x, y, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3, _ref4, _results;
       that = this;
       this.fadeInOutCtrl();
+      if (deleteSampleArr.length > 0) {
+        content = '<ul class="basicTooltip">';
+        for (k = _i = 0, _ref = deleteSampleArr.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; k = 0 <= _ref ? ++_i : --_i) {
+          content += '<li>Sample ' + deleteSampleArr[k] + ', ' + String(selected_phinchID_array[deleteSampleArr[k]]) + '<span id = "delete_' + deleteSampleArr[k] + '">show</span></li>';
+        }
+        content += '</ul>';
+        d3.select("#taxonomy_container").append("div").attr('id', 'deleteSampleArr').html('<p>' + deleteSampleArr.length + ' samples hidden&nbsp;&nbsp;<span>show all</span></p><i class="icon-remove icon-large" id = "iconRemover4SampleDiv"></i>' + content);
+        $('#deleteSampleArr p span').on('click', function(e) {
+          d3.selectAll('#deleteSampleArr ul').transition().duration(200).ease("quad").style('opacity', 1);
+          return d3.selectAll('#iconRemover4SampleDiv').transition().duration(250).ease("quad").style('opacity', 1);
+        });
+        $('#iconRemover4SampleDiv').on('click', function(e) {
+          d3.selectAll('#deleteSampleArr ul').transition().duration(250).ease("quad").style('opacity', 0);
+          return d3.selectAll('#iconRemover4SampleDiv').transition().duration(200).ease("quad").style('opacity', 0);
+        });
+        $('#deleteSampleArr ul li').each(function(index) {
+          return $(this).click(function() {
+            var thisSampID, updateContent, _j, _ref1;
+            thisSampID = parseInt($(this)[0].children[0].id.replace('delete_', ''));
+            deleteSampleArr.splice(deleteSampleArr.indexOf(thisSampID), 1);
+            updateContent = '';
+            for (k = _j = 0, _ref1 = deleteSampleArr.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; k = 0 <= _ref1 ? ++_j : --_j) {
+              updateContent += '<li>Sample ' + deleteSampleArr[k] + ', ' + String(selected_phinchID_array[deleteSampleArr[k]]) + '<span id = "delete_' + deleteSampleArr[k] + '">show</span></li>';
+            }
+            d3.select('#deleteSampleArr ul').html(updateContent);
+            return that.drawD3Bar();
+          });
+        });
+      }
       w = 1200;
       h = sumEachCol.length * 14 + 200;
       max_single = d3.max(sumEachCol);
       margin = {
-        top: 100,
+        top: 75,
         right: 20,
         bottom: 20,
         left: 100
@@ -505,7 +534,7 @@
       format = d3.format(',d');
       svg = d3.select("#taxonomy_container").append("svg").attr("width", w).attr("height", h).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
       infoPanel = d3.select("#taxonomy_container").append("div").attr("class", "basicTooltip").style("visibility", "hidden");
-      delePanel = d3.select("#taxonomy_container").append("div").attr("class", "basicTooltip").style("visibility", "hidden");
+      delePanel = d3.select("#taxonomy_container").append("div").attr("class", "basicTooltipFlat").style("visibility", "hidden");
       taxonomy = svg.selectAll('g.taxonomy').data(vizdata).enter().append('g').attr('class', 'taxonomy').style('fill', function(d, i) {
         return fillCol[i % 20];
       }).on('mouseover', function(d, i) {
@@ -544,7 +573,6 @@
           return y(d.y) / sumEachCol[i] * max_single;
         }
       }).attr('height', 12).on('mouseover', function(d, i) {
-        var content;
         content = '';
         content += '<div class="PanelHead"><b>SAMPLE NAME:</b> ' + columns_sample_name_array[d.x] + '<br/><b>TAXONOMY:</b> ' + d.name + '</div>';
         content += '<div class="PanelInfo">TAXONOMY OCCURENCE IN THIS SAMPLE<br/><span>' + (d.y / sumEachCol[i] * 100).toFixed(2) + '%</span>&nbsp;&nbsp;<em>(' + format(d.y) + ' out of ' + format(sumEachCol[i]) + ')</em></div>';
@@ -555,8 +583,8 @@
         infoPanel.html(content);
         infoPanel.style({
           "visibility": "visible",
-          top: (d3.event.pageY - 10) + "px",
-          left: (d3.event.pageX + 10) + "px",
+          top: (d3.event.pageY + 8) + "px",
+          left: (d3.event.pageX + 8) + "px",
           "background": "rgba(255,255,255,0.9)"
         });
         return delePanel.style({
@@ -567,48 +595,23 @@
           "visibility": "hidden"
         });
       }).on('contextmenu', function(d, i) {
-        var content, k, _i, _ref;
-        content = '';
-        content = '<b><i>Remove sample ' + d.x + '?</i></b>&nbsp;&nbsp;<i class="icon-remove icon-large" id = "iconRemoverPanel"></i><div>';
-        if (deleteSampleArr.length > 0) {
-          content += '<br/>Deleted samples: <ul id = "deleteSampleArr">';
-          for (k = _i = 0, _ref = deleteSampleArr.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; k = 0 <= _ref ? ++_i : --_i) {
-            content += '<li><input type="checkbox" id="delete_' + deleteSampleArr[k] + '" checked /><label style="margin-top: 1px;" for="delete_' + deleteSampleArr[k] + '"></label>&nbsp;&nbsp;Sample ' + deleteSampleArr[k] + '</li>';
-          }
-          content += '</ul></div>';
-        }
-        delePanel.html(content);
-        delePanel.style({
-          "visibility": "visible",
-          top: (d3.event.pageY - 10) + "px",
-          left: (d3.event.pageX + 10) + "px",
-          "background": "rgba(255,255,255,0.9)"
-        });
         infoPanel.style({
           "visibility": "hidden"
         });
-        $('#iconRemoverPanel').click(function() {
+        delePanel.html('<div class="hideSample">HIDE SAMPLE</div>');
+        delePanel.style({
+          "visibility": "visible",
+          top: (d3.event.pageY + 15) + "px",
+          left: (d3.event.pageX - 15) + "px"
+        });
+        return $('.hideSample').click(function() {
           deleteSampleArr.push(d.x);
           return that.drawD3Bar();
-        });
-        return $('#deleteSampleArr li').each(function(index) {
-          return $(this).click(function() {
-            var thisSampID;
-            thisSampID = parseInt($(this)[0].children[0].id.replace('delete_', ''));
-            if ($('#delete_' + thisSampID).is(':checked')) {
-              $('#delete_' + thisSampID).prop("checked", false);
-              deleteSampleArr.splice(deleteSampleArr.indexOf(thisSampID), 1);
-            } else {
-              $('#delete_' + thisSampID).prop("checked", true);
-              deleteSampleArr.push(thisSampID);
-            }
-            return that.drawD3Bar();
-          });
         });
       });
       swapPosArr = (function() {
         _results = [];
-        for (var _i = 0, _ref = selectedSampleCopy.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; 0 <= _ref ? _i++ : _i--){ _results.push(_i); }
+        for (var _j = 0, _ref1 = selectedSampleCopy.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; 0 <= _ref1 ? _j++ : _j--){ _results.push(_j); }
         return _results;
       }).apply(this);
       label = svg.append('g').selectAll('text').data(x.domain()).enter().append('text').text(function(d, i) {
@@ -618,15 +621,18 @@
       }).attr('y', function(d, i) {
         return 14 * i + 9;
       }).attr('text-anchor', 'start').attr("font-size", "10px").attr('fill', '#444').on('mouseout', function(d, i) {
-        return d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[selectedSampleCopy[i]]).substr(0, 12));
+        return d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[i]).substr(0, 12));
       }).on('mouseover', function(d, i) {
-        d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[selectedSampleCopy[i]]));
-        infoPanel.html('<div style="height:15px;"><i class="icon-fa-level-up icon-2x" id="moveup_' + i + '"></i></div><div><i class="icon-fa-level-down icon-2x" id="movedown_' + i + '"></i></div><div class="hideSample">HIDE SAMPLE</div>');
-        infoPanel.style({
+        d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[i]));
+        delePanel.html('<div style="height:15px;"><i class="icon-fa-level-up icon-2x" id="moveup_' + i + '"></i></div><div><i class="icon-fa-level-down icon-2x" id="movedown_' + i + '"></i></div><div class="hideSample">HIDE SAMPLE</div>');
+        delePanel.style({
           "visibility": "visible",
-          top: (d3.event.pageY - 5) + "px",
-          left: (d3.event.pageX + 5) + "px",
-          "background": "rgba(255,255,255,0)"
+          top: d3.event.pageY + "px",
+          left: (d3.event.pageX + 5) + "px"
+        });
+        $('.hideSample').click(function(e) {
+          deleteSampleArr.push(d);
+          return that.drawD3Bar();
         });
         $('.icon-fa-level-up').click(function(e) {
           var swapeeId, swapeePos, swaperId, swaperPos;
@@ -702,7 +708,7 @@
         }
       });
       legendArr = [];
-      for (i = _j = 0, _ref1 = sumEachTax.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
+      for (i = _k = 0, _ref2 = sumEachTax.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
         temp = new Object();
         temp.originalID = i;
         temp.value = sumEachTax[i];
@@ -712,11 +718,11 @@
       this.createLegend(legendArr);
       divCont = '';
       if (!percentage) {
-        for (i = _k = 0, _ref2 = sumEachCol.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
+        for (i = _l = 0, _ref3 = sumEachCol.length - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
           divCont += '<div class="fake" style="width:' + y(sumEachCol[i]) + 'px;"></div>';
         }
       } else {
-        for (i = _l = 0, _ref3 = sumEachCol.length - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; i = 0 <= _ref3 ? ++_l : --_l) {
+        for (i = _m = 0, _ref4 = sumEachCol.length - 1; 0 <= _ref4 ? _m <= _ref4 : _m >= _ref4; i = 0 <= _ref4 ? ++_m : --_m) {
           divCont += '<div class="fake" style="width:' + y(max_single) + 'px;"></div>';
         }
       }
@@ -772,16 +778,15 @@
             for (i = _j = 0, _ref1 = ui.content.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 0 <= _ref1 ? ++_j : --_j) {
               searchList.push(ui.content[i].value);
             }
-            content = '<i class="icon-remove icon-large" style="float:right; margin-right: 5px;" id = "iconRemover"></i><ul>';
+            content = '<i class="icon-remove icon-large" style="float:right; margin: 5px 10px 0 0;" id = "iconRemover"></i><ul>';
             for (i = _k = 0, _ref2 = searchList.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; i = 0 <= _ref2 ? ++_k : --_k) {
               if (deleteOTUArr.indexOf(i) !== -1) {
                 content += '<li><span style = "display:block; background-color:#aaa; height: 12px; width: 12px; float: left; margin: 2px 0px;" ></span>&nbsp;&nbsp;';
-                content += '<input type="checkbox" id="search_' + i + '"/><label style="margin-top: 1px;" for="search_' + i + '"></label>&nbsp;&nbsp;&nbsp;';
+                content += searchList[i] + '&nbsp;&nbsp;<em id="search_' + i + '">show</em></li>';
               } else {
                 content += '<li><span style = "display:block; background-color:' + fillCol[availableTags.indexOf(searchList[i]) % 20] + '; height: 12px; width: 12px; float: left; margin: 2px 0px;" ></span>&nbsp;&nbsp;';
-                content += '<input type="checkbox" id="search_' + i + '" checked /><label style="margin-top: 1px;" for="search_' + i + '"></label>&nbsp;&nbsp;&nbsp;';
+                content += searchList[i] + '&nbsp;&nbsp;<em id="search_' + i + '">hide</em></li>';
               }
-              content += searchList[i] + '</li>';
             }
             content += '</ul>';
             $('#autoCompleteList').append(content);
@@ -797,13 +802,13 @@
                 }).style('fill', d3.rgb(fillCol[index % 20]).darker());
               });
               return $(this).click(function() {
-                if ($('#search_' + index).is(':checked')) {
-                  $('#search_' + index).prop("checked", false);
+                if ($('#search_' + index).html() === 'hide') {
+                  $('#search_' + index).html('show');
                   $(this).find('span').css('background-color', '#aaa');
                   $(this).css('color', '#aaa');
                   deleteOTUArr.push(index);
                 } else {
-                  $('#search_' + index).prop("checked", true);
+                  $('#search_' + index).html('hide');
                   $(this).find('span').css('background-color', fillCol[index % 20]);
                   $(this).css('color', '#000');
                   deleteOTUArr.splice(deleteOTUArr.indexOf(index), 1);
