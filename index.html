@@ -131,20 +131,14 @@
     	$('#recent').hide();
     }
     else {         
-        // Modal 
         $('#help').click( function (e){
             e.preventDefault();
             $('#dialog-modal').show();
-            $('#dialog-modal').dialog({
-                height: 140,
-                modal: true
-            });
+            $('#dialog-modal').dialog({ height: 140, modal: true });
             $('.ui-button-text').html('<i class="icon-remove icon-large"></i>');
         });
-
     	app = new readFile();
     }
-
 	</script>
 
 </body>

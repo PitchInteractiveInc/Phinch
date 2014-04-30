@@ -1,7 +1,7 @@
 
 /* Top Section */
 
-#goBackFilter { float: left; margin: 20px; width: 204px; height: 50px; border: none; background-image: url('images/left_arrow.jpg');}
+#goBackFilter { float: left; margin: 20px; width: 204px; height: 50px; border: none; background-image: url('images/left_arrow.jpg'); }
 #goBackGallery { width: 204px; border: none; background-image: url('images/left_arrow.jpg');}
 
 .col3 { float: left; width: 31%;  height: auto; min-height: 250px; margin: 0% 10px 2% 10px; border: 2px solid #ccc; font-size: 17px; color: #6f6f6f;}
@@ -116,64 +116,55 @@
 
 /* 1 Taxonomy Bar Chart */
 
+.PanelHead {
+	color: #444;
+	margin: 10px;
+	padding-bottom: 5px;
+	border-bottom: 1px solid #bbb;
+}
+
+.PanelInfo {
+	color: #444;
+	margin: 10px 10px -10px 10px;
+}
+
+.PanelInfo span {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.basicTooltip progress {
+	width: 100%;
+	height: 3px;
+	padding: 0 10px;
+	background-color: #fff;
+	border: none;
+	-webkit-appearance: none;
+			appearance: none;
+}
+.basicTooltip progress[value]::-webkit-progress-bar { background-color: #bbb; }
+.basicTooltip progress[value]::-webkit-progress-value { background-color: #ff8900; }
+.basicTooltip progress[value]::-moz-progress-bar { background-color: #ff8900; color: red;}
+
+.hideSample {
+	color: #ff8900;
+	font-weight: bold;
+	border: 2px solid #ff8900;
+	margin: -35px 10px 0px 25px;
+	padding: 5px 10px;
+	background: #fff;
+}
+
 #deleteSampleArr {
 	list-style: none;
 	padding: 0 10px;
 }
+
 #deleteSampleArr li:hover {
 	background: rgba(239,193,79,0.6);
 	cursor: pointer;
 }
 
-.PanelHead {
-	font-size: 12px;
-	margin-bottom: 2px;
-	color: #444;
-	text-align: center;
-	margin: 0 10px 10px 10px;
-}
-.PanelRule {
-	height: 2px;
-	margin: 5px 10%;
-	background: #ddd;
-	width: 80%;
-}
-.PanelvaluesContainer {
-	padding-top: 7px;
-	padding-left: 10px;
-	padding-right: 10px;
-	font-size: 11px;
-	text-align: center;
-}
-.PanelValue {
-	float: left;
-	top: 28px;
-	width: 33%;
-}
-.PanelTtl {
-	float: left;
-	width: 33%;
-}
-.PanelPercent {
-	float: left;
-	width: 33%;
-	margin-bottom: 10px;
-}
-.PanelSlider {
-	background-color: #ff8900;
-	height: 10px;
-	margin-top: 10px;
-	margin-bottom: 10px;
-}
-.PanelTrueValue {
-	background-color: rgba(68,68,68,0.3);
-	height: 16px;
-	margin-top: -23px;
-}
-.PanelTtlAvg {
-	color: #ff8900;
-	font-weight: bold;
-}
 #fake_taxonomy_container {
 	position: absolute;
 	top: 270px;

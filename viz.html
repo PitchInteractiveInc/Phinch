@@ -74,9 +74,10 @@
     </section>
 
     <section id="GraphGallery">
+
         <a href="preview.html"><button id="goBackFilter" class="orange_btn">FILTER DATA </button></a>
         <hr width="100%">
-        </br></br>
+        <br><br>
 
         <div class="col3">
             <p class = "graphGalleryTitle"><span>Taxonomy Bar Chart</span></p>
@@ -102,7 +103,6 @@
             <p class = "graphGalleryTitle"><span>Bubble Chart By OTU</span></p>
             <img src="img/gallery_6.png">
         </div>
-
     </section>
 
     <section id = "viz_container">
@@ -178,35 +178,24 @@
         $('#NotSupported').show();
         $('#head_sec').animate({height:50}, 200);
         $('#viz_container').hide();
-    }   else {
+    } else {
 
         $( "#GraphGallery .col3" ).each( function(index) {
             $(this).click( function() {
-
                 // 1 change the big title 
                 $('h3').html( $(this).find('p').text() );
-
                 // 2 Fade in and out 
-                $('#GraphGallery').fadeOut(800, function(){
-                    $('#up_sec').fadeIn(800);
-                });
-
+                $('#GraphGallery').fadeOut(300, function(){ $('#up_sec').fadeIn(300); });
                 var app = new taxonomyViz(index);
-
             });
         });
 
-        // 3 Modal Help 
         $('#help').click( function (e){
             e.preventDefault();
             $('#dialog-modal').show();
-            $('#dialog-modal').dialog({
-                height: 140,
-                modal: true
-            });
+            $('#dialog-modal').dialog({ height: 140, modal: true });
             $('.ui-button-text').html('<i class="icon-remove icon-large"></i>');
         });
-
     }
     </script>
 

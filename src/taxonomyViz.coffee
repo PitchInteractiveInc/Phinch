@@ -12,7 +12,7 @@ class taxonomyViz
 	unique_taxonomy_comb_onLayer = null
 	format = d3.format(',d')
 	fillCol = ['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#e6550d', '#fd8d3c', '#fdae6b', '#fdd0a2', '#31a354', '#74c476', '#a1d99b', '#c7e9c0', '#756bb1', '#9e9ac8', '#bcbddc', '#dadaeb', '#636363', '#969696', '#bdbdbd', '#d9d9d9']
-	layerNameArr = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species'] 
+	layerNameArr = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species']
 	standardizedValue = 0
 	deleteOTUArr = []
 	deleteSampleArr = []
@@ -410,16 +410,17 @@ class taxonomyViz
 			.attr('height', 12)
 			.on 'mouseover', (d,i) ->
 				content = ''
-				content += '<div class="PanelHead">' + columns_sample_name_array[d.x] + '<br/>' + d.name+ '</div><div class="PanelRule"></div>'
-				content += '<div class="PanelvaluesContainer">In this sample:<br/><span class="PanelTtl">total occurrence<br/><b>' + format(sumEachCol[i]) + '</b></span><span class="PanelValue">this occurrence</br><b>' + format(d.y) + '</b></span><span class="PanelPercent">percent of total</br><b>' + (d.y / sumEachCol[i] * 100).toFixed(1) + '%</b></span>'
-				content += 'Compared to all samples:<br/>'
-				if d.y / sumEachTax[d.i] * sumEachCol.length > 2
-					content += '<div class="PanelSlider" style="width:' + (sumEachTax[d.i] / d.y / sumEachCol.length * 100) + '%;"></div><div class="PanelTrueValue" style="width:100%;"></div>'
-				else 
-					content += '<div class="PanelSlider" style="width: 50%;"></div><div class="PanelTrueValue" style="width:' + ( d.y / sumEachTax[d.i] * sumEachCol.length * 50) + '%;"></div>'
-				content += '<div><span class="PanelTtlAvg">total avg: ' + ( 100 / sumEachCol.length).toFixed(2)  + '%</span>, this sample percent: ' + (d.y / sumEachTax[d.i] * 100).toFixed(2) + '%</div></div>'		
+				content += '<div class="PanelHead"><b>SAMPLE NAME:</b> ' + columns_sample_name_array[d.x] + '<br/><b>TAXONOMY:</b> ' + d.name+ '</div>'
+				content += '<div class="PanelInfo">TAXONOMY OCCURENCE IN THIS SAMPLE<br/><span>' + (d.y / sumEachCol[i] * 100).toFixed(2) + '%</span>&nbsp;&nbsp;<em>(' + format(d.y) + ' out of ' + format(sumEachCol[i]) + ')</em></div>'
+				content += '<progress max="100" value="' + (d.y / sumEachCol[i] * 100).toFixed(2) + '"></progress>'
+				content += '<div class="PanelInfo">OUT OF TOTAL TAXONOMY OCCURENCE IN ALL SAMPLES<br/><span>' + (d.y / sumEachTax[d.i] * 100).toFixed(2) + '%</span>&nbsp;&nbsp;<em>(' + format(d.y) + ' out of ' + format(sumEachTax[d.i]) + ')</em></div>'
+				content += '<progress max="100" value="' + (d.y / sumEachTax[d.i] * 100).toFixed(2) + '"></progress>'
+				# content += '<div class="PanelInfo">AVERAGE TAXONOMY OCCURENCE ACROSS ALL SAMPLES<br/><span>' + ( 100 / sumEachCol.length).toFixed(2) + '%</span></div>'
+				# content += '<progress max="100" value="' + (100 / sumEachCol.length).toFixed(2) + '"></progress>'
+				content += '<br/><br/>'
+
 				infoPanel.html(content)
-				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px" })
+				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px", "background": "rgba(255,255,255,0.9)" })
 				delePanel.style( { "visibility": "hidden"})
 			.on 'mouseout', (d,i) -> 
 				infoPanel.style( { "visibility": "hidden"})
@@ -433,7 +434,7 @@ class taxonomyViz
 						content += '<li><input type="checkbox" id="delete_' + deleteSampleArr[k] + '" checked /><label style="margin-top: 1px;" for="delete_' + deleteSampleArr[k] + '"></label>&nbsp;&nbsp;Sample ' + deleteSampleArr[k] + '</li>'
 					content += '</ul></div>'
 				delePanel.html(content)
-				delePanel.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px" })
+				delePanel.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px", "background": "rgba(255,255,255,0.9)" })
 				infoPanel.style( { "visibility": "hidden"})
 
 				$('#iconRemoverPanel').click () -> 
@@ -456,26 +457,31 @@ class taxonomyViz
 		# console.log swapPosArr
 
 		# add y-axis
-		label = svg.selectAll('text')
+		label = svg.append('g').selectAll('text')
 			.data(x.domain())
 		.enter().append('text')
 			.text (d,i) ->
-				return String(selected_phinchID_array[i]).substr(-12) # if i%2 == 1 then
-			.attr('x', - 13)
+				return String(selected_phinchID_array[i]).substr(0,12)
+			.attr('x', -80)
 			.attr('class', (d,i) -> return 'sampleTxt_' + i )
 			.attr 'y', (d,i) ->
 					return 14 * i + 9
-			.attr('text-anchor', 'end')
+			.attr('text-anchor', 'start')
 			.attr("font-size", "10px")
 			.attr('fill', '#444')
+			.on 'mouseout', (d,i) ->
+				d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[selectedSampleCopy[i]]).substr(0,12))
+				# infoPanel.style( { "visibility": "hidden"})
 			.on 'mouseover', (d,i) ->
-				infoPanel.html('<div><i class="icon-fa-level-up icon-large" id="moveup_' + i + '"></i>&nbsp;&nbsp;' + String(selected_phinchID_array[selectedSampleCopy[i]]) + '&nbsp;&nbsp;<i class="icon-fa-level-down icon-large" id="movedown_' + i + '"></i></div>')
-				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 5) + "px", left: (d3.event.pageX + 5) + "px" })
+				d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[selectedSampleCopy[i]]))
+
+				infoPanel.html('<div style="height:15px;"><i class="icon-fa-level-up icon-2x" id="moveup_' + i + '"></i></div><div><i class="icon-fa-level-down icon-2x" id="movedown_' + i + '"></i></div><div class="hideSample">HIDE SAMPLE</div>')
+				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 5) + "px", left: (d3.event.pageX + 5) + "px", "background": "rgba(255,255,255,0)" })
 
 				$('.icon-fa-level-up').click( (e) ->
 
 					swaperId  = parseInt(e.target.id.replace('moveup_',''));  # 9
-					swaperPos = swapPosArr.indexOf(swaperId);          # 8
+					swaperPos = swapPosArr.indexOf(swaperId);          		  # 8
 					
 					if swaperPos != 0
 						swapeePos = swaperPos - 1;                     # 7
@@ -510,8 +516,6 @@ class taxonomyViz
 						swapPosArr[swaperPos] = swapeeId;
 
 				)
-			# .on 'mouseout', (d,i) ->
-			# 	infoPanel.style( { "visibility": "hidden"})
 
 		# add title & x-axis 
 		svg.append("text")
@@ -1135,8 +1139,8 @@ class taxonomyViz
 		@clickLargeSnakeyNode(originalData, i, originalSankey, originalSVG)
 
 	sankeyFilterControl: (_nodesArr, taxonomySankey, svg) ->
-		that = this
 
+		that = this
 		color = globalColoring
 		nodesArr = _nodesArr
 		availableTags = new Array(nodesArr.length)
@@ -1145,7 +1149,7 @@ class taxonomyViz
 
 		$('#tags').keydown () -> if $('#tags').val().length < 4 then $('#autoCompleteList').fadeOut(200)
 		searchList = []
-		$('#autoCompleteList').fadeOut(800);
+		$('#autoCompleteList').fadeOut(300);
 
 		$( "#tags" ).autocomplete({ 
 			source: availableTags,

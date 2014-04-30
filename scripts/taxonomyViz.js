@@ -546,20 +546,18 @@
       }).attr('height', 12).on('mouseover', function(d, i) {
         var content;
         content = '';
-        content += '<div class="PanelHead">' + columns_sample_name_array[d.x] + '<br/>' + d.name + '</div><div class="PanelRule"></div>';
-        content += '<div class="PanelvaluesContainer">In this sample:<br/><span class="PanelTtl">total occurrence<br/><b>' + format(sumEachCol[i]) + '</b></span><span class="PanelValue">this occurrence</br><b>' + format(d.y) + '</b></span><span class="PanelPercent">percent of total</br><b>' + (d.y / sumEachCol[i] * 100).toFixed(1) + '%</b></span>';
-        content += 'Compared to all samples:<br/>';
-        if (d.y / sumEachTax[d.i] * sumEachCol.length > 2) {
-          content += '<div class="PanelSlider" style="width:' + (sumEachTax[d.i] / d.y / sumEachCol.length * 100) + '%;"></div><div class="PanelTrueValue" style="width:100%;"></div>';
-        } else {
-          content += '<div class="PanelSlider" style="width: 50%;"></div><div class="PanelTrueValue" style="width:' + (d.y / sumEachTax[d.i] * sumEachCol.length * 50) + '%;"></div>';
-        }
-        content += '<div><span class="PanelTtlAvg">total avg: ' + (100 / sumEachCol.length).toFixed(2) + '%</span>, this sample percent: ' + (d.y / sumEachTax[d.i] * 100).toFixed(2) + '%</div></div>';
+        content += '<div class="PanelHead"><b>SAMPLE NAME:</b> ' + columns_sample_name_array[d.x] + '<br/><b>TAXONOMY:</b> ' + d.name + '</div>';
+        content += '<div class="PanelInfo">TAXONOMY OCCURENCE IN THIS SAMPLE<br/><span>' + (d.y / sumEachCol[i] * 100).toFixed(2) + '%</span>&nbsp;&nbsp;<em>(' + format(d.y) + ' out of ' + format(sumEachCol[i]) + ')</em></div>';
+        content += '<progress max="100" value="' + (d.y / sumEachCol[i] * 100).toFixed(2) + '"></progress>';
+        content += '<div class="PanelInfo">OUT OF TOTAL TAXONOMY OCCURENCE IN ALL SAMPLES<br/><span>' + (d.y / sumEachTax[d.i] * 100).toFixed(2) + '%</span>&nbsp;&nbsp;<em>(' + format(d.y) + ' out of ' + format(sumEachTax[d.i]) + ')</em></div>';
+        content += '<progress max="100" value="' + (d.y / sumEachTax[d.i] * 100).toFixed(2) + '"></progress>';
+        content += '<br/><br/>';
         infoPanel.html(content);
         infoPanel.style({
           "visibility": "visible",
           top: (d3.event.pageY - 10) + "px",
-          left: (d3.event.pageX + 10) + "px"
+          left: (d3.event.pageX + 10) + "px",
+          "background": "rgba(255,255,255,0.9)"
         });
         return delePanel.style({
           "visibility": "hidden"
@@ -583,7 +581,8 @@
         delePanel.style({
           "visibility": "visible",
           top: (d3.event.pageY - 10) + "px",
-          left: (d3.event.pageX + 10) + "px"
+          left: (d3.event.pageX + 10) + "px",
+          "background": "rgba(255,255,255,0.9)"
         });
         infoPanel.style({
           "visibility": "hidden"
@@ -612,18 +611,22 @@
         for (var _i = 0, _ref = selectedSampleCopy.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; 0 <= _ref ? _i++ : _i--){ _results.push(_i); }
         return _results;
       }).apply(this);
-      label = svg.selectAll('text').data(x.domain()).enter().append('text').text(function(d, i) {
-        return String(selected_phinchID_array[i]).substr(-12);
-      }).attr('x', -13).attr('class', function(d, i) {
+      label = svg.append('g').selectAll('text').data(x.domain()).enter().append('text').text(function(d, i) {
+        return String(selected_phinchID_array[i]).substr(0, 12);
+      }).attr('x', -80).attr('class', function(d, i) {
         return 'sampleTxt_' + i;
       }).attr('y', function(d, i) {
         return 14 * i + 9;
-      }).attr('text-anchor', 'end').attr("font-size", "10px").attr('fill', '#444').on('mouseover', function(d, i) {
-        infoPanel.html('<div><i class="icon-fa-level-up icon-large" id="moveup_' + i + '"></i>&nbsp;&nbsp;' + String(selected_phinchID_array[selectedSampleCopy[i]]) + '&nbsp;&nbsp;<i class="icon-fa-level-down icon-large" id="movedown_' + i + '"></i></div>');
+      }).attr('text-anchor', 'start').attr("font-size", "10px").attr('fill', '#444').on('mouseout', function(d, i) {
+        return d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[selectedSampleCopy[i]]).substr(0, 12));
+      }).on('mouseover', function(d, i) {
+        d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[selectedSampleCopy[i]]));
+        infoPanel.html('<div style="height:15px;"><i class="icon-fa-level-up icon-2x" id="moveup_' + i + '"></i></div><div><i class="icon-fa-level-down icon-2x" id="movedown_' + i + '"></i></div><div class="hideSample">HIDE SAMPLE</div>');
         infoPanel.style({
           "visibility": "visible",
           top: (d3.event.pageY - 5) + "px",
-          left: (d3.event.pageX + 5) + "px"
+          left: (d3.event.pageX + 5) + "px",
+          "background": "rgba(255,255,255,0)"
         });
         $('.icon-fa-level-up').click(function(e) {
           var swapeeId, swapeePos, swaperId, swaperPos;
@@ -1324,7 +1327,7 @@
         }
       });
       searchList = [];
-      $('#autoCompleteList').fadeOut(800);
+      $('#autoCompleteList').fadeOut(300);
       return $("#tags").autocomplete({
         source: availableTags,
         minLength: 2,

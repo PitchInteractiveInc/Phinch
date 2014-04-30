@@ -103,7 +103,6 @@
     <script src="lib/moment.min.js"></script>
     <script src="lib/d3.v3.min.js"></script>
     <script src="lib/jquery.dataTables.min.js"></script>
-    <script src="lib/d3.v3.min.js"></script>
 
     <script src="scripts/filter.js"></script>
 
@@ -114,20 +113,13 @@
         $('#head_sec').animate({height:50}, 200);
         $('#bottom_sec').hide();
     } else {
-
-        // Modal 
         $('#help').click( function (e){
             e.preventDefault();
             $('#dialog-modal').show();
-            $('#dialog-modal').dialog({
-                height: 140,
-                modal: true
-            });
+            $('#dialog-modal').dialog({ height: 140, modal: true });
             $('.ui-button-text').html('<i class="icon-remove icon-large"></i>');
         });
-
         app = new filter();
-    
     }
     </script>
 
