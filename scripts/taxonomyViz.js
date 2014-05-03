@@ -105,12 +105,19 @@
               biom = JSON.parse(currentData.data);
               $("#file_details").html("");
               $("#file_details").append("ANALYZING &nbsp;<span>" + currentData.name.substring(0, 40) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>");
+              $('#layer_1').on('mouseover', function() {
+                $('#layer_1').removeClass('selected_layer');
+                return $('#layer_1').css('background-image', 'url("css/images/kingdom.png")');
+              }).on('mouseout', function() {
+                return $('#layer_1').addClass('selected_layer');
+              });
               $('.circle').click(function(evt) {
                 var that;
                 that = _this;
                 $('.circle').removeClass('selected_layer');
                 $('.circle').css('background-image', 'url("css/images/circle.png")');
                 LayerID = parseInt(evt.currentTarget.id.replace("layer_", ""));
+                console.log('clicked on ' + LayerID);
                 $('#layer_' + LayerID).css('background-image', 'url("css/images/' + layerNameArr[LayerID - 1] + '.png")');
                 return $('.progressLine').animate({
                   width: (120 + (LayerID - 2) * 111) + 'px'
@@ -957,7 +964,7 @@
           stroke: '#000',
           'stroke-width': '3'
         });
-        tooltip.html("Taxonomy: " + d.name + "<br/><br/> Total Reads: " + d.value);
+        tooltip.html("<b>TAXONOMY:</b> " + d.name + "<br/><b>TOTAL READS:</b> " + format(d.value) + "<br/><b>OTU QUANTITY:</b> " + format(unique_taxonomy_comb_count[i]));
         return tooltip.style({
           "visibility": "visible",
           top: (d3.event.pageY - 10) + "px",
@@ -1875,7 +1882,7 @@
         legendLen = 9;
       }
       for (i = _i = 0; 0 <= legendLen ? _i <= legendLen : _i >= legendLen; i = 0 <= legendLen ? ++_i : --_i) {
-        content += '<li><span style = "display:block; background-color:' + fillCol[legendArr[i].originalID % 20] + '; height: 12px; width: 12px; float: left; margin: 2px 0px;" ></span>&nbsp;&nbsp;&nbsp;' + legendArr[i].name + '&nbsp;&nbsp;<b>' + format(legendArr[i].value) + '</b></li>';
+        content += '<li><span style = "display:block; background-color:' + fillCol[legendArr[i].originalID % 20] + '; height: 12px; width: 12px; float: left; margin: 2px 0px;" ></span>&nbsp;&nbsp;&nbsp;' + legendArr[i].name + '&nbsp;&nbsp;<em>' + format(legendArr[i].value) + '</em></li>';
       }
       content += '</ul>';
       $('#legend_container').append(content);
@@ -1909,19 +1916,20 @@
           }
           if (VizID === 1) {
             $('#ListBubble').fadeIn(500);
-            $('#slider').fadeIn(500);
+            $('#bubbleSliderContainer').fadeIn(500);
             $('.ui-slider-horizontal .ui-slider-handle').css({
-              "margin-top": "3px",
-              "border": "1px solid #ff8900"
+              "margin-top": "-2px",
+              "border": "2px solid #ff8900",
+              "background": "#fff"
             });
           }
           if (VizID === 2) {
             $('#tags').fadeIn(500);
-            $('#alertBox').fadeIn(500);
+            $('#sankeyMsgBox').fadeIn(500);
             $('#layer_1').off('click');
             $('#layer_6').off('click');
             $('#layer_7').off('click');
-            $('#alertBox').html("* " + unique_taxonomy_comb_count.length + " unique paths, cannot go deeper to the 6th or 7th layer.");
+            $('#sankeyMsgBox').html("* " + unique_taxonomy_comb_count.length + " unique paths, cannot go deeper to the 6th or 7th layer.");
           }
           if (VizID === 4) {
             $('#PercentValue').fadeIn(500);

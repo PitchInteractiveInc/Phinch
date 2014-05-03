@@ -129,6 +129,7 @@ a [class^="icon-"], a [class*=" icon-"] {display: inline;}
 [class^="icon-"].icon-fixed-width,[class*=" icon-"].icon-fixed-width {display: inline-block;width: 1.1428571428571428em;text-align: right;padding-right: 0.2857142857142857em;}
 [class^="icon-"].icon-fixed-width.icon-large,[class*=" icon-"].icon-fixed-width.icon-large {width: 1.4285714285714286em;}
 [class^="icon-"].hide,[class*=" icon-"].hide {display: none;}
+.icon-15x {font-size: 1.5em;}
 .icon-2x {font-size: 2em;}
 .icon-4x {font-size: 4em;}
 [class^="icon-"].pull-left,[class*=" icon-"].pull-left {margin-right: .3em;}
@@ -153,6 +154,7 @@ a .icon-stack, a .icon-spin {display: inline-block;text-decoration: none;}
 .icon-fa-users:before { content: "\f03a"; }
 .icon-fa-level-up:before {  content: "\f0d8"; font-weight: bold; }
 .icon-fa-level-down:before {content: "\f0d7"; font-weight: bold; }
+.icon-circle:before {content: "\f111"; vertical-align: middle;}
 
 .icon-remove:hover {color: #ff8900; cursor: pointer;}
 .icon-fa-level-up:hover { color: #ff8900; cursor: pointer;}
