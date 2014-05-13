@@ -175,7 +175,10 @@
     <script src="lib/d3.layout.min.js"></script>
     <script src="lib/d3.sankey.js"></script>
     <script src="lib/lodash.js"></script>
+    <script src="lib/FileSaver.js"></script>
+    <script src="lib/jszip.min.js"></script>
 
+    <script src="socket.io/socket.io.js"></script>
     <script src="scripts/taxonomyViz.js"></script>
 
     <script>
@@ -185,6 +188,14 @@
         $('#head_sec').animate({height:50}, 200);
         $('#viz_container').hide();
     } else {
+
+        if (typeof io !== 'undefined') {
+            var socket = io.connect(document.location.origin);
+            socket.on('connect', function() {
+                console.log('Shujian ---- Server Success!!! ');
+            });
+            window.socket = socket; 
+        }
 
         $( "#GraphGallery .col3" ).each( function(index) {
             $(this).click( function() {

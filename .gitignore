@@ -13,7 +13,7 @@ blog/wp-content/cache/
 blog/wp-content/backups/
 blog/sitemap.xml.gz
 blog/wp-config.php
-
+node_modules/
 
 #OS junk files
 [Tt]humbs.db

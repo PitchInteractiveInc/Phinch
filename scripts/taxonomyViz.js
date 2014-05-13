@@ -4,9 +4,11 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   taxonomyViz = (function() {
-    var LayerID, VizID, biom, bubbleView, columns_sample_name_array, deleteOTUArr, deleteSampleArr, fillCol, format, globalColoring, groupable, layerNameArr, map_array, new_data_matrix, new_data_matrix_onLayer, percentage, selectedSampleCopy, selected_attributes_array, selected_attributes_units_array, selected_phinchID_array, selected_samples, standardizedValue, sumEachCol, sumEachTax, unique_taxonomy_comb, unique_taxonomy_comb_count, unique_taxonomy_comb_onLayer, vizdata;
+    var LayerID, VizID, biom, bubbleView, columns_sample_name_array, deleteOTUArr, deleteSampleArr, fillCol, format, globalColoring, groupable, layerNameArr, map_array, new_data_matrix, new_data_matrix_onLayer, percentage, phinch, selectedSampleCopy, selected_attributes_array, selected_attributes_units_array, selected_phinchID_array, selected_samples, standardizedValue, sumEachCol, sumEachTax, unique_taxonomy_comb, unique_taxonomy_comb_count, unique_taxonomy_comb_onLayer, vizdata;
 
     biom = null;
+
+    phinch = null;
 
     percentage = false;
 
@@ -262,7 +264,10 @@
                 }
               });
               _this.prepareData();
-              return _this.generateVizData();
+              _this.generateVizData();
+              return $('#export').click(function() {
+                return _this.downloadChart(VizID);
+              });
             });
           });
         });
@@ -568,13 +573,17 @@
       }).attr('y', function(d, i) {
         return 14 * i;
       }).attr('x', function(d, i) {
-        if (!percentage) {
+        if (isNaN(y(d.y0))) {
+          return 0;
+        } else if (!percentage) {
           return y(d.y0);
         } else {
           return y(d.y0) / sumEachCol[i] * max_single;
         }
       }).attr('width', function(d, i) {
-        if (!percentage) {
+        if (isNaN(y(d.y))) {
+          return 0;
+        } else if (!percentage) {
           return y(d.y);
         } else {
           return y(d.y) / sumEachCol[i] * max_single;
@@ -1941,6 +1950,30 @@
           }
         }
       });
+    };
+
+    taxonomyViz.prototype.downloadChart = function(_VizID) {
+      var content, img, obj_log, obj_phinch, zip;
+      console.log(_VizID);
+      socket.emit('downloadChart', _VizID);
+      obj_phinch = JSON.stringify(biom);
+      obj_log = {};
+      obj_log.selected_sample = selected_samples;
+      obj_log.selected_sample_phinchID = selected_phinchID_array;
+      obj_log.selected_attributes_array = selected_attributes_array;
+      obj_log.selected_attributes_units_array = selected_attributes_units_array;
+      obj_log = JSON.stringify(obj_log);
+      zip = new JSZip();
+      zip.file("data.phinch", obj_phinch);
+      zip.file("log.json", obj_log);
+      img = zip.folder("images");
+      img.file("test2.png", imgData, {
+        base64: true
+      });
+      content = zip.generate({
+        type: "blob"
+      });
+      return saveAs(content, "phinch.zip");
     };
 
     return taxonomyViz;

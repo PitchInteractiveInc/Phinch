@@ -1,6 +1,7 @@
 class taxonomyViz
 
 	biom = null
+	phinch = null
 	percentage = false
 	bubbleView = true
 	LayerID = 2
@@ -156,9 +157,12 @@ class taxonomyViz
 									$('#count_header').css('background', 'none')
 								})		
 
-						# 6 Generate chart
+						# 7 Generate chart
 						@prepareData()
 						@generateVizData()
+
+						# 8 Export and share 
+						$('#export').click( () => @downloadChart(VizID) )
 
 	prepareData: () ->
 
@@ -438,15 +442,19 @@ class taxonomyViz
 				return 'sample_' + i
 			.attr 'y', (d, i) -> 
 					return 14 * i
-			.attr 'x', (d, i) -> 
-				if !percentage
+			.attr 'x', (d, i) ->
+				if isNaN(y(d.y0))
+					return 0
+				else if !percentage
 					return y(d.y0)
-				else 
+				else
 					return y(d.y0) / sumEachCol[i] * max_single
-			.attr 'width', (d,i) -> 
-				if !percentage
+			.attr 'width', (d,i) ->
+				if isNaN(y(d.y))
+					return 0
+				else if !percentage
 					return y(d.y)
-				else 
+				else
 					return y(d.y) / sumEachCol[i] * max_single 
 			.attr('height', 12)
 			.on 'mouseover', (d,i) ->
@@ -1762,6 +1770,29 @@ class taxonomyViz
 			if VizID == 5
 				$('#layerSwitch').hide()
 		})
+
+	downloadChart: (_VizID) ->
+		console.log _VizID
+		socket.emit('downloadChart', _VizID);
+
+		obj_phinch = JSON.stringify(biom)
+		obj_log = {}
+		obj_log.selected_sample = selected_samples;
+		obj_log.selected_sample_phinchID = selected_phinchID_array;
+		obj_log.selected_attributes_array = selected_attributes_array;
+		obj_log.selected_attributes_units_array = selected_attributes_units_array;
+		obj_log = JSON.stringify(obj_log);
+
+		zip = new JSZip();
+		zip.file("data.phinch", obj_phinch);
+		zip.file("log.json", obj_log);
+
+		img = zip.folder("images");
+		img.file("test2.png", imgData, {base64: true});
+
+		content = zip.generate({type:"blob"});
+		saveAs(content, "phinch.zip");
+
 
 window.taxonomyViz = taxonomyViz
 
