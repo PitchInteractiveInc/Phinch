@@ -128,91 +128,28 @@
 
 /* 1 Taxonomy Bar Chart */
 
-.PanelHead {
-	color: #444;
-	margin: 10px;
-	padding-bottom: 5px;
-	border-bottom: 1px solid #bbb;
-}
+.PanelHead { color: #444; margin: 10px; padding-bottom: 5px; border-bottom: 1px solid #bbb;}
+.PanelInfo { color: #444; margin: 10px 10px -10px 10px;}
+.PanelInfo span { font-size: 14px; font-weight: bold;}
 
-.PanelInfo {
-	color: #444;
-	margin: 10px 10px -10px 10px;
-}
-
-.PanelInfo span {
-	font-size: 14px;
-	font-weight: bold;
-}
-
-.basicTooltip progress {
-	width: 100%;
-	height: 3px;
-	padding: 0 10px;
-	background-color: #fff;
-	border: none;
-	-webkit-appearance: none;
-			appearance: none;
-}
+.basicTooltip progress { width: 100%; height: 3px; padding: 0 10px; background-color: #fff; border: none; -webkit-appearance: none; appearance: none;}
 .basicTooltip progress[value]::-webkit-progress-bar { background-color: #bbb; }
 .basicTooltip progress[value]::-webkit-progress-value { background-color: #ff8900; }
 .basicTooltip progress[value]::-moz-progress-bar { background-color: #ff8900; color: red;}
 
-.hideSample {
-	color: #ff8900;
-	font-weight: bold;
-	border: 2px solid #ff8900;
-	margin: -35px 10px 0px 25px;
-	padding: 5px 10px;
-	background: #fff;
-}
-.hideSample:hover {
-	cursor: pointer;
-}
+.hideSample { color: #ff8900; font-weight: bold; border: 2px solid #ff8900; margin: -35px 10px 0px 25px; padding: 5px 10px; background: #fff;}
+.hideSample:hover { cursor: pointer;}
 
-#deleteSampleArr {
-	margin: 0px 0px 0px 20px;
-}
-#deleteSampleArr span {
-	color: #ff8900;
-	cursor: pointer;
-}
-#deleteSampleArr ul {
-	opacity: 0;
-	width: 400px;
-	list-style: none;
-	margin-top: -5px;
-	padding: 20px 0 0 0;
-}
-#deleteSampleArr ul li {
-	padding: 5px 10px;	
-}
-#deleteSampleArr ul li span {
-	float: right;
-}
-#iconRemover4SampleDiv {
-	opacity: 0;
-	margin-left: 380px; position: absolute; z-index: 3; 
-}
+#deleteSampleArr { margin: 0px 0px 0px 20px;}
+#deleteSampleArr span { color: #ff8900; cursor: pointer;}
+#deleteSampleArr ul { opacity: 0; width: 400px; list-style: none; margin-top: -5px; padding: 20px 0 0 0;}
+#deleteSampleArr ul li { padding: 5px 10px;	}
+#deleteSampleArr ul li span { float: right;}
+#iconRemover4SampleDiv { opacity: 0; margin-left: 380px; position: absolute; z-index: 3; }
 
-#fake_taxonomy_container {
-	position: absolute;
-	top: 270px;
-	left: 50px;
-	z-index: -1;
-}
-.fake {
-	height: 12px;
-	margin-bottom: 2px;
-	background-color: rgba(0,0,0,0); 
-}
-#outline {
-	display: none;
-	position: fixed;
-	right: 0px;
-	top: 420px;
-	cursor: default !important;
-}
+#fake_taxonomy_container { position: absolute; top: 270px; left: 50px; z-index: -1;}
+.fake { height: 12px; margin-bottom: 2px; background-color: rgba(0,0,0,0); }
+#outline { display: none; position: fixed; right: 0px; top: 420px; cursor: default !important;}
 
 /* 2 Bubble Chart */
 
@@ -232,71 +169,17 @@
 
 /* 3 Sankey Diagram */
 
-#sankeyMsgBox {
-	display: none;
-	width: 350px;
-	height: 33px;
-	color: #ff8900;
-	margin-left: 415px;
-	line-height: 33px;
-	font-size: 12px;
-	font-style: italic;
-}
+#sankeyMsgBox { display: none; width: 350px; height: 33px; color: #ff8900; margin-left: 415px; line-height: 33px; font-size: 12px; font-style: italic;}
 
-.nullnode {
-	display: none;
-}
-.node rect {
-	fill-opacity: .6;
-	shape-rendering: crispEdges;
-}
-.node rect:hover {
-	cursor: pointer;
-	fill-opacity: 1;
-}
+.nullnode { display: none;}
+.node rect { shape-rendering: crispEdges;}
+.node rect:hover { cursor: pointer; fill-opacity: 1;}
+.node text { pointer-events: none;}
+.link:hover { fill-opacity: .6; cursor: pointer;}
 
-.node text {
-	pointer-events: none;
-	text-shadow: 0 1px 0 #fff;
-	font-size: 10px;
-}
-.link {
-	fill-opacity: .2;
-}
-.link:hover {
-	fill-opacity: .6;
-	cursor: pointer;
-}
-
-#sankeyInfo {
-	position: fixed;
-	top: 50px;
-	width: 100%;
-	height: 750px;
-	margin-top: 100px;
-	background: rgba(255,255,255,0.9);
-	color: #000;	
-}
-.sankeyInfobox {
-	width: 800px;
-	height: 850px;
-	padding: 0 20px;
-	border: 1px solid #c8c8c8;
-	margin: 0 auto;
-	margin-top: -100px;
-	background-color:white;
-	position: relative;
-}
-
-#sankeyRemover {
-	cursor: pointer;
-	width: 15px;
-	height: 20px;
-	margin: 15px;
-	position: absolute;
-	right: 0;
-	top: 0;
-}
+#sankeyInfo { position: fixed; top: 50px; width: 100%; height: 750px; margin-top: 100px; background: rgba(255,255,255,0.9); color: #000; }
+.sankeyInfobox { width: 800px; height: 850px; padding: 0 20px; border: 1px solid #c8c8c8; margin: 0 auto; margin-top: -100px; background-color:white; position: relative;}
+#sankeyRemover { cursor: pointer; width: 15px; height: 20px; margin: 15px; position: absolute; right: 0; top: 0;}
 
 /* 4 Donut Partition */
 
