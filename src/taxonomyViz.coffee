@@ -29,6 +29,7 @@ class taxonomyViz
 	selected_attributes_units_array = []
 	selected_phinchID_array = []
 	globalColoring = d3.scale.category20()
+	backendServer = 'http://' + window.location.host + ":8000"
 
 	constructor: (_VizID) ->
 		VizID = _VizID
@@ -1771,7 +1772,17 @@ class taxonomyViz
 				$('#layerSwitch').hide()
 		})
 
+	exportCallback: (data, textStatus, xhr) ->
+		console.log data
 	downloadChart: (_VizID) ->
+		console.log 'download chart'
+		svg = $('svg')
+		svgStringData = svg.wrap('<p>').parent().html()
+		postData = {svg: svgStringData}
+		exportEndpoint = backendServer + '/exportImage'
+		console.log postData
+		$.post(exportEndpoint, postData, @exportCallback)
+	doZip: (_VizID) ->
 		console.log _VizID
 		socket.emit('downloadChart', _VizID);
 

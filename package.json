@@ -13,9 +13,7 @@
   },
   "homepage": "https://github.com/shujianbu/Phinch",
   "dependencies": {
-    "express.io": "~1.1.13",
-    "socket.io": "~0.9.16",
-    "jszip": "~2.2.2",
-    "rsvg": "~0.2.3"
+    "express": "^4.2.0",
+    "body-parser": "^1.2.0"
   }
 }
