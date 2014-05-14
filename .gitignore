@@ -22,3 +22,6 @@ node_modules/
 #Subversion files
 *.svn
 .svn
+
+
+node_modules
