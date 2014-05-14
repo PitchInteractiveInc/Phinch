@@ -23,5 +23,5 @@ node_modules/
 *.svn
 .svn
 
-
+scripts
 node_modules
