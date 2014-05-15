@@ -1008,6 +1008,7 @@ class taxonomyViz
 			.attr("transform", (d) -> if !isNaN(d.y) then return "translate(" + d.x + "," + d.y + ")" else return "translate(" + d.x + ", 1)" )
 
 		node.append("rect")
+			.attr('x',0).attr('y',0)
 			.attr("height",  (d) -> if (d.dy < 2 or isNaN(d.dy)) then return 2 else return d.dy )
 			.attr("width", sankey.nodeWidth())
 			.style("fill",  (d, i) -> return color(d.name) )
@@ -1129,7 +1130,7 @@ class taxonomyViz
 			return color(d.name);
 		).on('click', (d,i) =>
 			return @clickSmallSankeyNode(d,i, originalSankey,originalSVG)
-		).style("opacity", 0.6);
+		).style("opacity", 0.6).attr('x', 0).attr('y',0);
 		node.append('rect').attr('height', (d) ->
 			originalNode = _.filter(originalSankey.nodes, (dd) -> return dd.name is d.name)
 			if originalNode.length > 1
