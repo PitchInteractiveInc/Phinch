@@ -22,12 +22,12 @@ var allowCrossDomain = function(req, res, next) {
 var app = express();
 
 app.use(allowCrossDomain)
-app.use(bodyParser.urlencoded())
-
+app.use(bodyParser.urlencoded({limit: '50mb'}))
 
 app.get('/', function(req, res){
   res.send('this is the Phinch back end server. please see <a href="http://phinch.org/">phinch.org</a> for more information');
 });
+
 app.post('/exportImage', exportImageHandler)
 app.post('/share', shareHandler)
 

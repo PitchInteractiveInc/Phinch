@@ -6,6 +6,7 @@ class taxonomyViz
 	bubbleView = true
 	LayerID = 2
 	VizID = null
+	filename = 'data'
 	vizdata = null
 	sumEachCol = null
 	sumEachTax = null
@@ -57,7 +58,7 @@ class taxonomyViz
 					s.biom.query().all().execute().done (results) => 
 						currentData = results[results.length-1]
 						biom = JSON.parse(currentData.data)
-
+						filename = currentData.name
 						$("#file_details").html("");
 						$("#file_details").append( "ANALYZING &nbsp;<span>" + currentData.name.substring(0,40) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>")
 
@@ -162,8 +163,11 @@ class taxonomyViz
 						@prepareData()
 						@generateVizData()
 
-						# 8 Export and share 
-						$('#export').click( () => @downloadChart(VizID) )
+						# 8 Download file and log 
+						$('#downloadFile').click( () => @doZip() )
+
+						# 9 Export chart 
+						$('#export').click( () => @downloadChart() )
 
 	prepareData: () ->
 
@@ -1097,7 +1101,7 @@ class taxonomyViz
 			.layout(128, smallSankeyDimensions.w)
 		path = smallSankey.link()
 		link = smallSankeySVG.append('g').selectAll('.link').data(smlTaxonomySankey.links)
-		link.enter().append('path').attr('class','link')
+		link.enter().append('path').attr('class','link').style("opacity", 0.2)
 		link.attr('d', path).style('fill', (d) ->
 			return color(d.target.name);
 		).sort((a,b) ->
@@ -1125,7 +1129,7 @@ class taxonomyViz
 			return color(d.name);
 		).on('click', (d,i) =>
 			return @clickSmallSankeyNode(d,i, originalSankey,originalSVG)
-		);
+		).style("opacity", 0.6);
 		node.append('rect').attr('height', (d) ->
 			originalNode = _.filter(originalSankey.nodes, (dd) -> return dd.name is d.name)
 			if originalNode.length > 1
@@ -1147,6 +1151,7 @@ class taxonomyViz
 			.attr("x", -6)
 			.attr("y",  (d) -> return d.dy / 2)
 			.attr("dy", ".35em")
+			.attr("font-size", "10px")
 			.attr("text-anchor", "end")
 			.attr("transform", null)
 			.text( (d) -> return d.name)
@@ -1777,19 +1782,31 @@ class taxonomyViz
 		})
 
 	exportCallback: (data, textStatus, xhr) ->
-		console.log data
-	downloadChart: (_VizID) ->
-		console.log 'download chart'
+		console.log 'exportCallback!'
+		convertResult = JSON.parse(data)
+		if convertResult['status'] != 'okay'
+			$('#exportHeader').html('unable to download image!')
+		else
+			$('#downloadPreview img').attr('src', 'data:image/png;base64,' + convertResult['imageData']);
+			$('#downloadPreview a').attr('href', 'data:image/png;base64,' + convertResult['imageData']);
+		$('#exportLoading').fadeOut(500);
+	
+	downloadChart: () ->
+		$('#exportShareDiv').fadeIn(500);
+		$('#exportLoading').fadeIn(500);
+
+		$('#exportShareDiv .icon-remove').click( (e) -> $('#exportShareDiv').fadeOut(500); ) 
+
 		svg = $('svg')
 		svgStringData = svg.wrap('<p>').parent().html()
 		postData = {svg: svgStringData}
 		exportEndpoint = backendServer + '/exportImage'
 		console.log postData
 		$.post(exportEndpoint, postData, @exportCallback)
-	doZip: (_VizID) ->
-		console.log _VizID
-		socket.emit('downloadChart', _VizID);
 
+	doZip: () ->
+
+		console.log 'doZip!'
 		obj_phinch = JSON.stringify(biom)
 		obj_log = {}
 		obj_log.selected_sample = selected_samples;
@@ -1799,15 +1816,11 @@ class taxonomyViz
 		obj_log = JSON.stringify(obj_log);
 
 		zip = new JSZip();
-		zip.file("data.phinch", obj_phinch);
-		zip.file("log.json", obj_log);
-
-		img = zip.folder("images");
-		img.file("test2.png", imgData, {base64: true});
+		zip.file( filename + ".phinch", obj_phinch);
+		zip.file( filename + "_log.json", obj_log);
 
 		content = zip.generate({type:"blob"});
 		saveAs(content, "phinch.zip");
-
 
 window.taxonomyViz = taxonomyViz
 

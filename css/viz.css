@@ -2,7 +2,7 @@
 /* Top Section */
 
 #goBackFilter { float: left; margin: 20px; width: 204px; height: 50px; border: none; background-image: url('images/left_arrow.jpg'); }
-#goBackGallery { width: 204px; border: none; background-image: url('images/left_arrow.jpg');}
+#goBackGallery { width: 204px; border: none; background-image: url('images/left_arrow.jpg'); background-repeat: no-repeat;}
 
 .col3 { float: left; width: 31%;  height: auto; min-height: 250px; margin: 0% 10px 2% 10px; border: 2px solid #ccc; font-size: 17px; color: #6f6f6f;}
 .col3:hover { cursor: pointer; border: 2px solid #ff8900; background-color: #ff8900; color: #ffffff; -webkit-transition:.4s; -moz-transition:.4s; -o-transition:.4s; transition:.4s;}
@@ -11,6 +11,10 @@
 
 #taxonomy_container { width: 100%; opacity: 0;}
 #loadingIcon { position: absolute; top: 400px; left: 600px; opacity: 0;}
+
+#exportShareDiv {display: none; width: 800px; height: 600px; border: 1px solid #000; position: absolute; top: 120px; left: 300px; background: #fff; border: 1px solid rgba(0,0,0,0.2); box-shadow: 0 3px 9px rgba(0,0,0,0.5); z-index: 5;}
+#exportLoading {position: absolute; top: 250px; left: 350px;}
+#downloadPreview {margin: 50px 0 0 50px;}
 
 /* Layer Switch Part */
 

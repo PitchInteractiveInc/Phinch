@@ -59,8 +59,9 @@
 
     <section id = "up_sec" style="display:none;">
         <button class="orange_btn" id="share">SHARE</button>
-        <button class="orange_btn" id="export">EXPORT</button>
-        <a href="viz.html"><button id="goBackGallery" class="orange_btn">BACK TO GALLERY </button></a>
+        <button class="orange_btn" id="export">EXPORT&nbsp;&nbsp;<i class="icon-chart icon-large"></i></button>
+        <button class="orange_btn" id="downloadFile">FILES&nbsp;&nbsp;<i class="icon-download icon-large"></i></button>
+        <a href="viz.html"><button id="goBackGallery" class="orange_btn">BACK TO GALLERY</button></a>
             
         <p id = "file_details"></p>
         <select id = "attributes_dropdown" style="display: none;"></select>  
@@ -158,6 +159,13 @@
         <div id="count_header">SAMPLE DIST</div>
         <div id="count_container"></div>
 
+        <div id="exportShareDiv"><i class="icon-remove icon-large" style=" float: right; margin: 10px 10px;"></i>
+            <span id = "exportLoading"><i class="icon-spinner icon-spin icon-large icon-4x"></i></span>
+            <div id = "exportHeader">Preview Image, click to download!</div>
+            <div id = "downloadPreview">
+                <a href="" download><img src="" height="500px"></a>
+            </div>
+        </div>
     </section>
 
 <!--     <section class = "footer">
@@ -187,14 +195,6 @@
         $('#head_sec').animate({height:50}, 200);
         $('#viz_container').hide();
     } else {
-
-        if (typeof io !== 'undefined') {
-            var socket = io.connect(document.location.origin);
-            socket.on('connect', function() {
-                console.log('Shujian ---- Server Success!!! ');
-            });
-            window.socket = socket; 
-        }
 
         $( "#GraphGallery .col3" ).each( function(index) {
             $(this).click( function() {
