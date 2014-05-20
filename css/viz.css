@@ -14,7 +14,8 @@
 
 #exportShareDiv {display: none; width: 800px; height: 600px; border: 1px solid #000; position: absolute; top: 120px; left: 300px; background: #fff; border: 1px solid rgba(0,0,0,0.2); box-shadow: 0 3px 9px rgba(0,0,0,0.5); z-index: 5;}
 #exportLoading {position: absolute; top: 250px; left: 350px;}
-#downloadPreview {margin: 50px 0 0 50px;}
+#exportHeader {padding: 20px;}
+#downloadPreview {margin: 20px;}
 
 /* Layer Switch Part */
 

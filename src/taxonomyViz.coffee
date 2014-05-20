@@ -30,8 +30,8 @@ class taxonomyViz
 	selected_attributes_units_array = []
 	selected_phinchID_array = []
 	globalColoring = d3.scale.category20()
-	backendServer = 'http://' + window.location.host + ":8000"
-
+	backendServer = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/')) + "/server/"
+	console.log backendServer
 	constructor: (_VizID) ->
 		VizID = _VizID
 		db.open(
@@ -1785,24 +1785,29 @@ class taxonomyViz
 	exportCallback: (data, textStatus, xhr) ->
 		console.log 'exportCallback!'
 		convertResult = JSON.parse(data)
-		if convertResult['status'] != 'okay'
-			$('#exportHeader').html('unable to download image!')
+		console.log convertResult
+		if convertResult['code'] is 0 and convertResult['err'] is ''
+			$('#downloadPreview img').attr('src', 'data:image/png;base64,' + convertResult['out']);
+			$('#downloadPreview a').attr('href', 'data:image/png;base64,' + convertResult['out']);
+			$('#exportHeader').html('Preview Image, click to download!')
+
 		else
-			$('#downloadPreview img').attr('src', 'data:image/png;base64,' + convertResult['imageData']);
-			$('#downloadPreview a').attr('href', 'data:image/png;base64,' + convertResult['imageData']);
+			$('#exportHeader').html('unable to download image!')
 		$('#exportLoading').fadeOut(500);
 	
 	downloadChart: () ->
 		$('#exportShareDiv').fadeIn(500);
 		$('#exportLoading').fadeIn(500);
+		$('#downloadPreview img').attr('src', '');
+		$('#downloadPreview a').attr('href', '');
+		$('#exportHeader').html('Generating Image')
 
 		$('#exportShareDiv .icon-remove').click( (e) -> $('#exportShareDiv').fadeOut(500); ) 
 
 		svg = $('svg')
 		svgStringData = svg.wrap('<p>').parent().html()
 		postData = {svg: svgStringData}
-		exportEndpoint = backendServer + '/exportImage'
-		console.log postData
+		exportEndpoint = backendServer + 'export.php'
 		$.post(exportEndpoint, postData, @exportCallback)
 
 	doZip: () ->
