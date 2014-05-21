@@ -1770,6 +1770,7 @@ class taxonomyViz
 				$('#tags').fadeIn(500)
 				$('#PercentValue').fadeIn(500)
 				$('#legend_header').fadeIn(500)
+				$('#sankeyMsgBox').html("* If the page is not showing correctly, please refresh")
 			if VizID == 1
 				$('#ListBubble').fadeIn(500)
 				$('#bubbleSliderContainer').fadeIn(500)
@@ -1780,7 +1781,6 @@ class taxonomyViz
 				})
 			if VizID == 2
 				$('#tags').fadeIn(500)
-				$('#sankeyMsgBox').fadeIn(500)
 				$('#layer_1').off('click'); # There's no 1 layer situation
 				$('#layer_6').off('click');
 				$('#layer_7').off('click');

@@ -174,7 +174,7 @@
 
 /* 3 Sankey Diagram */
 
-#sankeyMsgBox { display: none; width: 350px; height: 33px; color: #ff8900; margin-left: 415px; line-height: 33px; font-size: 12px; font-style: italic;}
+#sankeyMsgBox { width: 350px; height: 33px; color: #ff8900; line-height: 33px; font-size: 12px; font-style: italic;}
 
 .nullnode { display: none;}
 .node rect { shape-rendering: crispEdges;}
