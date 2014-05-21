@@ -60,7 +60,7 @@ class taxonomyViz
 						biom = JSON.parse(currentData.data)
 						filename = currentData.name
 						$("#file_details").html("");
-						$("#file_details").append( "ANALYZING &nbsp;<span>" + currentData.name.substring(0,40) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>")
+						$("#file_details").append( "ANALYZING &nbsp;<span>" + currentData.name.substring(0,30) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>")
 
 						# 3 Click events 
 
@@ -164,10 +164,21 @@ class taxonomyViz
 						@generateVizData()
 
 						# 8 Download file and log 
-						$('#downloadFile').click( () => @doZip() )
+						$('#downloadFile').click( () => 
+							alert("Implementing...!")
+							# @doZip() 
+						)
 
 						# 9 Export chart 
-						$('#export').click( () => @downloadChart() )
+						$('#export').click( () => 
+							# alert("Implementing...!")
+							@downloadChart() 
+						)
+
+						# 10 Share
+						$('#share').click( () => 
+							alert("Implementing...!")
+						)						
 
 	prepareData: () ->
 
@@ -388,8 +399,8 @@ class taxonomyViz
 					d3.select('#deleteSampleArr ul').html(updateContent)					
 					that.drawD3Bar()
 
-		# 2 clean canvas     
-		w = 1200 
+		# 2 clean canvas 
+		w = 1200  
 		h = sumEachCol.length * 14 + 200
 		max_single = d3.max(sumEachCol)
 		margin = {top: 75, right: 20, bottom: 20, left: 100}
@@ -573,8 +584,8 @@ class taxonomyViz
 			.text (d,i) -> 
 				if !percentage
 					return format(d) 
-				else 
-					return Math.round( i / (y.ticks(10).length) * 100 ) + '%'
+				else
+					return Math.round( i / (y.ticks(10).length - 1) * 100 ) + '%'
 
 		# 10 create legend 
 		legendArr = [] 

@@ -151,7 +151,11 @@ class readFile
 		totalrows = $('#recent_data tr .del').length
 		for k in [0..totalrows-1] 
 			if i == $('#recent_data tr .del')[k].id
-				@server.biom.remove( @currentData[totalrows - k - 1].id ).done () -> $('#recent_data tr')[k].remove()
-				break
+				console.log @currentData[totalrows - k - 1].id
+				@server.biom.remove( @currentData[totalrows - k - 1].id ).done( () -> 
+					# $('#recent_data tr')[k].remove()
+					# break
+					location.reload(true);
+				)
 
 window.readFile = readFile

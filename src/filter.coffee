@@ -375,7 +375,7 @@ class filter
 								content += "<input type='checkbox' name='groupable_check_group' id='groupable_check_" + check_count + "' checked='checked' /><label for='groupable_check_" + check_count + "'></label><span class = 'biom_valid_attr_grp'>" + toprocess[_k] + "</span><br/>"	
 								check_count++
 
-							$('#groupable_att').append("<div>" + content + "</div>")
+							$('#groupable_att').append("<div class='overflowControl'>" + content + "</div>")
 
 							for k in [0..toprocess.length-1]
 								$('#groupable_check_' + (k+1) ).click () => @livePreview()
@@ -473,7 +473,7 @@ class filter
 				if $('#numeric_check_' + i).is(':checked')
 					selected_range_array.push(@range_array[i-1])
 
-		$('#right_live_panel').html("")
+		$('#right_live_panel').html('')
 
 		# Step 1
 		for i in [0..biom.shape[1]-1] 
@@ -542,10 +542,10 @@ class filter
 			for i in [0..@selected_sample.length-1] 
 				content += '<tr><td contenteditable="true" id="phinchID_' + @selected_sample[i] + '">' +  phinchID_array[@selected_sample[i]] + '</td><td>' + (@selected_sample[i] + 1) + '</td><td>' + columns_sample_name_array[@selected_sample[i]] + '</td><td>' + columns_sample_count_list[@selected_sample[i]] + '</td></tr>'
 		content += "</table>"
-		$("#right_live_panel").append(content)
+		$("#right_live_panel").html(content)
 
 		$('#myTable').dataTable({
-			"iDisplayLength": 50,
+			"iDisplayLength": @selected_sample.length, # 50
 			"aaSorting": [[ 1, "asc" ]],
 			"oLanguage": {
 			# "sLengthMenu": "_MENU_ samples per page",
