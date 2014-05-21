@@ -60,7 +60,7 @@ class taxonomyViz
 						biom = JSON.parse(currentData.data)
 						filename = currentData.name
 						$("#file_details").html("");
-						$("#file_details").append( "ANALYZING &nbsp;<span>" + currentData.name.substring(0,40) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>")
+						$("#file_details").append( "ANALYZING &nbsp;<span>" + currentData.name.substring(0,30) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>")
 
 						# 3 Click events 
 
@@ -164,11 +164,15 @@ class taxonomyViz
 						@generateVizData()
 
 						# 8 Download file and log 
-						$('#downloadFile').click( () => @doZip() )
+						$('#downloadFile').click( () => 
+							alert("Implementing...!")
+							# @doZip() 
+						)
 
 						# 9 Export chart 
-						$('#export').click( () => @downloadChart() )
+						$('#export').click( @downloadChart )
 						$('#share').click(@shareViz)
+
 	prepareData: () ->
 
 		# Calculate unique taxonomy combination
@@ -388,8 +392,8 @@ class taxonomyViz
 					d3.select('#deleteSampleArr ul').html(updateContent)					
 					that.drawD3Bar()
 
-		# 2 clean canvas     
-		w = 1200 
+		# 2 clean canvas 
+		w = 1200  
 		h = sumEachCol.length * 14 + 200
 		max_single = d3.max(sumEachCol)
 		margin = {top: 75, right: 20, bottom: 20, left: 100}
@@ -573,8 +577,8 @@ class taxonomyViz
 			.text (d,i) -> 
 				if !percentage
 					return format(d) 
-				else 
-					return Math.round( i / (y.ticks(10).length) * 100 ) + '%'
+				else
+					return Math.round( i / (y.ticks(10).length - 1) * 100 ) + '%'
 
 		# 10 create legend 
 		legendArr = [] 
@@ -1759,6 +1763,7 @@ class taxonomyViz
 				$('#tags').fadeIn(500)
 				$('#PercentValue').fadeIn(500)
 				$('#legend_header').fadeIn(500)
+				$('#sankeyMsgBox').html("* If the page is not showing correctly, please refresh")
 			if VizID == 1
 				$('#ListBubble').fadeIn(500)
 				$('#bubbleSliderContainer').fadeIn(500)
@@ -1769,7 +1774,6 @@ class taxonomyViz
 				})
 			if VizID == 2
 				$('#tags').fadeIn(500)
-				$('#sankeyMsgBox').fadeIn(500)
 				$('#layer_1').off('click'); # There's no 1 layer situation
 				$('#layer_6').off('click');
 				$('#layer_7').off('click');
@@ -1827,15 +1831,24 @@ class taxonomyViz
 
 		content = zip.generate({type:"blob"});
 		saveAs(content, "phinch.zip");
-	shareViz: () ->
+	shareViz: () =>
 		console.log 'share'
 		biomData = JSON.stringify(biom)
 		#console.log CryptoJS.SHA1(biomData).toString()
 		w = new Worker('scripts/hashWorker.js')
-		w.addEventListener('message', (e) ->
+		w.addEventListener('message', (e) =>
 			console.log 'worker message'
 			console.log e
+			hashValue = e.data
+			@shareHashExists(hashValue)
 		)
 		w.postMessage(biomData)
+	shareHashExists: (hash) ->
+		console.log hash
+		hashExistsEndpoint = backendServer + "hashExists.php"
+		$.get(hashExistsEndpoint, {hash: hash}, @shareHashExistsCallback)
+	shareHashExistsCallback: (data, textStatus, xhr) =>
+		console.log data
+
 window.taxonomyViz = taxonomyViz
 

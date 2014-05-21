@@ -13,7 +13,7 @@
 .biom_valid_attr_dates { line-height: 32px; }
 .biom_valid_attr_units { display: none; width: 50px; height: 16px; margin-left: 10px; text-align: center; border: 1px #bbb solid;}
 .biom_valid_attr_grp { margin-left: 10px;}
-
+.overflowControl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .biom_valid_notes { font-size: 12px; font-style: italic;}
 .biom_valid_att_slider { opacity: 0.4; height: 50px !important;  margin: -57px 0px 0px 20px;}
 .biom_valid_att_thumbnail { margin: 10px 0px 0px 20px;}

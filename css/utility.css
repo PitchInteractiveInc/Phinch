@@ -22,7 +22,7 @@ td { border: 2px #ccc solid; color: #ababab; height: 26px;}
 .logo { float: left; }
 .logo img { margin: 0 0 0 20px;}
 
-.footer { bottom: 0;}
+.footer { bottom: 0; width: 100%;}
 .footer_copyright {font-size: 12px;line-height: 50px;color: #fff;background: #444; padding-left: 20px;margin: 0;}
 .footer_copyright span {float: right;margin-right: 20px;}
 .footer_copyright a {text-decoration: none;color: #fff;}
