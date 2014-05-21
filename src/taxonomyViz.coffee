@@ -168,7 +168,7 @@ class taxonomyViz
 
 						# 9 Export chart 
 						$('#export').click( () => @downloadChart() )
-
+						$('#share').click(@shareViz)
 	prepareData: () ->
 
 		# Calculate unique taxonomy combination
@@ -1827,6 +1827,15 @@ class taxonomyViz
 
 		content = zip.generate({type:"blob"});
 		saveAs(content, "phinch.zip");
-
+	shareViz: () ->
+		console.log 'share'
+		biomData = JSON.stringify(biom)
+		#console.log CryptoJS.SHA1(biomData).toString()
+		w = new Worker('scripts/hashWorker.js')
+		w.addEventListener('message', (e) ->
+			console.log 'worker message'
+			console.log e
+		)
+		w.postMessage(biomData)
 window.taxonomyViz = taxonomyViz
 

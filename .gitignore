@@ -25,3 +25,4 @@ node_modules/
 
 scripts
 node_modules
+server/dbconfig.php
