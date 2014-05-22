@@ -32,6 +32,7 @@ class taxonomyViz
 	globalColoring = d3.scale.category20()
 	backendServer = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/')) + "/server/"
 	console.log backendServer
+
 	constructor: (_VizID) ->
 		VizID = _VizID
 		db.open(
@@ -165,13 +166,13 @@ class taxonomyViz
 
 						# 8 Download file and log 
 						$('#downloadFile').click( () => 
-							alert("Implementing...!")
-							# @doZip() 
+							$('#downloadFile i').removeClass('icon-download')
+							$('#downloadFile i').addClass('icon-spinner icon-spin')
+							setTimeout(@doZip, 800)
 						)
 
 						# 9 Export chart 
 						$('#export').click( () => 
-							# alert("Implementing...!")
 							@downloadChart() 
 						)
 
@@ -1256,11 +1257,19 @@ class taxonomyViz
 			count[ groupable_array.indexOf( biom.columns[ selected_samples[i] ].metadata[ cur_attribute ] ) ].push( selected_samples[i] )
 
 		# 3 Plot Pie for each category 
-		d3.select('#taxonomy_container').attr("width", 1200).attr("height", 250 * groupable_array.length + 200)
+		# find the longest bar #
+		maxCount = 0
+		for i in [0..count.length-1]
+			if count[i].length > maxCount
+				maxCount = count[i].length
+
+		console.log 'maxCount: ' + maxCount
+
+		d3.select('#taxonomy_container').append('svg').attr("width", maxCount * 20 + 450).attr("height", 250 * groupable_array.length + 200)
 		alphagroupble_array = _.clone(groupable_array).sort()
 
-		console.log groupable_array
-		console.log alphagroupble_array
+		# console.log groupable_array
+		# console.log alphagroupble_array
 
 		for i in [0..groupable_array.length-1]
 			donutArr = []
@@ -1281,33 +1290,35 @@ class taxonomyViz
 		pie = d3.layout.pie() 
 			.sort(null)
 			.value( (d) -> return yScale(d) )
-		
-		# 1 append each svg
+
+		# 0 Add switch buttons
 		d3.select('#taxonomy_container').append('div')
+			.attr('class','donutSwitch')
+			.style('top', 250 + posID * 290 + 'px')
+			.html('<button id="toggleDy_' + donutID + '" class="clicked">Dynamic</button><button id = "toggleSt_' + donutID + '">Stand.</button>')
+
+		$('#toggleDy_' + donutID).click(() =>
+			if(! $('#toggleDy_' + donutID).hasClass('clicked'))
+				$('#toggleDy_' + donutID).addClass('clicked')
+				$('#toggleSt_' + donutID).removeClass('clicked')
+				@drawBasicRect(true, donutContainedSamp, donutID, null, 'dynamic')
+		)
+
+		$('#toggleSt_' + donutID).click(() =>
+			if(! $('toggleSt_' + donutID).hasClass('clicked'))
+				$('#toggleSt_' + donutID).addClass('clicked')
+				$('#toggleDy_' + donutID).removeClass('clicked')
+				@drawBasicRect(true, donutContainedSamp, donutID, null, 'standardized')
+		)
+
+		# 1 append each svg
+		d3.select('#taxonomy_container svg').append('g')
 			.attr("id", "donut_" + donutID)
-			.attr("class", "donutDiv")
-			.style('top', (250 + posID * 290) + 'px')	
-		svg = d3.select('#donut_' + donutID).append('svg')
+			.attr("transform", "translate(" + 125 + "," + (150 + posID * 290) + ")")
+
+		svg = d3.select('#donut_' + donutID).append('g')
 			.attr("width", 300)
 			.attr("height", 255)
-			.style("float", "left")
-		.append("g")
-			.attr("transform", "translate(" + 125 + "," + 125 + ")")
-
-		# 2 add category name 
-		svg.append('text')
-			.attr('dy', '.35em')
-			.attr('y', '-7')
-			.style('text-anchor', 'middle')
-			.attr("font-size", "12px")
-			.text(donutName)
-		svg.append('text')
-			.attr('dy', '.35em')
-			.style('text-anchor', 'middle')
-			.attr("font-size", "14px")
-			.attr("font-weight", "bold")
-			.attr('y', '7')
-			.text(d3.sum(donutData))
 
 		# 3 plot all arc
 		that = this
@@ -1325,22 +1336,41 @@ class taxonomyViz
 						if i != index then return 0.5
 			.on 'mouseout', (d,i) -> 
 				d3.selectAll('g.arc_' + donutID).style('opacity', 1)
-				# that.drawBasicRect(true, donutContainedSamp, donutID, null)
 			.on 'click', (d,i) ->
-				that.drawBasicRect(false, donutContainedSamp, donutID, i, $('#toggle_' + donutID).html() )
+				if $('#toggleDy_' + donutID).hasClass('clicked') 
+					dynamicStatus = 'dynamic'
+				else
+					dynamicStatus = 'standardized'
+				that.drawBasicRect(false, donutContainedSamp, donutID, i, dynamicStatus )
 
-		infoPanel = d3.select('#donut_' + donutID)
-			.append("div")
-			.attr("class", "panelCombSample")
-			.html('<a class="toggleStandard" id="toggle_' + donutID + '">dynamic</a><span class="containedTaxonomy" id="containedTaxonomy_' + donutID + '"></span><div id="selectedColumn_' + donutID + '"></div>')
+		# 2 add category name # put this after previous step, so the text will be on top of the donuts
+		svg.append('text')
+			.attr('dy', '.35em')
+			.attr('y', '-7')
+			.style('text-anchor', 'middle')
+			.attr("font-size", "12px")
+			.text(donutName)
+		svg.append('text')
+			.attr('dy', '.35em')
+			.style('text-anchor', 'middle')
+			.attr("font-size", "14px")
+			.attr("font-weight", "bold")
+			.attr('y', '7')
+			.text(d3.sum(donutData))
 
-		$('#toggle_' + donutID).click(() =>
-			if $('#toggle_' + donutID).html() == 'standardized'  
-				$('#toggle_' + donutID).html('dynamic') 
-			else 
-				$('#toggle_' + donutID).html('standardized')
-			@drawBasicRect(true, donutContainedSamp, donutID, null, $('#toggle_' + donutID).html() )
-		)
+		# 4 bar chart part
+		d3.select('#donut_' + donutID).append("g")
+			.attr('height', 235)
+			.attr('id', 'selectedColumn_' + donutID)
+			.attr("transform", "translate(150,-100)")
+
+		d3.select('#donut_' + donutID).append("text")	
+			.attr("id", "containedTaxonomy_" + donutID)
+			.style("font-size", "11px")
+			.style("text-anchor", "start")
+			.style("font-style","italic")
+			.attr("x", -100)
+			.attr("y", 150)
 		
 		@drawBasicRect(true, donutContainedSamp, donutID, null, 'dynamic')
 
@@ -1358,12 +1388,11 @@ class taxonomyViz
 				rectArr[i] += new_data_matrix_onLayer[selectedTaxnomy][containedSamp[i]]
 
 		# 2 add info 
-		d3.select('#containedTaxonomy_' + donutID).html("")
 		if totalFlag
 			d3.select('#containedTaxonomy_' + donutID).html( unique_taxonomy_comb_onLayer.length + ' Taxonomy in Total')
 		else
 			thisTaxonomyName = unique_taxonomy_comb_onLayer[selectedTaxnomy][0] + ',' + unique_taxonomy_comb_onLayer[selectedTaxnomy][1] + ',' + unique_taxonomy_comb_onLayer[selectedTaxnomy][2] + ',' + unique_taxonomy_comb_onLayer[selectedTaxnomy][3] + ',' + unique_taxonomy_comb_onLayer[selectedTaxnomy][4] + ',' + unique_taxonomy_comb_onLayer[selectedTaxnomy][5] + ',' + unique_taxonomy_comb_onLayer[selectedTaxnomy][6]
-			d3.select('#containedTaxonomy_' + donutID).html( 'Taxonomy:  ' + thisTaxonomyName )
+			d3.select('#containedTaxonomy_' + donutID).html( thisTaxonomyName )
 
 		# 3 find the max standardized value of all 
 		if d3.max(rectArr) > standardizedValue
@@ -1375,46 +1404,43 @@ class taxonomyViz
 		else 
 			yScale = d3.scale.pow().exponent(.5).domain([0, standardizedValue]).range([2, 160])
 
-		eachBarWidth = 800 / containedSamp.length
-		if eachBarWidth < 10 # too many samples contained, too narrow 
-			d3.select('#selectedColumn_' + donutID).html("Too many samples!" + containedSamp) 
-		else 
-			d3.select('#selectedColumn_' + donutID).select('svg').remove() # clear canvas first
-			rectContainedSamp = d3.select('#selectedColumn_' + donutID).append('svg')
-			rectContainedSamp.selectAll('rect').data(rectArr).enter().append('rect')
-				.attr('height', (d) -> return yScale(d))
-				.attr('width', eachBarWidth - 3 )
-				.attr("x", (d,i) -> return eachBarWidth * i + 50 )
-				.attr("y", (d,i) -> return 170 - yScale(d))
-				.style("fill", (d,i) -> if totalFlag then return '#ff8900' else return fillCol[selectedTaxnomy%20] )
-			rectContainedSamp.selectAll('text')
-				.data(containedSamp)
-			.enter().append('text')
-				.text( (d,i) -> return String(selected_phinchID_array[i]))  # .substring(0,9) 
- 				.attr('x', (d,i) -> return eachBarWidth * (i + 0.5) + 50 )
-				.attr('y', 200)
-				.attr('width', eachBarWidth )
-				.attr('text-anchor', 'end')
-				.attr("font-size", "9px")
-				.attr('fill', '#444')
-				.attr("transform", (d, i) -> return "translate( " + (eachBarWidth / 3.3 * i - 120) + "," + (80 + i * 0.71 * eachBarWidth + eachBarWidth / 3 ) + ")rotate(-45)")
+		eachBarWidth = 20
+		$('#selectedColumn_' + donutID).empty() # clear canvas first
+		rectContainedSamp = d3.select('#selectedColumn_' + donutID)
+		rectContainedSamp.selectAll('rect').data(rectArr).enter().append('rect')
+			.attr('height', (d) -> return yScale(d))
+			.attr('width', eachBarWidth - 3 )
+			.attr("x", (d,i) -> return eachBarWidth * i + 50 )
+			.attr("y", (d,i) -> return 170 - yScale(d))
+			.style("fill", (d,i) -> if totalFlag then return '#ff8900' else return fillCol[selectedTaxnomy%20] )
+		rectContainedSamp.selectAll('text')
+			.data(containedSamp)
+		.enter().append('text')
+			.text( (d,i) -> return String(selected_phinchID_array[i]))  # .substring(0,9) 
+			.attr('x', 0)
+			.attr('y', 0)
+			.attr('width', eachBarWidth )
+			.attr('text-anchor', 'end')
+			.attr("font-size", "9px")
+			.attr('fill', '#444')
+			.attr('transform', (d,i) -> return "translate(" + (eachBarWidth * i + 65) + ", 200)rotate(-45)")
 
-			rule = rectContainedSamp.selectAll('g.rule')
-				.data(yScale.ticks(10))
-			.enter().append('g')
-				.attr('class','rule')
-				.attr('transform', (d) -> return "translate(0," + ( 172 - yScale(d) ) + ")" )	
-			rule.append('line')
-				.attr('x1', 45)
-				.attr('x2', 870)
-				.style("stroke", (d) -> return if d then "#eee" else "#444" )
-				.style("stroke-opacity", (d) -> return if d then 0.7 else null )
-			rule.append('text')
-				.attr('x', 40)
-				.attr("font-size", "9px")
-				.attr('text-anchor', 'end')
-				.attr('fill', '#444')
-				.text( (d,i) -> return format(d) )
+		rule = rectContainedSamp.selectAll('g.rule')
+			.data(yScale.ticks(10))
+		.enter().append('g')
+			.attr('class','rule')
+			.attr('transform', (d) -> return "translate(0," + ( 172 - yScale(d) ) + ")" )	
+		rule.append('line')
+			.attr('x1', 45)
+			.attr('x2', 55 + containedSamp.length * 20)
+			.style("stroke", (d) -> return if d then "#eee" else "#444" )
+			.style("stroke-opacity", (d) -> return if d then 0.7 else null )
+		rule.append('text')
+			.attr('x', 40)
+			.attr("font-size", "9px")
+			.attr('text-anchor', 'end')
+			.attr('fill', '#444')
+			.text( (d,i) -> return format(d) )
 
 	#####################################################################################################################  
 	#############################################  Bars By Attributes  ##################################################  
@@ -1678,7 +1704,7 @@ class taxonomyViz
 			.attr("transform", "translate(" + (w - r) / 2 + ", 10)")
 
 		# 2 Filter 
-		threshold = 1000
+		threshold = 2000 # if the threshold is too high, there's no point in doing this bubble chart
 		filteredData = {}
 		filteredData.name = 'BIOM'
 		filteredData.children = []
@@ -1697,8 +1723,18 @@ class taxonomyViz
 		vis.selectAll("circle").data(nodes)
 			.enter().append("svg:circle")
 			.attr("class", (d) -> if d.children != null then return 'parent' else return 'child' )		
-			.attr("cx", (d) -> return d.x)
-			.attr("cy", (d) -> return d.y)
+			.attr("cx", (d) -> 
+				if isNaN(d.x) 
+					return 0 
+				else 
+					return d.x
+			)
+			.attr("cy", (d) -> 
+				if isNaN(d.y) 
+					return 0 
+				else 
+					return d.y
+			)
 			.attr("r", (d) -> return d.r)
 			.style("fill", '#ff8900')
 			# .on "click", (d) -> if node == d then return that.zoomBubble(vis, root) else return that.zoomBubble(vis, d)
@@ -1823,7 +1859,6 @@ class taxonomyViz
 
 	doZip: () ->
 
-		console.log 'doZip!'
 		obj_phinch = JSON.stringify(biom)
 		obj_log = {}
 		obj_log.selected_sample = selected_samples;
@@ -1838,6 +1873,9 @@ class taxonomyViz
 
 		content = zip.generate({type:"blob"});
 		saveAs(content, "phinch.zip");
+
+		$('#downloadFile i').removeClass('icon-spinner icon-spin')
+		$('#downloadFile i').addClass('icon-download')
 
 window.taxonomyViz = taxonomyViz
 
