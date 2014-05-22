@@ -75,23 +75,29 @@ class taxonomyViz
 
 						$('.circle').click (evt) =>
 							that = this
-							$('.circle').removeClass('selected_layer');
-							$('.circle').css('background-image', 'url("css/images/circle.png")')
+
 							LayerID = parseInt evt.currentTarget.id.replace("layer_","");
 							console.log 'clicked on ' + LayerID
-							$('#layer_' + LayerID).css('background-image', 'url("css/images/' + layerNameArr[LayerID-1] + '.png")');
 
-							$('.progressLine').animate({width: (120 + (LayerID - 2) * 111 ) + 'px'}, {duration: 1000, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
-								if LayerID > 1
-									for i in [1..LayerID-1]
-										$('#layer_' + i).addClass('selected_layer');
-								if $('#valueBtn').hasClass('clicked')
-									percentage = false
-								else 
-									percentage = true
-								that.generateVizData()
+							if (VizID == 2 and LayerID == 1)
+								alert('Sankey diagram has at least two layers!')
+							else if (VizID == 2 and (LayerID == 6 || LayerID == 7)) 
+								alert('Cannot go deeper to the 6th or 7th layer!')
+							else
+								$('.circle').removeClass('selected_layer');
+								$('.circle').css('background-image', 'url("css/images/circle.png")')
+								$('#layer_' + LayerID).css('background-image', 'url("css/images/' + layerNameArr[LayerID-1] + '.png")');
+								$('.progressLine').animate({width: (120 + (LayerID - 2) * 111 ) + 'px'}, {duration: 1000, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
+									if LayerID > 1
+										for i in [1..LayerID-1]
+											$('#layer_' + i).addClass('selected_layer');
+									if $('#valueBtn').hasClass('clicked')
+										percentage = false
+									else 
+										percentage = true
+									that.generateVizData()
 
-							});
+								});
 
 						# 4 Value | Percent View Change 
 						$('#valueBtn').click (evt) =>
@@ -714,6 +720,7 @@ class taxonomyViz
 	drawTaxonomyBubble: () ->
 
 		@fadeInOutCtrl()
+		@bubbleSearch()
 
 		viz_series = new Array(unique_taxonomy_comb_onLayer.length)
 		vizdata = new Array(unique_taxonomy_comb_onLayer.length)
@@ -829,6 +836,7 @@ class taxonomyViz
 			.data(nodes)
 		.enter().append("circle")
 			.attr("class", "node")
+			.attr("id", (d) -> return "bub_" + d.id)
 			.attr("cx", (d) -> return d.x )
 			.attr("cy", (d) -> return d.y )
 			.attr("r", (d) -> d.radius)
@@ -912,6 +920,45 @@ class taxonomyViz
 				.attr('r', (d) -> return d.radius )
 				.duration(750)
 				.ease("quad")
+
+	bubbleSearch: () ->
+
+		that = this  # important!! to call the functions 
+		availableTags = new Array(unique_taxonomy_comb_onLayer.length)
+		for i in [0..unique_taxonomy_comb_onLayer.length-1]  # layer 2 - 68 
+			availableTags[i] = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6]
+
+		$('#tags').keydown () -> if $('#tags').val().length < 4 then $('#autoCompleteList').fadeOut(200)
+		searchList = []
+		$('#autoCompleteList').fadeOut(800);
+
+		$( "#tags" ).autocomplete({ 
+			source: availableTags,
+			minLength: 3,
+			response: (evt, ui) ->
+				$('#autoCompleteList').html("");
+				searchList.length = 0
+				if ui.content.length > 0
+					for i in [0..ui.content.length-1]
+						searchList.push(ui.content[i].value)
+					content = '<i class="icon-remove icon-large" style="float:right; margin: 5px 10px 0 0;" id = "iconRemover"></i><ul>'
+					for i in [0..searchList.length-1]
+						content += '<li><span style = "display:block; background-color:' + fillCol[ availableTags.indexOf(searchList[i]) % 20] + '; height: 12px; width: 12px; float: left; margin: 2px 0px;" ></span>&nbsp;&nbsp;' + searchList[i] + '</li>'
+					content += '</ul>'
+					$('#autoCompleteList').append(content)
+					$('#autoCompleteList ul li').each (index) ->
+						$(this).mouseout () ->
+							d3.select('#bub_' + index).style({opacity:'0.6',stroke: 'none'})
+
+						$(this).mouseover () ->
+							d3.select('#bub_' + index).style({opacity:'1', stroke: '#000', 'stroke-width': '3' })
+
+					$('#iconRemover').click () -> $('#autoCompleteList').fadeOut(200)
+					$('#autoCompleteList').show()
+				else
+					$('#autoCompleteList').html("")
+					$('#autoCompleteList').hide()
+		})
 
 	#####################################################################################################################         
 	#############################################  Sankey Diagram   #####################################################         
@@ -1496,20 +1543,26 @@ class taxonomyViz
 				vizdata[j][i].y0 = sumEachCol[i]
 				sumEachCol[i] += selected_new_data_matrix_onLayer[j][i]
 
-		@drawBasicColumns(attributes_array)
+		@drawBasicColumns(attributes_array, cur_attribute, count)
 
 		$('#count_container').html("") 
 		content = ''
-		content += '<span>' + cur_attribute + ', ' + selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] + '</span>'
+		if selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] is undefined # Unit 
+			content += '<span>' + cur_attribute + '</span>'
+		else
+			content += '<span>' + cur_attribute + ', ' + selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] + '</span>'
 		if attributes_array.length > 0
 			for i in [0..attributes_array.length-1]
 				content += '<p><b>' + attributes_array[i] + '</b>:&nbsp;&nbsp;' 
-				if count[i].length > 0
-					for j in [0..count[i].length-1]
+				if count[i].length == 0
+					content += 'no samples'
+				else if count[i].length == 1
+					content += count[i][0]
+				else if count[i].length > 2	
+					for j in [0..count[i].length-2]
 						# content += selected_phinchID_array[count[i][j]] + ' (' + count[i][j] + '), '
 						content += count[i][j] + ', '
-				else
-					content += 'no samples'
+					content += count[i][count[i].length - 1]
 				content += '</p>'
 		if countEmpty.length > 0
 			content += '<p><i><b>* NaN value samples</b>:&nbsp;&nbsp;'
@@ -1531,11 +1584,12 @@ class taxonomyViz
 
 		@createLegend(legendArr)
 
-	drawBasicColumns: (attributes_array) -> 
+	drawBasicColumns: (attributes_array, cur_attribute, count) -> 
 
+		# console.log count
 		@fadeInOutCtrl()
 		# 1 Plot     
-		w = if sumEachCol.length < 80 then 600 else sumEachCol.length * 18
+		w = 120 + sumEachCol.length * 18
 		h = 800
 		max_single = d3.max(sumEachCol)
 		margin = {top: 20, right: 20, bottom: 20, left: 100}
@@ -1573,12 +1627,7 @@ class taxonomyViz
 		rect = taxonomy.selectAll('rect')
 			.data(Object)
 		.enter().append('rect')
-			.attr('x', (d, i) -> 
-				if sumEachCol.length < 80 
-					return x(d.x) + i * 3 
-				else 
-					return 15 * i + i * 3
-			)
+			.attr('x', (d, i) -> return 20 * i)
 			.attr('y', (d, i) -> 
 				if !percentage
 					return h - y(d.y) - y(d.y0)
@@ -1591,14 +1640,21 @@ class taxonomyViz
 				else 
 					return y(d.y) / sumEachCol[i] * max_single 
 			)
-			.attr('width', (d, i) -> 
-				if sumEachCol.length < 80 
-					return x.rangeBand()
-				else 
-					return 15
-			)
-			.on('mouseover', (d,i) -> 
-				tooltip.html( "Taxonomy: " + d.name + "<br/> Total: " + d.y )
+			.attr('width', 15)
+			.on('mouseover', (d,i) ->
+				content = ""
+				if attributes_array.length > 0
+					for i in [0..attributes_array.length-1]
+						content += '<b>' + attributes_array[i] + '</b>:&nbsp;&nbsp;' 
+						if count[i].length == 1
+							content += selected_phinchID_array[count[i][0]] + ' (<i>' + count[i][0] + '</i>)'
+						else if count[i].length > 2	
+							for j in [0..count[i].length-2]
+								content += selected_phinchID_array[count[i][j]] + ' (<i>' + count[i][j] + '</i>), '
+							content += selected_phinchID_array[count[i][count[i].length - 1]] + ' (<i>' + count[i][count[i].length - 1] + '</i>)'
+						content += '</br>'
+
+				tooltip.html( "<div class='attrColHead'><b>TAXONOMY: </b>" + d.name + "<br/><b>TOTAL READS: </b> " + format(d.y) + "</div><div class='attrColBody'>" + content + "</div>")
 				tooltip.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px" })
 			)
 			.on('mouseout', (d,i) -> 
@@ -1610,16 +1666,12 @@ class taxonomyViz
 			.data( attributes_array )
 		.enter().append('text')
 			.text( (d,i) -> return d )
-			.attr('x', (d,i) -> 
-				if sumEachCol.length < 80 
-					return x.rangeBand() * i + x.rangeBand() / 2 + i * 3
-				else 
-					return 15 * i + 7.5 + i * 3
-			)
-			.attr('y', h + 15)
+			.attr('x', 0)
+			.attr('y', 0)
 			.attr('text-anchor', 'middle')
 			.attr("font-size", "10px")
 			.attr('fill', '#444')
+			.attr('transform', (d,i) -> return "translate(" + (20 * i + 7.5) + ", " + (h + 15) + ")rotate(-45)")
 
 		# add y-axis
 		rule = svg.selectAll('g.rule')
@@ -1629,12 +1681,7 @@ class taxonomyViz
 			.attr('transform', (d) -> return "translate(0," + ( h - y(d) ) + ")" )	
 
 		rule.append('line')
-			.attr('x2', (d,i) -> 
-				if sumEachCol.length < 80 
-					return w - margin.left - margin.right + 30
-				else 
-					return w + 30
-			)
+			.attr('x2', (d,i) -> return w + 20)
 			.style("stroke", (d) -> return if d then "#eee" else "#444" )
 			.style("stroke-opacity", (d) -> return if d then 0.7 else null )
 
@@ -1643,14 +1690,21 @@ class taxonomyViz
 			.attr("font-size", "9px")
 			.attr('text-anchor', 'end')
 			.attr('fill', '#444')
-			.text( (d,i) -> 
+			.text (d,i) -> 
 				if !percentage
 					return format(d) 
 				else 
 					return Math.round( i / (y.ticks(10).length ) * 100 ) + '%'
-			)
 
-
+		# add text legend on the bottom
+		attr_n_unit = cur_attribute 
+		if selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] isnt undefined
+			attr_n_unit += ', ' + selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] 
+		svg.append('text')
+			.attr('x', w / 2 - 80)
+			.attr('y', h + 40)
+			.attr('font-size', '11px')
+			.text(attr_n_unit)
 
 	#####################################################################################################################         
 	############################################### Bubble by OTU #######################################################  
@@ -1809,6 +1863,7 @@ class taxonomyViz
 				$('#sankeyMsgBox').html("* If the page is not showing correctly, please refresh")
 			if VizID == 1
 				$('#ListBubble').fadeIn(500)
+				$('#tags').fadeIn(500)
 				$('#bubbleSliderContainer').fadeIn(500)
 				$('.ui-slider-horizontal .ui-slider-handle').css({
 					"margin-top": "-2px",
@@ -1817,9 +1872,6 @@ class taxonomyViz
 				})
 			if VizID == 2
 				$('#tags').fadeIn(500)
-				$('#layer_1').off('click'); # There's no 1 layer situation
-				$('#layer_6').off('click');
-				$('#layer_7').off('click');
 				$('#sankeyMsgBox').html( "* " + unique_taxonomy_comb_count.length + " unique paths, cannot go deeper to the 6th or 7th layer.")
 			if VizID == 4
 				$('#PercentValue').fadeIn(500)

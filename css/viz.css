@@ -69,95 +69,21 @@
 
 /* Legend */
 
-#legend_header {
-	display: none;
-	position: fixed;
-	top: 350px;
-	right: 0px;
-	width: 146px;
-	height: 30px;
-	border: 2px solid #ff8900;
-	border-right: none;
-	color: #ff8900;
-	font-weight: bold;
-	text-align: center;
-	line-height: 30px;
-}
-#legend_header:hover {
-	cursor: pointer;
-}
-#legend_container {
-	opacity: 0;
-	position: fixed;
-	top: 384px;
-	right: 0;
-	border-left: 1px solid #c3c3c3;
-	border-bottom: 1px solid #c3c3c3;
-	background: rgba(255,255,255,0.6);
-}
-#legend_container p {
-	padding-left: 20px;
-	font-size: 13px;
-	margin: 10px 0 0 0;
-}
-#legend_container ul {
-	font-size: 12px;
-	line-height: 16px;
-	list-style: none;
-	margin: 10px 20px;
-	padding: 0;
-}
+#legend_header { display: none; position: fixed; top: 350px; right: 0px; width: 146px; height: 30px; border: 2px solid #ff8900; border-right: none; color: #ff8900; font-weight: bold; text-align: center; line-height: 30px;}
+#legend_header:hover { cursor: pointer;}
+#legend_container { opacity: 0; position: fixed; top: 384px; right: 0; border-left: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; background: rgba(255,255,255,0.6);}
+#legend_container p { padding-left: 20px; font-size: 13px; margin: 10px 0 0 0;}
+#legend_container ul { font-size: 12px; line-height: 16px; list-style: none; margin: 10px 20px; padding: 0;}
+#legend_container ul em { float: right; color: #ff8900;}
 
-#legend_container ul em {
-	float: right;
-	color: #ff8900;
-}
 /* Auto-Complete Sections */
 
-#tags {
-	display: none;
-	width: 200px;
-	height: 32px;
-	position: absolute;
-	right: 20px;
-	top: 191px;
-	font-size: 15px;
-	border: 1px solid #bbb;
-	background: url('images/search.png') no-repeat right center;
-}
-
-#autoCompleteList { 
-	display: none;
-	position: absolute;
-	right: 20px;
-	top: 240px;
-	font-size: 12px; 
-	line-height: 16px; 
-	border-radius: 3px; 
-	background: rgba(255,255,255,0.9); 
-	color: #000; 
-	box-shadow: 0 1px 5px rgba(0,0,0,0.4); 
-	-moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-	overflow-y: scroll;
-	max-height: 400px;
-	z-index: 1;
-}
-#autoCompleteList ul {
-	list-style: none;
-	padding: 15px 10px 0px 15px;
-}
-#autoCompleteList ul li {
-	padding: 5px 0;
-}
-#autoCompleteList ul li:hover{
-	background: rgba(239,193,79,0.6);
-	cursor: pointer;
-}
-#autoCompleteList ul em {
-	color: #ff8900;
-	float: right;
-	font-style: normal;
-}
+#tags { display: none; width: 200px; height: 32px; position: absolute; right: 20px; top: 191px; font-size: 15px; border: 1px solid #bbb; background: url('images/search.png') no-repeat right center;}
+#autoCompleteList {  display: none; position: absolute; right: 20px; top: 240px; font-size: 12px;  line-height: 16px;  border-radius: 3px;  background: rgba(255,255,255,0.9);  color: #000;  box-shadow: 0 1px 5px rgba(0,0,0,0.4);  -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4); overflow-y: scroll; max-height: 400px; z-index: 1;}
+#autoCompleteList ul { list-style: none; padding: 15px 10px 0px 15px;}
+#autoCompleteList ul li { padding: 5px 0;}
+#autoCompleteList ul li:hover{ background: rgba(239,193,79,0.6); cursor: pointer;}
+#autoCompleteList ul em { color: #ff8900; float: right; font-style: normal;}
 
 /* 1 Taxonomy Bar Chart */
 
@@ -193,7 +119,7 @@
 .bubbleTaxHeader { width: 860px; height: 40px; line-height: 40px; padding-left: 50px; font-weight: bold; background: url('images/header.png') no-repeat;}
 .bubbleTaxHeader span { color: #c3c3c3;}
 
-#bubbleSliderContainer { display: none; width: 180px; margin-left: 1010px; margin-top: -35px; color: #ff8900; font-size: 12px;}
+#bubbleSliderContainer { display: none; width: 180px; margin-left: 30px; margin-top: 15px; color: #ff8900; font-size: 12px;}
 #bubbleSlider { width: 175px; position: absolute; height: 3px; border: none; background: #bbb;}
 #bubbleSlider .ui-widget-header { background: #ff8900;}
 .sliderIcons { text-align: center; margin: 0px 5px -18px 0px;}
@@ -222,59 +148,14 @@
 
 /* 5 Attributes Column Chart */
 
-#attributes_dropdown {
-	position: absolute;
-	top: 115px;
-	right: 20px;
-	height: 32px;
-	border: 2px solid #ff8900;
-}
-
-#count_header {
-	display: none;
-	position: fixed;
-	top: 600px;
-	right: 0px;
-	width: 146px;
-	height: 30px;
-	border: 2px solid #ff8900;
-	border-right: none;
-	color: #ff8900;
-	font-weight: bold;
-	text-align: center;
-	line-height: 30px;
-}
-#count_header:hover {
-	cursor: pointer;
-}
-#count_container {
-	opacity: 0;
-	position: fixed;
-	top: 634px;
-	right: 0;
-	border-left: 1px solid #c3c3c3;
-	border-bottom: 1px solid #c3c3c3;
-	background: rgba(255,255,255,0.6);
-	width: 400px;
-	overflow-wrap: break-word;
-	padding-bottom: 10px;
-}
-
-#count_container span {
-	font-size: 14px; 
-	font-weight: bold;
-	color: #ff8900;
-	text-align: center;
-	display: block;
-	margin: 5px 0;
-}
-#count_container p {
-	margin: 0;
-	font-size: 12px;
-	padding: 1px 20px;	
-}
-
-
+#attributes_dropdown { position: absolute; top: 115px; right: 20px; height: 32px; border: 2px solid #ff8900;}
+#count_header { display: none; position: fixed; top: 600px; right: 0px; width: 146px; height: 30px; border: 2px solid #ff8900; border-right: none; color: #ff8900; font-weight: bold; text-align: center; line-height: 30px;}
+#count_header:hover { cursor: pointer;}
+#count_container { opacity: 0; position: fixed; top: 634px; right: 0; border-left: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; background: rgba(255,255,255,0.6); width: 400px; overflow-wrap: break-word; padding-bottom: 10px;}
+#count_container span { font-size: 14px;  font-weight: bold; color: #ff8900; text-align: center; display: block; margin: 5px 0;}
+#count_container p { margin: 0; font-size: 12px; padding: 1px 20px;	}
+.attrColHead { margin: 10px; border-bottom: 1px solid #bbb; }
+.attrColBody { margin: 10px;}
 /* 6 Bubble Chart By OTU */
 
 circle {
