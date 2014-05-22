@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: internal-db.s179208.gridserver.com
--- Generation Time: May 20, 2014 at 02:59 PM
+-- Generation Time: May 21, 2014 at 04:56 PM
 -- Server version: 5.1.72-rel14.10
 -- PHP Version: 5.3.27
 
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `SharedData` (
   `visualization_id` int(10) NOT NULL,
   `layer_id` int(10) NOT NULL,
   `visualization_options` text NOT NULL,
-  `data_uploaded` date NOT NULL,
+  `date_uploaded` datetime NOT NULL,
   `countView` int(10) NOT NULL,
   PRIMARY KEY (`SharedData_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

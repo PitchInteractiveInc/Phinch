@@ -15,8 +15,36 @@
 #exportShareDiv {display: none; width: 800px; height: 600px; border: 1px solid #000; position: absolute; top: 120px; left: 300px; background: #fff; border: 1px solid rgba(0,0,0,0.2); box-shadow: 0 3px 9px rgba(0,0,0,0.5); z-index: 5;}
 #exportLoading {position: absolute; top: 250px; left: 350px;}
 #exportHeader {padding: 20px;}
-#downloadPreview {margin: 20px;}
+#downloadPreview {margin: 20px; overflow: hidden;}
 
+#sharingInfo {
+	position: absolute;
+	display: none;
+	border: 1px solid black;
+	background: white;
+	top: 100px;
+	left: calc(50% - 200px);
+	height: 400px;
+	width: 400px;
+	z-index: 10;
+}
+#sharingInfo .loading {
+	text-align: center;
+}
+#sharingInfo .shareForm {
+	padding: 20px;
+	display: none;
+}
+#sharingInfo label {
+	display: block;
+}
+#sharingInfo input {
+	display: block;
+	margin-bottom: 10px;
+}
+#sharingInfo label:before {
+	display: none;
+}
 /* Layer Switch Part */
 
 #layerSwitch { display: none;  width: 802px; height: 36px; background-color: #f2f2f2; margin: -13px 0px 0px 20px;}
@@ -188,42 +216,9 @@
 
 /* 4 Donut Partition */
 
-.donutDiv {
-	width: 1200px;
-	height: 270px;
-	margin-left: 50px;
-	margin-top: 15px;
-	position: absolute;
-}
-.panelCombSample {
-	float: left;
-	width: 880px;
-	height: 235px;
-	margin-top: 10px;
-	font-size: 12px;
-	padding: 5px;
-	border-radius: 3px;
-	background: rgba(255,255,255,0.9);
-	color: #000;
-	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-	-moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-	border: 1px solid rgba(200,200,200,0.85);
-	text-align: right;
-	overflow: hidden;
-}
-
-.containedTaxonomy {
-	padding-right: 20px;
-	font-style: italic;
-}
-
-.toggleStandard {
-	background: #ff8900;
-	cursor: pointer;
-	margin-right: 10px;
-	padding: 0 5px;
-} 
-
+.donutSwitch{ position: absolute; float: right; right: 20px; border: 2px solid #ff8900; height: 28px;}
+.donutSwitch button { border: none; margin: 0; height: 28px; color: #ff8900; background: #fff; padding: 0 10px; font-weight: bold; font-size: 12px;}
+.donutSwitch .clicked { color: #fff; background: #ff8900; -o-transition: background .6s; -ms-transition: background .6s; -moz-transition: background .6s; -webkit-transition: background .6s; transition: background .6s;}
 
 /* 5 Attributes Column Chart */
 

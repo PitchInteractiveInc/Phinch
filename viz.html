@@ -2,11 +2,19 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>PHINCH</title>
-    <meta name="description" content="">
+    <title>PHINCH - A framework for visualizing bio data</title>
+    <meta name="description" content="Phinch is an open-source framework for visualizing biological data. Whether it's genes, proteins, or microbial species, Phinch provides an interactive visualization tool that allows users to explore and manipulate large biological datasets." />
+    <meta name="keywords" content="data viz, data visualization, sloan founcation, uc davis, biom, biological data, open-source, framework" />
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="css/utility.css">
     <link rel="stylesheet" href="css/viz.css">
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:title" content="PHINCH - A framework for visualizing bio data">
+    <meta property="og:image" content="img/phinch-logo.jpg">
+    <meta property="og:site_name" content="PHINCH">
+
+    <!-- Google Analytics -->
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-50346302-1']);
@@ -163,11 +171,29 @@
             <span id="exportLoading"><i class="icon-spinner icon-spin icon-large icon-4x"></i></span>
             <div id="exportHeader">Preview Image, click to download!</div>
             <div id="downloadPreview">
+
                 <a href="" download><img src="" style="max-width: 600px; max-height: 500px; margin: 10px 0 0 20px;"></a>
             </div>
         </div>
         <div id="sharingInfo">
-            <span id="loading"><i class="icon-spinner icon-spin icon-large icon-4x"></i></span>
+            <div class="loading">
+                <i class="icon-spinner icon-spin icon-large icon-4x"></i>
+                <div class="loadingText"></div>
+            </div>
+            <div class="shareForm">
+                <label for="shareFromName">Your Name:</label>
+                <input type="text" name="shareFromName" id="shareFromName" />
+                <label for="shareFromEmail">Your Email:</label>
+                <input type="text" name="shareFromEmail" id="shareFromEmail" />
+                <label for="shareToName">To Name:</label>
+                <input type="text" name="shareToName" id="shareToName" />
+                <label for="shareToEmail">To Email:</label>
+                <input type="text" name="shareToEmail" id="shareToEmail" />
+                <label for="shareNotes">Notes:</label>
+                <textarea rows="4" cols="40" name="shareNotes" id="shareNotes"></textarea>
+
+                <input type="button" value="Share" class="shareButton" />
+            </div>
         </div>
     </section>
 
