@@ -58,8 +58,8 @@ while(true) {
 	}
 }
 
-$q = 'INSERT INTO SharedData (biom_filename, biom_file_hash, ip_address, from_email, from_name, to_email, to_name, notes, url_hash, visualization_id, layer_id, visualization_options, date_uploaded, countView) VALUES ';
-$q .= '(:biom_filename, :biom_file_hash, :ip_address, :from_email, :from_name, :to_email, :to_name, :notes, :url_hash, :visualization_id, :layer_id, :visualization_options, NOW(), 0)';
+$q = 'INSERT INTO SharedData (biom_filename, biom_file_hash, ip_address, from_email, from_name, to_email, to_name, notes, url_hash, visualization_id, layer_id, visualization_options, date_uploaded, countView, filter_options_json) VALUES ';
+$q .= '(:biom_filename, :biom_file_hash, :ip_address, :from_email, :from_name, :to_email, :to_name, :notes, :url_hash, :visualization_id, :layer_id, :visualization_options, NOW(), 0, :filter_options_json)';
 $stmt = $db->prepare($q);
 $stmt->bindParam(':biom_file_hash', $_POST['biom_file_hash']);
 $stmt->bindParam(':ip_address', $_SERVER['REMOTE_ADDR']);
@@ -71,6 +71,7 @@ $stmt->bindParam(':notes', $_POST['notes']);
 $stmt->bindParam(':url_hash', $urlHash);
 $stmt->bindParam(':visualization_id', $vizID);
 $stmt->bindParam(':layer_id', $layerID);
+$stmt->bindParam(':filter_options_json', $_POST['filter_options_json']);
 $stmt->bindParam(':visualization_options', json_encode(array()));
 //generate random url hash
 
@@ -82,7 +83,7 @@ if(isset($_POST['biomFile'])) {
 	}
 	$fullPath = $sharedDataFolder.$randomFilename;
 	$f = fopen($fullPath,'w+');
-	fwrite($f, base64_decode($_POST['biomFile']));
+	fwrite($f, $_POST['biomFile']);
 	fclose($f);
 	//bindFilename
 	$stmt->bindParam(':biom_filename', $randomFilename);

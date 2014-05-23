@@ -31,24 +31,29 @@ class taxonomyViz
 	selected_phinchID_array = []
 	globalColoring = d3.scale.category20()
 	backendServer = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/')) + "/server/"
+	filterOptionJSON = {}
 	console.log backendServer
 
-	constructor: (_VizID) ->
+	constructor: (_VizID, _LayerID) ->
 		VizID = _VizID
+		LayerID = _LayerID
+
 		db.open(
 			server: "BiomSample", version: 1,
 			schema:
 				"biomSample": key: keyPath: 'id', autoIncrement: true,
 		).done (s) => 
 			s.biomSample.query().all().execute().done (results) =>
-				
+
+				filterOptionJSON = results[results.length-1]
+
 				# 1 get selected samples first 
-				selected_samples = results[results.length-1].selected_sample
-				groupable = results[results.length-1].groupable
-				selected_groupable_array = results[results.length-1].selected_groupable_array
-				selected_attributes_array = results[results.length-1].selected_attributes_array
-				selected_attributes_units_array = results[results.length-1].selected_attributes_units_array
-				selected_phinchID_array = results[results.length-1].selected_phinchID_array
+				selected_samples = filterOptionJSON.selected_sample
+				groupable = filterOptionJSON.groupable
+				selected_groupable_array = filterOptionJSON.selected_groupable_array
+				selected_attributes_array = filterOptionJSON.selected_attributes_array
+				selected_attributes_units_array = filterOptionJSON.selected_attributes_units_array
+				selected_phinchID_array = filterOptionJSON.selected_phinchID_array
 
 				# 2 open the biom file 
 				db.open(
@@ -56,12 +61,14 @@ class taxonomyViz
 					schema:
 						"biom": key: keyPath: 'id', autoIncrement: true,
 				).done (s) => 
-					s.biom.query().all().execute().done (results) => 
+					s.biom.query().all().execute().done (results) =>
 						currentData = results[results.length-1]
 						biom = JSON.parse(currentData.data)
 						filename = currentData.name
+
 						$("#file_details").html("");
 						$("#file_details").append( "ANALYZING &nbsp;<span>" + currentData.name.substring(0,30) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>")
+
 
 						# 3 Click events 
 
@@ -180,7 +187,6 @@ class taxonomyViz
 						# 9 Export chart 
 						$('#export').click( @downloadChart )
 						$('#share').click(@shareViz)
-
 
 	prepareData: () ->
 
@@ -318,7 +324,9 @@ class taxonomyViz
 			else 
 				alert("Not supported!")
 		else if VizID == 5
-			@drawOTUBubble()
+			@drawOTUBubble();
+		else
+			alert('Data is not being loaded correctly! ...')
 
 	#####################################################################################################################         
 	##############################################  Bar Chart & Filter ##################################################  
@@ -1706,6 +1714,7 @@ class taxonomyViz
 			.attr('font-size', '11px')
 			.text(attr_n_unit)
 
+
 	#####################################################################################################################         
 	############################################### Bubble by OTU #######################################################  
 	#####################################################################################################################  
@@ -1925,6 +1934,7 @@ class taxonomyViz
 
 		content = zip.generate({type:"blob"});
 		saveAs(content, "phinch.zip");
+
 	shareViz: () =>
 		console.log 'share'
 		biomData = JSON.stringify(biom)
@@ -1963,6 +1973,7 @@ class taxonomyViz
 			notes: $('#sharingInfo #shareNotes').val(),
 			biom_file_hash: @shareHash,
 			layer_name: layerName,
+			filter_options_json: JSON.stringify(filterOptionJSON),
 			viz_name: vizName
 		}
 		if @shareHashExists is 'true'

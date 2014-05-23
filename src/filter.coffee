@@ -715,7 +715,4 @@ class filter
 				tooltipOverPanel.style("visibility", "hidden")
 			)
 
-
 window.filter = filter
-
-

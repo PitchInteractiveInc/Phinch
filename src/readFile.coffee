@@ -19,23 +19,19 @@ class readFile
 		false)
 
 		document.getElementById('loadTestFile').addEventListener('click', (evt) =>
-			testfile = '../data/testdata.biom'  ## Dev TODO http://phinch.org/data/testdata.biom
-			rawFile = new XMLHttpRequest();
-			rawFile.open("GET", testfile, true);
 			$('#loadTestFile').html('Loading...&nbsp;&nbsp;<i class="icon-spinner icon-spin icon-large"></i>');
-
-			rawFile.onreadystatechange = () =>
-				if rawFile.readyState == 4
-					if (rawFile.status == 200 || rawFile.status == 0)
-						biomToStore = {}
-						biomToStore.name = 'testdata.biom'
-						biomToStore.size = 15427024
-						biomToStore.data = rawFile.responseText
-						d = new Date();
-						biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
-						@server.biom.add(biomToStore).done () ->
-							setTimeout( "window.location.href = 'preview.html'", 2000)
-			rawFile.send(null);
+			hostURL = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/'))
+			testfile = hostURL + '/data/testdata.biom'  ## Dev TODO http://phinch.org/data/testdata.biom
+			$.get(testfile, (testdata) => 
+				biomToStore = {}
+				biomToStore.name = 'testdata.biom'
+				biomToStore.size = 15427024
+				biomToStore.data = testdata
+				d = new Date();
+				biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
+				@server.biom.add(biomToStore).done () ->
+					setTimeout( "window.location.href = 'preview.html'", 2000)
+			)
 		false)
 
 		document.getElementById('files').addEventListener('change', @handleFileSelect, false)
