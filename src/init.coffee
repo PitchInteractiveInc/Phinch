@@ -62,12 +62,15 @@ class init
 							"biom": key: keyPath: 'id', autoIncrement: true,
 					).done (s) =>
 						s.biom.add(biomToStore).done () ->
+							console.log 'shared file uploaded! '
 							db.open(
 								server: "BiomSample", version: 1,
 								schema:
 									"biomSample": key: keyPath: 'id', autoIncrement: true,
 							).done (t) =>
+								delete optionJSON.id 
 								t.biomSample.add( optionJSON ).done (item) =>
+									console.log 'option json uploaded!'
 									$('h3').html( shareJSON.VizName ); # 1 change the big title 
 									$('#GraphGallery').fadeOut(300, () -> $('#up_sec').fadeIn(300); ); # 2 fade in and out
 									app = new taxonomyViz(parseInt(shareJSON.visualization_id) - 1, parseInt(shareJSON.layer_id));
