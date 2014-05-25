@@ -95,11 +95,12 @@ if(isset($_POST['biomFile'])) {
 	$filename = $biomFilename->fetch(PDO::FETCH_OBJ);
 
 	//bind it
+	$stmt->bindParam(':biom_filename', $filename->biom_filename);
 }
 
 $stmt->execute();
 //execute query
-
+echo json_encode(array('status' => 'ok', 'urlHash' => $urlHash));
 
 function generateRandomString($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyz';

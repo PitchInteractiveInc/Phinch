@@ -17,6 +17,7 @@
 #exportHeader {padding: 20px;}
 #downloadPreview {margin: 20px; overflow: hidden;}
 
+/* Sharing modals */
 #sharingInfo {
 	position: absolute;
 	display: none;
@@ -44,6 +45,9 @@
 }
 #sharingInfo label:before {
 	display: none;
+}
+#sharingInfo .results {
+	padding: 20px;
 }
 /* Layer Switch Part */
 
