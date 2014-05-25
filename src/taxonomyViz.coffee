@@ -1935,6 +1935,8 @@ class taxonomyViz
 		content = zip.generate({type:"blob"});
 		saveAs(content, "phinch.zip");
 
+		$('#downloadFile i').removeClass('icon-spinner icon-spin')
+		$('#downloadFile i').addClass('icon-download')
 	shareViz: () =>
 		console.log 'share'
 		biomData = JSON.stringify(biom)
