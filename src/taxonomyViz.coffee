@@ -1960,6 +1960,9 @@ class taxonomyViz
 		@shareHashExists = data
 		$('#sharingInfo .loading').hide()
 		$('#sharingInfo .shareForm').show()
+		hideShare = (e) -> $('#sharingInfo').fadeOut(500);
+		$('#sharingInfo .icon-remove').off('click', hideShare).on('click', hideShare) 
+
 		$('#sharingInfo .shareButton').off('click', @submitShare).on('click', @submitShare)
 	submitShare: () =>
 		console.log 'submit share'
