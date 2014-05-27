@@ -95,11 +95,25 @@ if(isset($_POST['biomFile'])) {
 	$filename = $biomFilename->fetch(PDO::FETCH_OBJ);
 
 	//bind it
+	$stmt->bindParam(':biom_filename', $filename->biom_filename);
 }
 
 $stmt->execute();
 //execute query
+$link = 'http://phinch.org/viz.html?shareID=' . $urlHash;
+$to = $_POST['to_email'];
+$subject = 'Shared Biom Visualization';
+$message = 'Hi ' . $_POST['to_name'].','."\n\n";
+$message .= $_POST['from_name'].' has shared a visuzliation with you. You can view it here:'. "\n\n";
+$message .= $link;
 
+$message .= "\n\n";
+if($_POST['notes'] !== '') {
+	$message .= 'Notes: ' . $_POST['notes'];
+}
+$header = 'From: noreply@phinch.org';
+echo json_encode(array('status' => 'ok', 'urlHash' => $urlHash));
+mail($to, $subject, $message, $header);
 
 function generateRandomString($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyz';

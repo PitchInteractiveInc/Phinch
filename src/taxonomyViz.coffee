@@ -1935,6 +1935,8 @@ class taxonomyViz
 		content = zip.generate({type:"blob"});
 		saveAs(content, "phinch.zip");
 
+		$('#downloadFile i').removeClass('icon-spinner icon-spin')
+		$('#downloadFile i').addClass('icon-download')
 	shareViz: () =>
 		console.log 'share'
 		biomData = JSON.stringify(biom)
@@ -1958,6 +1960,9 @@ class taxonomyViz
 		@shareHashExists = data
 		$('#sharingInfo .loading').hide()
 		$('#sharingInfo .shareForm').show()
+		hideShare = (e) -> $('#sharingInfo').fadeOut(500);
+		$('#sharingInfo .icon-remove').off('click', hideShare).on('click', hideShare) 
+
 		$('#sharingInfo .shareButton').off('click', @submitShare).on('click', @submitShare)
 	submitShare: () =>
 		console.log 'submit share'
@@ -1993,13 +1998,20 @@ class taxonomyViz
 		w.postMessage(biomData)
 	shareRequest: () =>
 		shareEndpoint = backendServer + "shareViz.php"
-		$.post(shareEndpoint, @shareData, @shareCallback)
+		$.post(shareEndpoint, @shareData, @shareCallback, 'json')
 	shareCallback: (data, textStatus, xhr) =>
 		console.log(data)
+		if data.status is 'ok'
+			$('#sharingInfo .shareForm').hide();
+			$('#sharingInfo .results').remove();
+			results = d3.select('#sharingInfo').append('div').attr('class','results')
+			results.append('div').text('Your visualization has been shared. It is available here:')
+			src = document.location.origin + document.location.pathname + "?shareID=" + data.urlHash
+			results.append('a').attr('href',src).text(src)		
+				
 
 
-		$('#downloadFile i').removeClass('icon-spinner icon-spin')
-		$('#downloadFile i').addClass('icon-download')
+
 
 window.taxonomyViz = taxonomyViz
 
