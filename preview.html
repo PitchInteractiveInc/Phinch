@@ -82,24 +82,18 @@
     <section id = "bottom_sec">
         
         <section id = "left_control_panel">
-
             <p class = "att_head" id = "att_head_dates">Dates</p>
             <div id = "dates" class="att_block"></div></br>
-
             <p class = "att_head" id = "att_head_numeric">Numeric Range</p>
             <div id = "numeric_att" class="att_block"></div></br>
-            
             <p class = "att_head" id = "att_head_groupable">Groupable</p>
             <div id = "groupable_att" class="att_block"></div></br>
-            
-            <p class = "att_head" id = "att_head_descriptive">Descriptive or Fixed Value</p>
+            <p class = "att_head" id = "att_head_descriptive">Descriptive</p>
             <div id = "non_numeric_att" class="att_block"></div>
-
         </section>
 
         <section id = "right_live_panel">
             <i class="icon-spinner icon-spin icon-large icon-4x" style="float:right;"></i>
-            <!-- <div id = "myTable"></div> -->
         </section>
 
     </section>
@@ -115,9 +109,7 @@
 
     <script src="scripts/filter.js"></script>
     <script src="scripts/init.js"></script>
-    <script>
-        new init('preview');
-    </script>
+    <script> var app; window.onload = function() { app = new init('preview');} </script>
 
 </body>
 </html>

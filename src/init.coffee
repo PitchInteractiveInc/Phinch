@@ -1,4 +1,6 @@
 class init 
+	
+	vizNames = ['Taxonomy Bar Chart', 'Bubble Chart', 'Sankey Diagram', 'Donut Partition', 'Attributes Column Chart']
 
 	constructor: (page) ->
 		console.log page
@@ -71,11 +73,11 @@ class init
 								delete optionJSON.id 
 								t.biomSample.add( optionJSON ).done (item) =>
 									console.log 'option json uploaded!'
-									$('h3').html( shareJSON.VizName ); # 1 change the big title 
+									$('h3').html( vizNames[parseInt(shareJSON.visualization_id) - 1]); # 1 change the big title 
 									$('#GraphGallery').fadeOut(300, () -> $('#up_sec').fadeIn(300); ); # 2 fade in and out
 									app = new taxonomyViz(parseInt(shareJSON.visualization_id) - 1, parseInt(shareJSON.layer_id));
 				).fail () ->
-					alert( "Shared link not valid! ..." )
+					alert( "This shared link no long exists ..." )
 
 		else # not from a shared url
 			$( "#GraphGallery .col3").each (index) ->

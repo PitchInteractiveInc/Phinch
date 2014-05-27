@@ -1,38 +1,43 @@
 class taxonomyViz
 
-	biom = null
-	phinch = null
-	percentage = false
-	bubbleView = true
+	VizID = 0
 	LayerID = 2
-	VizID = null
-	filename = 'data'
-	vizdata = null
-	sumEachCol = null
-	sumEachTax = null
-	new_data_matrix_onLayer = null
-	unique_taxonomy_comb_onLayer = null
+
+	biom = {}
+	filename = 'phinch'
+
+	percentView = false
+	bubbleView = true
+
+	map_array = []
+	groupable = []
+	new_data_matrix = []
+	selected_samples = []
+	unique_taxonomy_comb = []
+	selected_phinchID_array = []
+	selected_attributes_array = []
+	columns_sample_name_array = []
+	unique_taxonomy_comb_count = []
+	selected_attributes_units_array = []
+
+	vizdata = []
+	sumEachCol = []
+	sumEachTax = []
+	standardizedValue = 0
+	new_data_matrix_onLayer = []
+	unique_taxonomy_comb_onLayer = []
+
 	format = d3.format(',d')
 	fillCol = ['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#e6550d', '#fd8d3c', '#fdae6b', '#fdd0a2', '#31a354', '#74c476', '#a1d99b', '#c7e9c0', '#756bb1', '#9e9ac8', '#bcbddc', '#dadaeb', '#636363', '#969696', '#bdbdbd', '#d9d9d9']
 	layerNameArr = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species']
-	standardizedValue = 0
+	globalColoring = d3.scale.category20c()
+
 	deleteOTUArr = []
 	deleteSampleArr = []
-	selectedSampleCopy = [] # array after deletion
-	new_data_matrix = []
-	unique_taxonomy_comb = []
-	columns_sample_name_array = []
-	map_array = []
-	unique_taxonomy_comb_count = []
-	selected_samples = []
-	groupable = []
-	selected_attributes_array = []
-	selected_attributes_units_array = []
-	selected_phinchID_array = []
-	globalColoring = d3.scale.category20()
+	selectedSampleCopy = []
+
 	backendServer = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/')) + "/server/"
 	filterOptionJSON = {}
-	console.log backendServer
 
 	constructor: (_VizID, _LayerID) ->
 		VizID = _VizID
@@ -99,24 +104,24 @@ class taxonomyViz
 										for i in [1..LayerID-1]
 											$('#layer_' + i).addClass('selected_layer');
 									if $('#valueBtn').hasClass('clicked')
-										percentage = false
+										percentView = false
 									else 
-										percentage = true
+										percentView = true
 									that.generateVizData()
 
 								});
 
 						# 4 Value | Percent View Change 
 						$('#valueBtn').click (evt) =>
-							if percentage
-								percentage = false 
+							if percentView
+								percentView = false 
 								LayerID = parseInt($('.selected_layer').length) + 1
 								$('#valueBtn').addClass('clicked')
 								$('#percentBtn').removeClass('clicked')
 								@generateVizData()
 						$('#percentBtn').click (evt) =>
-							if !percentage
-								percentage = true
+							if !percentView
+								percentView = true
 								LayerID = parseInt($('.selected_layer').length) + 1
 								$('#valueBtn').removeClass('clicked')
 								$('#percentBtn').addClass('clicked')
@@ -338,9 +343,7 @@ class taxonomyViz
 		selectedSampleCopy = selected_samples.slice(0); 
 
 		# 1 Prepare Data  &&  2 - get the sum of each row, i.e. one taxonomy total over all samples 
-		vizdata = null
 		vizdata = new Array(new_data_matrix_onLayer.length) # only contains selected samples 
-		sumEachTax = null 
 		sumEachTax = new Array(new_data_matrix_onLayer.length)
 
 		# 2 get rid of the deleted samples
@@ -365,7 +368,6 @@ class taxonomyViz
 				vizdata[i][j].name = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6]
 		
 		# 3 generate viz - get the max value of each column, i.e. total sequence reads within a sample 
-		sumEachCol = null
 		sumEachCol = new Array(selectedSampleCopy.length)
 		if selectedSampleCopy.length > 0 # 95 samples
 			for i in [0..selectedSampleCopy.length-1] 
@@ -425,7 +427,6 @@ class taxonomyViz
 		y = d3.scale.linear() # .sqrt()
 			.domain([0, max_single ])
 			.range([0, w - margin.right - margin.left - 50])
-		format = d3.format(',d')
 			
 		svg = d3.select("#taxonomy_container").append("svg")
 			.attr("width", w )
@@ -476,14 +477,14 @@ class taxonomyViz
 			.attr 'x', (d, i) ->
 				if isNaN(y(d.y0))
 					return 0
-				else if !percentage
+				else if !percentView
 					return y(d.y0)
 				else
 					return y(d.y0) / sumEachCol[i] * max_single
 			.attr 'width', (d,i) ->
 				if isNaN(y(d.y))
 					return 0
-				else if !percentage
+				else if !percentView
 					return y(d.y)
 				else
 					return y(d.y) / sumEachCol[i] * max_single 
@@ -597,7 +598,7 @@ class taxonomyViz
 			.attr('text-anchor', 'middle')
 			.attr('fill', '#444')
 			.text (d,i) -> 
-				if !percentage
+				if !percentView
 					return format(d) 
 				else
 					return Math.round( i / (y.ticks(10).length - 1) * 100 ) + '%'
@@ -615,7 +616,7 @@ class taxonomyViz
 
 		# 11 create fake divs for minimap
 		divCont = ''
-		if !percentage
+		if !percentView
 			for i in [0..sumEachCol.length-1]
 				divCont += '<div class="fake" style="width:' + y(sumEachCol[i]) + 'px;"></div>'
 		else 
@@ -1555,7 +1556,7 @@ class taxonomyViz
 
 		$('#count_container').html("") 
 		content = ''
-		if selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] is undefined # Unit 
+		if selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] is undefined or selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] == null # Unit 
 			content += '<span>' + cur_attribute + '</span>'
 		else
 			content += '<span>' + cur_attribute + ', ' + selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] + '</span>'
@@ -1637,13 +1638,13 @@ class taxonomyViz
 		.enter().append('rect')
 			.attr('x', (d, i) -> return 20 * i)
 			.attr('y', (d, i) -> 
-				if !percentage
+				if !percentView
 					return h - y(d.y) - y(d.y0)
 				else 
 					return h - ( y(d.y) + y(d.y0) ) / sumEachCol[i] * max_single
 			)
 			.attr('height', (d,i) -> 
-				if !percentage
+				if !percentView
 					return y(d.y)
 				else 
 					return y(d.y) / sumEachCol[i] * max_single 
@@ -1699,21 +1700,20 @@ class taxonomyViz
 			.attr('text-anchor', 'end')
 			.attr('fill', '#444')
 			.text (d,i) -> 
-				if !percentage
+				if !percentView
 					return format(d) 
 				else 
 					return Math.round( i / (y.ticks(10).length ) * 100 ) + '%'
 
 		# add text legend on the bottom
 		attr_n_unit = cur_attribute 
-		if selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] isnt undefined
+		if selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] isnt undefined and selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] isnt null
 			attr_n_unit += ', ' + selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] 
 		svg.append('text')
 			.attr('x', w / 2 - 80)
 			.attr('y', h + 40)
 			.attr('font-size', '11px')
 			.text(attr_n_unit)
-
 
 	#####################################################################################################################         
 	############################################### Bubble by OTU #######################################################  
