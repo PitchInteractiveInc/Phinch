@@ -18,37 +18,14 @@
 #downloadPreview {margin: 20px; overflow: hidden;}
 
 /* Sharing modals */
-#sharingInfo {
-	position: absolute;
-	display: none;
-	border: 1px solid black;
-	background: white;
-	top: 100px;
-	left: calc(50% - 200px);
-	height: 400px;
-	width: 400px;
-	z-index: 10;
-}
-#sharingInfo .loading {
-	text-align: center;
-}
-#sharingInfo .shareForm {
-	padding: 20px;
-	display: none;
-}
-#sharingInfo label {
-	display: block;
-}
-#sharingInfo input {
-	display: block;
-	margin-bottom: 10px;
-}
-#sharingInfo label:before {
-	display: none;
-}
-#sharingInfo .results {
-	padding: 20px;
-}
+#sharingInfo { position: absolute; display: none; border: 1px solid black; background: white; top: 100px; left: calc(50% - 200px); height: 400px; width: 400px; z-index: 10;}
+#sharingInfo .loading { text-align: center;}
+#sharingInfo .shareForm { padding: 20px; display: none;}
+#sharingInfo label { display: block;}
+#sharingInfo input { display: block; margin-bottom: 10px;}
+#sharingInfo label:before { display: none;}
+#sharingInfo .results { padding: 20px;}
+
 /* Layer Switch Part */
 
 #layerSwitch { display: none;  width: 802px; height: 36px; background-color: #f2f2f2; margin: -13px 0px 0px 20px;}
@@ -100,28 +77,30 @@
 .basicTooltip progress[value]::-webkit-progress-value { background-color: #ff8900; }
 .basicTooltip progress[value]::-moz-progress-bar { background-color: #ff8900; color: red;}
 
+.hideSampleContainer { position: absolute; font-size: 12px; padding: 5px; }
 .hideSample { color: #ff8900; font-weight: bold; border: 2px solid #ff8900; margin: -35px 10px 0px 25px; padding: 5px 10px; background: #fff;}
 .hideSample:hover { cursor: pointer;}
 
-#deleteSampleArr { margin: 0px 0px 0px 20px;}
-#deleteSampleArr span { color: #ff8900; cursor: pointer;}
-#deleteSampleArr ul { opacity: 0; width: 400px; list-style: none; margin-top: -5px; padding: 20px 0 0 0;}
+#deleteSampleArr { margin: 30px 0px 0px 20px;}
+#deleteSampleArr p { margin: 0; font-style: italic; color: #ff8900; }
+#deleteSampleArr span { cursor: pointer;}
+#deleteSampleArr ul { opacity: 0; width: 400px; list-style: none; padding: 20px 0 0 0;}
 #deleteSampleArr ul li { padding: 5px 10px;	}
 #deleteSampleArr ul li span { float: right;}
-#iconRemover4SampleDiv { opacity: 0; margin-left: 380px; position: absolute; z-index: 3; }
+#iconRemover4SampleDiv { opacity: 0; margin: 15px 0 0 380px; position: absolute; z-index: 3; }
 
-#fake_taxonomy_container { position: absolute; top: 270px; left: 50px; z-index: -1;}
 .fake { height: 12px; margin-bottom: 2px; background-color: rgba(0,0,0,0); }
+#fake_taxonomy_container { position: absolute; top: 270px; left: 50px; z-index: -1;}
 #outline { display: none; position: fixed; right: 0px; top: 420px; cursor: default !important;}
 
 /* 2 Bubble Chart */
 
 #bubbleTooltip { padding: 10px 10px 5px 10px; }
-#bubblePanel { position: absolute; top: 288px; left: 200px; width: 880px; text-align: left; background: rgba(255,255,255,0.9);}
-#bubbleRemover { position:absolute; top:298px; left: 1050px; cursor: pointer;}
+#bubblePanel { position: absolute; top: 350px; left: 200px; width: 880px; text-align: left; background: rgba(255,255,255,0.9);}
+#bubbleRemover{position: absolute; top:358px; left: 1050px; cursor: pointer;}
 
-.bubbleTaxHeader { width: 860px; height: 40px; line-height: 40px; padding-left: 50px; font-weight: bold; background: url('images/header.png') no-repeat;}
-.bubbleTaxHeader span { color: #c3c3c3;}
+.bubbleTaxHeader { width: 860px; height: 40px; font-size: 12px; line-height: 40px; padding-left: 40px; background: url('images/header.png') no-repeat;}
+.bubbleTaxHeader span { color: #c3c3c3; float: right; margin-right: 65px;}
 
 #bubbleSliderContainer { display: none; width: 180px; margin-left: 30px; margin-top: 15px; color: #ff8900; font-size: 12px;}
 #bubbleSlider { width: 175px; position: absolute; height: 3px; border: none; background: #bbb;}
@@ -132,7 +111,7 @@
 
 /* 3 Sankey Diagram */
 
-#sankeyMsgBox { width: 350px; height: 33px; color: #ff8900; line-height: 33px; font-size: 12px; font-style: italic;}
+#MsgBox { width: 350px; height: 33px; color: #ff8900; line-height: 33px; font-size: 12px; font-style: italic;}
 
 .nullnode { display: none;}
 .node rect { shape-rendering: crispEdges;}
@@ -141,7 +120,7 @@
 .link:hover { fill-opacity: .6; cursor: pointer;}
 
 #sankeyInfo { position: fixed; top: 50px; width: 100%; height: 750px; margin-top: 100px; background: rgba(255,255,255,0.9); color: #000; }
-.sankeyInfobox { width: 800px; height: 850px; padding: 0 20px; border: 1px solid #c8c8c8; margin: 0 auto; margin-top: -100px; background-color:white; position: relative;}
+.sankeyInfobox { width: 800px; height: 850px; padding: 0 20px; border: 1px solid #c8c8c8; margin: 0 auto; margin-top: 100px; background-color:white; position: relative;}
 #sankeyRemover { cursor: pointer; width: 15px; height: 20px; margin: 15px; position: absolute; right: 0; top: 0;}
 
 /* 4 Donut Partition */
@@ -160,26 +139,11 @@
 #count_container p { margin: 0; font-size: 12px; padding: 1px 20px;	}
 .attrColHead { margin: 10px; border-bottom: 1px solid #bbb; }
 .attrColBody { margin: 10px;}
+
 /* 6 Bubble Chart By OTU */
 
-circle {
-	fill: #ff8900;
-	stroke: #999;
-	/*pointer-events: all;*/
-}
-
-circle.parent {
-	fill: #ff8900;
-	fill-opacity: .1;
-	/*stroke: steelblue;*/
-}
-
-circle.parent:hover {
-	stroke: #ff7f0e;
-	stroke-width: 2px;
-}
-
-circle.child {
-	pointer-events: none;
-}
+circle { fill: #ff8900; stroke: #999;}
+circle.parent { fill: #ff8900; fill-opacity: .1;}
+circle.parent:hover { stroke: #ff7f0e; stroke-width: 2px;}
+circle.child { pointer-events: none;}
 

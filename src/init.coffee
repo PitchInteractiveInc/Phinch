@@ -1,6 +1,6 @@
 class init 
 	
-	vizNames = ['Taxonomy Bar Chart', 'Bubble Chart', 'Sankey Diagram', 'Donut Partition', 'Attributes Column Chart']
+	
 
 	constructor: (page) ->
 		console.log page
@@ -36,11 +36,13 @@ class init
 		return check; 
 
 	viz: () ->
+
 		name = 'shareID';
 		regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
 		results = regex.exec(location.search);
 		results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " ")); # full results
-
+		vizNames = ['Taxonomy Bar Chart', 'Bubble Chart', 'Sankey Diagram', 'Donut Partition', 'Attributes Column Chart']
+		
 		if results isnt null # if shared from a url
 			hostURL = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/'))
 			shareURL = hostURL + "/server/getSharedData.php?shareID=" + results[1];
@@ -75,7 +77,7 @@ class init
 									console.log 'option json uploaded!'
 									$('h3').html( vizNames[parseInt(shareJSON.visualization_id) - 1]); # 1 change the big title 
 									$('#GraphGallery').fadeOut(300, () -> $('#up_sec').fadeIn(300); ); # 2 fade in and out
-									app = new taxonomyViz(parseInt(shareJSON.visualization_id) - 1, parseInt(shareJSON.layer_id));
+									app = new taxonomyViz(parseInt(shareJSON.visualization_id), parseInt(shareJSON.layer_id));
 				).fail () ->
 					alert( "This shared link no long exists ..." )
 
@@ -87,7 +89,7 @@ class init
 					else
 						$('h3').html( $(this).find('p').text() ); # 1 change the big title 
 						$('#GraphGallery').fadeOut(300, () -> $('#up_sec').fadeIn(300); ); # 2 fade in and out 
-						app = new taxonomyViz(index, 2); # 3 generate viz
+						app = new taxonomyViz(index+1, 2); # 3 generate viz
 
 	helpMenu: () ->
 		$('#help').click (e) ->
