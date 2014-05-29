@@ -107,10 +107,19 @@
             <p class = "graphGalleryTitle"><span>Attributes Column Chart</span></p>
             <img src="img/gallery_5.png">
         </div>
-        <div class="col3">
+<!--         <div class="col3">
             <p class = "graphGalleryTitle"><span>Bubble Chart By OTU</span></p>
             <img src="img/gallery_6.png">
-        </div>
+        </div> -->
+    </section>
+
+    <section id = "share_box">
+        <div class="info">shared filename: <span></span></div>
+        <div class="info">shared file first uploaded: <span></span></div>
+        <div class="info">shared file has been viewed: <span></span></div>
+        <div class="info">shared visualization: <span></span></div>
+        <div class="info">shared layer: <span></span></div>
+        <button class="orange_btn" id="shareGO">Go >>> </button>
     </section>
 
     <section id = "viz_container">
@@ -174,25 +183,24 @@
                 <a href="" download><img src="" style="max-width: 600px; max-height: 500px; margin: 10px 0 0 20px;"></a>
             </div>
         </div>
-        <div id="sharingInfo">
+        <div id="sharingInfo" class="basicTooltip">
             <div class="loading">
                 <i class="icon-spinner icon-spin icon-large icon-4x"></i>
                 <div class="loadingText"></div>
             </div>
             <div class="shareForm">
                 <i class="icon-remove icon-large" style=" float: right;"></i>
-                <label for="shareFromName">Your Name:</label>
+                <label for="shareFromName">From Name:</label>
                 <input type="text" name="shareFromName" id="shareFromName" />
-                <label for="shareFromEmail">Your Email:</label>
+                <label for="shareFromEmail">From Email:</label>
                 <input type="text" name="shareFromEmail" id="shareFromEmail" />
                 <label for="shareToName">To Name:</label>
                 <input type="text" name="shareToName" id="shareToName" />
                 <label for="shareToEmail">To Email:</label>
                 <input type="text" name="shareToEmail" id="shareToEmail" />
-                <label for="shareNotes">Notes:</label>
-                <textarea rows="4" cols="40" name="shareNotes" id="shareNotes"></textarea>
-
-                <input type="button" value="Share" class="shareButton" />
+                <label for="shareNotes">Message:</label>
+                <textarea rows="3" cols="57" name="shareNotes" id="shareNotes" placeholder="Type an optional message "></textarea>
+                <input type="button" value="Send" class="shareButton orange_btn" />
             </div>
         </div>
     </section>

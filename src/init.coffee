@@ -44,6 +44,11 @@ class init
 		vizNames = ['Taxonomy Bar Chart', 'Bubble Chart', 'Sankey Diagram', 'Donut Partition', 'Attributes Column Chart']
 		
 		if results isnt null # if shared from a url
+
+			$('#share_box').show()
+			$("#GraphGallery .col3").off('click')
+			$('#goBackFilter').attr("disabled", "disabled")
+
 			hostURL = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/'))
 			shareURL = hostURL + "/server/getSharedData.php?shareID=" + results[1];
 			$.getJSON shareURL, (shareJSON) ->
@@ -51,22 +56,24 @@ class init
 				shareFile = hostURL + '/biomFiles/' + shareJSON.biom_filename
 				optionJSON = JSON.parse(shareJSON.filter_options_json)
 
+				$('#share_box .info').eq(0).find('span').html(optionJSON.name)
+				$('#share_box .info').eq(1).find('span').html(shareJSON.date_uploaded)
+				$('#share_box .info').eq(2).find('span').html(shareJSON.countView)
+				$('#share_box .info').eq(3).find('span').html(vizNames[parseInt(shareJSON.visualization_id) - 1])
+				$('#share_box .info').eq(4).find('span').html(shareJSON.LayerName)
+
 				$.get(shareFile, (data) ->
+
 					shareBiom = LZString.decompressFromBase64(data);
-					biomToStore = {}
-					biomToStore.name = optionJSON.name + '.biom'
-					biomToStore.size = shareBiom.length
-					biomToStore.data = shareBiom
 					d = new Date();
-					biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
-					
+					biomToStore = {name: optionJSON.name, size: shareBiom.length, data: shareBiom, date: d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"}					
 					db.open(
 						server: "BiomData", version: 1,
 						schema:
 							"biom": key: keyPath: 'id', autoIncrement: true,
 					).done (s) =>
 						s.biom.add(biomToStore).done () ->
-							console.log 'shared file uploaded! '
+							console.log 'shared file uploaded!'
 							db.open(
 								server: "BiomSample", version: 1,
 								schema:
@@ -75,9 +82,12 @@ class init
 								delete optionJSON.id 
 								t.biomSample.add( optionJSON ).done (item) =>
 									console.log 'option json uploaded!'
-									$('h3').html( vizNames[parseInt(shareJSON.visualization_id) - 1]); # 1 change the big title 
-									$('#GraphGallery').fadeOut(300, () -> $('#up_sec').fadeIn(300); ); # 2 fade in and out
-									app = new taxonomyViz(parseInt(shareJSON.visualization_id), parseInt(shareJSON.layer_id));
+									$('#shareGO').click () =>
+										$('#share_box').fadeOut(200)
+										$('#loadingIcon').css('opacity','1')
+										$('h3').html( vizNames[parseInt(shareJSON.visualization_id) - 1]); # 1 change the big title 
+										$('#GraphGallery').fadeOut(300, () -> $('#up_sec').fadeIn(300); ); # 2 fade in and out
+										app = new taxonomyViz(parseInt(shareJSON.visualization_id), parseInt(shareJSON.layer_id));
 				).fail () ->
 					alert( "This shared link no long exists ..." )
 
@@ -87,6 +97,7 @@ class init
 					if(index == 5)
 						alert('Implementing... ');
 					else
+						$('#loadingIcon').css('opacity','1')
 						$('h3').html( $(this).find('p').text() ); # 1 change the big title 
 						$('#GraphGallery').fadeOut(300, () -> $('#up_sec').fadeIn(300); ); # 2 fade in and out 
 						app = new taxonomyViz(index+1, 2); # 3 generate viz

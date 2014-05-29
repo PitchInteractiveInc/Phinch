@@ -10,6 +10,7 @@ class taxonomyViz
 
 	percentView = false
 	bubbleView = true
+	shareFlag = false
 	standardizedValue = 0
 
 	map_array = []
@@ -75,7 +76,17 @@ class taxonomyViz
 						$("#file_details").html("");
 						$("#file_details").append( "ANALYZING &nbsp;<span>" + currentData.name.substring(0,30) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>")
 
-						# 3 handle click events 
+						# 3 handle slider click events 
+						if (LayerID != 2) # if this is from a shared link, change the slider 
+							$('.circle').removeClass('selected_layer');
+							$('.circle').css('background-image', 'url("css/images/circle.png")')
+							$('#layer_' + LayerID).css('background-image', 'url("css/images/' + layerNameArr[LayerID-1] + '.png")');	
+							$('.progressLine').animate({width: (120 + (LayerID - 2) * 111 ) + 'px'}, {duration: 500, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
+								if LayerID > 1
+									for i in [1..LayerID-1]
+										$('#layer_' + i).addClass('selected_layer');
+							});
+
 						$('#layer_1').on('mouseover', () -> # resolve the first layer button mousevoer problem 
 							$('#layer_1').removeClass('selected_layer');
 							$('#layer_1').css('background-image', 'url("css/images/kingdom.png")');
@@ -95,7 +106,7 @@ class taxonomyViz
 								$('.circle').removeClass('selected_layer');
 								$('.circle').css('background-image', 'url("css/images/circle.png")')
 								$('#layer_' + LayerID).css('background-image', 'url("css/images/' + layerNameArr[LayerID-1] + '.png")');
-								$('.progressLine').animate({width: (120 + (LayerID - 2) * 111 ) + 'px'}, {duration: 1000, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
+								$('.progressLine').animate({width: (120 + (LayerID - 2) * 111 ) + 'px'}, {duration: 500, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
 									if LayerID > 1
 										for i in [1..LayerID-1]
 											$('#layer_' + i).addClass('selected_layer');
@@ -143,14 +154,14 @@ class taxonomyViz
 						$('#legend_header').click () => 
 							if $('#legend_header').html() == 'TOP SEQS'
 								$('#outline').hide()
-								$('#legend_header').animate( {width: ( $('#legend_container').width() - 1) + 'px'}, {duration: 500, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
-									$('#legend_container').animate( {opacity: 1}, {duration: 500} )
+								$('#legend_header').animate( {width: ( $('#legend_container').width() - 1) + 'px'}, {duration: 250, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
+									$('#legend_container').animate( {opacity: 1}, {duration: 250} )
 									$('#legend_header').html('TOP SEQUENCES')
 									$('#legend_header').css('background', 'url("css/images/collapse.png") no-repeat')
 								})
 							else
-								$('#legend_container').animate( {opacity: '0'}, {duration: 500, specialEasing: {opacity: "easeInOutQuad"}, complete: () -> 
-									$('#legend_header').animate( {width: '146px'}, {duration: 500} )
+								$('#legend_container').animate( {opacity: '0'}, {duration: 250, specialEasing: {opacity: "easeInOutQuad"}, complete: () -> 
+									$('#legend_header').animate( {width: '146px'}, {duration: 250} )
 									$('#legend_header').html('TOP SEQS')
 									$('#legend_header').css('background', 'none')
 									$('#outline').show()
@@ -158,14 +169,14 @@ class taxonomyViz
 
 						$('#count_header').click () => 
 							if $('#count_header').html() == 'SAMPLE DIST'
-								$('#count_header').animate( {width: '399px'}, {duration: 500, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
-									$('#count_container').animate( {opacity: 1}, {duration: 500} )
+								$('#count_header').animate( {width: '399px'}, {duration: 250, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
+									$('#count_container').animate( {opacity: 1}, {duration: 250} )
 									$('#count_header').html('SAMPLE DISTRIRBUTION')
 									$('#count_header').css('background', 'url("css/images/collapse.png") no-repeat')
 								})
 							else
-								$('#count_container').animate( {opacity: '0'}, {duration: 500, specialEasing: {opacity: "easeInOutQuad"}, complete: () -> 
-									$('#count_header').animate( {width: '146px'}, {duration: 500} )
+								$('#count_container').animate( {opacity: '0'}, {duration: 250, specialEasing: {opacity: "easeInOutQuad"}, complete: () -> 
+									$('#count_header').animate( {width: '146px'}, {duration: 250} )
 									$('#count_header').html('SAMPLE DIST')
 									$('#count_header').css('background', 'none')
 								})		
@@ -1614,7 +1625,6 @@ class taxonomyViz
 	doZip: () ->
 
 		obj_log = {'selected_sample': selected_samples, 'selected_sample_phinchID': selected_phinchID_array, 'selected_attributes_array': selected_attributes_array, 'selected_attributes_units_array': selected_attributes_units_array}
-
 		zip = new JSZip();
 		zip.file( filename + ".phinch", JSON.stringify(biom));
 		zip.file( filename + "_log.json", JSON.stringify(obj_log));
@@ -1630,7 +1640,12 @@ class taxonomyViz
 		# console.log 'share'
 		# console.log CryptoJS.SHA1(biomData).toString()
 		$('#sharingInfo').show()
-		$('#sharingInfo .loadingText').text('Preparing data')
+		if shareFlag
+			$('#sharingInfo .shareForm input, #sharingInfo .shareForm label, #sharingInfo .shareForm textarea').show();
+			$('#sharingInfo .results').hide();
+		else
+			$('#sharingInfo .loadingText').text('Preparing data ... ')
+
 		w = new Worker('scripts/hashWorker.js')
 		w.addEventListener('message', (e) =>
 			console.log 'worker message'
@@ -1650,9 +1665,8 @@ class taxonomyViz
 		@shareHashExists = data
 		$('#sharingInfo .loading').hide()
 		$('#sharingInfo .shareForm').show()
-		hideShare = (e) -> $('#sharingInfo').fadeOut(500);
+		hideShare = (e) -> $('#sharingInfo').fadeOut(200);
 		$('#sharingInfo .icon-remove').off('click', hideShare).on('click', hideShare) 
-
 		$('#sharingInfo .shareButton').off('click', @submitShare).on('click', @submitShare)
 	
 	submitShare: () =>
@@ -1662,21 +1676,25 @@ class taxonomyViz
 		layerName = layerNameArr[LayerID - 1]
 		vizName = vizNameArr[VizID-1]
 
-		@shareData = {
-			from_email: $('#sharingInfo #shareFromEmail').val(),
-			to_email: $('#sharingInfo #shareToEmail').val(),
-			from_name: $('#sharingInfo #shareFromName').val(),
-			to_name: $('#sharingInfo #shareToName').val(),
-			notes: $('#sharingInfo #shareNotes').val(),
-			biom_file_hash: @shareHash,
-			layer_name: layerName,
-			filter_options_json: JSON.stringify(filterOptionJSON),
-			viz_name: vizName
-		}
-		if @shareHashExists is 'true'
-			@shareRequest()
+		if @validateEmail($('#sharingInfo #shareFromEmail').val()) and @validateEmail($('#sharingInfo #shareToEmail').val())
+			shareFlag = true
+			@shareData = {
+				from_email: $('#sharingInfo #shareFromEmail').val(),
+				to_email: $('#sharingInfo #shareToEmail').val(),
+				from_name: $('#sharingInfo #shareFromName').val(),
+				to_name: $('#sharingInfo #shareToName').val(),
+				notes: $('#sharingInfo #shareNotes').val(),
+				biom_file_hash: @shareHash,
+				layer_name: layerName,
+				filter_options_json: JSON.stringify(filterOptionJSON),
+				viz_name: vizName
+			}
+			if @shareHashExists is 'true'
+				@shareRequest()
+			else
+				@generateBiomZip()
 		else
-			@generateBiomZip()
+			alert("Invalid email address ... ")
 
 	generateBiomZip: () =>
 		biomData = JSON.stringify(biom)
@@ -1696,12 +1714,16 @@ class taxonomyViz
 	shareCallback: (data, textStatus, xhr) =>
 		console.log(data)
 		if data.status is 'ok'
-			$('#sharingInfo .shareForm').hide();
+			$('#sharingInfo .shareForm input, #sharingInfo .shareForm label, #sharingInfo .shareForm textarea').hide();
 			$('#sharingInfo .results').remove();
+			$('#sharingInfo .results').show();
 			results = d3.select('#sharingInfo').append('div').attr('class','results')
-			results.append('div').text('Your visualization has been shared. It is available here:')
+			results.append('div').html('Your visualization has been shared. <br/>It is available here:')
 			src = document.location.origin + document.location.pathname + "?shareID=" + data.urlHash
-			results.append('a').attr('href',src).text(src)		
+			results.append('a').attr('href',src).attr('target','_blank').text(src)		
 
+	validateEmail: (email) ->
+		re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+		return re.test(email);
 
 window.taxonomyViz = taxonomyViz

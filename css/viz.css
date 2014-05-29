@@ -9,6 +9,10 @@
 .col3 img { width: 100%; display: inline-block; border-top: 2px #ccc solid;}
 .graphGalleryTitle { width: 100%; height: 25px; float: left; text-align: center;}
 
+#share_box { display: none; z-index: 5; background: #fff; border: 1px solid rgba(0,0,0,0.2); box-shadow: 0 3px 9px rgba(0,0,0,0.5); outline: 0; color: #222222; width: 700px; height: 300px; top: 310px; position: fixed; left: calc(40% - 250px);}
+#share_box .info { font-size: 16px; margin: 20px 0 0 20px; }
+#share_box .info span { color: #ff8900; font-style: italic; }
+
 #taxonomy_container { width: 100%; opacity: 0;}
 #loadingIcon { position: absolute; top: 400px; left: 600px; opacity: 0;}
 
@@ -18,13 +22,15 @@
 #downloadPreview {margin: 20px; overflow: hidden;}
 
 /* Sharing modals */
-#sharingInfo { position: absolute; display: none; border: 1px solid black; background: white; top: 100px; left: calc(50% - 200px); height: 400px; width: 400px; z-index: 10;}
-#sharingInfo .loading { text-align: center;}
+#sharingInfo { position: absolute; display: none; top: 310px; left: calc(50% - 200px); height: 400px; width: 600px; z-index: 5; font-size: 15px; font-weight: bold; color: #aaa;}
+#sharingInfo .loading { text-align: center; margin: 25% 0 0 0;}
 #sharingInfo .shareForm { padding: 20px; display: none;}
-#sharingInfo label { display: block;}
-#sharingInfo input { display: block; margin-bottom: 10px;}
+#sharingInfo label { display: block; margin-bottom: 3px;}
 #sharingInfo label:before { display: none;}
-#sharingInfo .results { padding: 20px;}
+#sharingInfo input { display: block; margin-bottom: 10px; outline: none; border: #ff8900 solid 1px; }
+#sharingInfo textarea { outline: none; border: #ff8900 solid 1px; }
+#sharingInfo .results { padding: 20px; margin-top: 15%; }
+#sharingInfo .results a { color: #ff8900; }
 
 /* Layer Switch Part */
 
@@ -59,7 +65,7 @@
 
 /* Auto-Complete Sections */
 
-#tags { display: none; width: 200px; height: 32px; position: absolute; right: 20px; top: 191px; font-size: 15px; border: 1px solid #bbb; background: url('images/search.png') no-repeat right center;}
+#tags { display: none; width: 200px; height: 32px; position: absolute; right: 20px; top: 191px; font-size: 15px; border: 1px solid #bbb; background: #fff url('images/search.png') no-repeat right center; z-index: 3;}
 #autoCompleteList {  display: none; position: absolute; right: 20px; top: 240px; font-size: 12px;  line-height: 16px;  border-radius: 3px;  background: rgba(255,255,255,0.9);  color: #000;  box-shadow: 0 1px 5px rgba(0,0,0,0.4);  -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4); overflow-y: scroll; max-height: 400px; z-index: 1;}
 #autoCompleteList ul { list-style: none; padding: 15px 10px 0px 15px;}
 #autoCompleteList ul li { padding: 5px 0;}
