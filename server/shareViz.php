@@ -103,15 +103,15 @@ $stmt->execute();
 $link = 'http://phinch.org/viz.html?shareID=' . $urlHash;
 $to = $_POST['to_email'];
 $subject = 'Shared Biom Visualization';
-$message = 'Hi ' . $_POST['to_name'].','."\n\n";
-$message .= $_POST['from_name'].' has shared a visuzliation with you. You can view it here:'. "\n\n";
+$message = 'Hi ' . $_POST['to_name']."\n\n";
+$message .= $_POST['from_name'].' ' .$_POST['from_email'] .' has shared a visuzliation with you. You can view it here:'. "\n\n";
 $message .= $link;
 
 $message .= "\n\n";
 if($_POST['notes'] !== '') {
 	$message .= 'Notes: ' . $_POST['notes'];
 }
-$header = 'From: noreply@phinch.org';
+$header = 'From: noreply@phinch.org' . "\r\n" . "Reply-To: " . $_POST['from_email'] . "\r\n" . 'X-Mailer: PHP/' . phpversion();
 echo json_encode(array('status' => 'ok', 'urlHash' => $urlHash));
 mail($to, $subject, $message, $header);
 

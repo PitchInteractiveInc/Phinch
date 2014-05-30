@@ -25,6 +25,18 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
     </script>
+
+    <!-- Disable Console Msg -->
+    <script type="text/javascript">
+        if (false || !(window.console && console.log)) {(function() {
+            var noop = function() {};
+            var methods = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log', 'markTimeline', 'profile', 'profileEnd', 'markTimeline', 'table', 'time', 'timeEnd', 'timeStamp', 'trace', 'warn'];
+            var length = methods.length;
+            var console = window.console = {};
+            while (length--) { console[methods[length]] = noop;}
+        }()); }
+    </script>
+
 </head>
 
 <body>
@@ -119,7 +131,7 @@
         <div class="info">shared file has been viewed: <span></span></div>
         <div class="info">shared visualization: <span></span></div>
         <div class="info">shared layer: <span></span></div>
-        <button class="orange_btn" id="shareGO">Go >>> </button>
+        <button class="orange_btn" id="shareGO"><i class="icon-spinner icon-spin icon-2x"></i></button>
     </section>
 
     <section id = "viz_container">
@@ -199,7 +211,7 @@
                 <label for="shareToEmail">To Email:</label>
                 <input type="text" name="shareToEmail" id="shareToEmail" />
                 <label for="shareNotes">Message:</label>
-                <textarea rows="3" cols="57" name="shareNotes" id="shareNotes" placeholder="Type an optional message "></textarea>
+                <textarea rows="3" cols="58" name="shareNotes" id="shareNotes" placeholder="Type an optional message "></textarea>
                 <input type="button" value="Send" class="shareButton orange_btn" />
             </div>
         </div>
@@ -215,10 +227,8 @@
     <script src="lib/d3.v3.min.js"></script>
     <script src="lib/d3.layout.min.js"></script>
     <script src="lib/d3.sankey.js"></script>
-    <script src="lib/lodash.js"></script>
+    <script src="lib/lodash.min.js"></script>
     <script src="lib/FileSaver.js"></script>
-    <script src="lib/jszip.min.js"></script>
-    <script src="lib/lz-string-1.3.3.js"></script>
 
     <script src="scripts/taxonomyViz.js"></script>
     <script src="scripts/init.js"></script>

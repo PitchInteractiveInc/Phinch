@@ -72,6 +72,7 @@ class taxonomyViz
 						currentData = results[results.length-1]
 						biom = JSON.parse(currentData.data)
 						filename = currentData.name
+						filename = filename.substring(0,filename.length-5)
 
 						$("#file_details").html("");
 						$("#file_details").append( "ANALYZING &nbsp;<span>" + currentData.name.substring(0,30) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>")
@@ -1625,15 +1626,17 @@ class taxonomyViz
 	doZip: () ->
 
 		obj_log = {'selected_sample': selected_samples, 'selected_sample_phinchID': selected_phinchID_array, 'selected_attributes_array': selected_attributes_array, 'selected_attributes_units_array': selected_attributes_units_array}
-		zip = new JSZip();
-		zip.file( filename + ".phinch", JSON.stringify(biom));
-		zip.file( filename + "_log.json", JSON.stringify(obj_log));
 
-		content = zip.generate({type:"blob"});
-		saveAs(content, "phinch.zip");
+		w = new Worker('scripts/downloadWorker.js')
+		w.addEventListener('message', (e) =>
+			d = new Date()
+			dateStamp = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + "UTC"
+			saveAs(e.data, "phinch-" + dateStamp + ".zip");
+			$('#downloadFile i').removeClass('icon-spinner icon-spin')
+			$('#downloadFile i').addClass('icon-download')
 
-		$('#downloadFile i').removeClass('icon-spinner icon-spin')
-		$('#downloadFile i').addClass('icon-download')
+		)
+		w.postMessage({"o1": JSON.stringify(biom), "o2": JSON.stringify(obj_log), "filename": filename})
 
 	shareViz: () =>
 		biomData = JSON.stringify(biom)
@@ -1642,6 +1645,8 @@ class taxonomyViz
 		$('#sharingInfo').show()
 		if shareFlag
 			$('#sharingInfo .shareForm input, #sharingInfo .shareForm label, #sharingInfo .shareForm textarea').show();
+			$('#sharingInfo #shareToEmail').val("")
+			$('#sharingInfo #shareToName').val("")
 			$('#sharingInfo .results').hide();
 		else
 			$('#sharingInfo .loadingText').text('Preparing data ... ')
