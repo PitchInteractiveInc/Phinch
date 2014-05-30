@@ -186,7 +186,7 @@ class taxonomyViz
 						$('#downloadFile').click( () => 
 							$('#downloadFile i').removeClass('icon-download')
 							$('#downloadFile i').addClass('icon-spinner icon-spin')
-							setTimeout(@doZip, 800)
+							setTimeout(@doZip, 250)
 						)
 
 						# 8 export  
