@@ -6,6 +6,12 @@ if(isset($_GET['shareID']) && ctype_alnum($_GET['shareID'])) {
 } else {
 	die(json_encode(array('error'=> 'no share id')));
 }
+
+$updateCountQ = 'UPDATE SharedData SET countView = countView + 1 WHERE url_hash = :urlHash';
+$updateStmt = $db->prepare($updateCountQ);
+$updateStmt->bindParam(':urlHash', $urlHash);
+$updateStmt->execute();
+
 $q = 'SELECT SharedData.*, Visualization.name as VizName, Layer.name as LayerName ' .
 	'FROM SharedData, Visualization, Layer '.
 	'WHERE url_hash= :urlHash && SharedData.visualization_id=Visualization.visualization_id && SharedData.layer_id=Layer.layer_id';
