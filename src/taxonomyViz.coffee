@@ -1683,6 +1683,11 @@ class taxonomyViz
 
 		if @validateEmail($('#sharingInfo #shareFromEmail').val()) and @validateEmail($('#sharingInfo #shareToEmail').val())
 			shareFlag = true
+			$('#sharingInfo .shareForm input, #sharingInfo .shareForm label, #sharingInfo .shareForm textarea').hide();
+			$('#sharingInfo .results').remove();
+			$('#sharingInfo .results').show();			
+			results = d3.select('#sharingInfo').append('div').attr('class','results')
+			results.append('div').html('Your visualization has been shared. <br/> Wait until the link is generated below: ')
 			@shareData = {
 				from_email: $('#sharingInfo #shareFromEmail').val(),
 				to_email: $('#sharingInfo #shareToEmail').val(),
@@ -1719,13 +1724,8 @@ class taxonomyViz
 	shareCallback: (data, textStatus, xhr) =>
 		console.log(data)
 		if data.status is 'ok'
-			$('#sharingInfo .shareForm input, #sharingInfo .shareForm label, #sharingInfo .shareForm textarea').hide();
-			$('#sharingInfo .results').remove();
-			$('#sharingInfo .results').show();
-			results = d3.select('#sharingInfo').append('div').attr('class','results')
-			results.append('div').html('Your visualization has been shared. <br/>It is available here:')
 			src = document.location.origin + document.location.pathname + "?shareID=" + data.urlHash
-			results.append('a').attr('href',src).attr('target','_blank').text(src)		
+			d3.select('#sharingInfo .results').append('a').attr('href',src).attr('target','_blank').text(src)
 
 	validateEmail: (email) ->
 		re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
