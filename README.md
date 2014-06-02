@@ -25,6 +25,13 @@ FileSaver: https://github.com/eligrey/FileSaver.js/<br>
 Moment: http://momentjs.com/<br>
 jQuery: http://jquery.com/<br>
 jQueryUI: http://jqueryui.com/<br>
+jQueryFracs: http://larsjung.de/fracs/<br>
+Blob: https://github.com/eligrey/Blob.js/<br>
+DataTable: https://datatables.net/<br>
+JSZip: http://stuk.github.io/jszip/<br>
+Lo-Dash: http://lodash.com/<br>
+lz-string: https://github.com/pieroxy/lz-string<br>
+md5-js: https://github.com/wbond/md5-js<br>
 
 ## License
 The BSD 2-Clause License
