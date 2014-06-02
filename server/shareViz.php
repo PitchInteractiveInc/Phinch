@@ -57,7 +57,10 @@ while(true) {
 		$urlHash = generateRandomString(32);
 	}
 }
-
+$filterOptionsJson = $_POST['filter_options_json'];
+if(get_magic_quotes_gpc()) {
+    $filterOptionsJson = stripslashes($filterOptionsJson);
+}
 $q = 'INSERT INTO SharedData (biom_filename, biom_file_hash, ip_address, from_email, from_name, to_email, to_name, notes, url_hash, visualization_id, layer_id, visualization_options, date_uploaded, countView, filter_options_json) VALUES ';
 $q .= '(:biom_filename, :biom_file_hash, :ip_address, :from_email, :from_name, :to_email, :to_name, :notes, :url_hash, :visualization_id, :layer_id, :visualization_options, NOW(), 0, :filter_options_json)';
 $stmt = $db->prepare($q);
@@ -71,7 +74,7 @@ $stmt->bindParam(':notes', $_POST['notes']);
 $stmt->bindParam(':url_hash', $urlHash);
 $stmt->bindParam(':visualization_id', $vizID);
 $stmt->bindParam(':layer_id', $layerID);
-$stmt->bindParam(':filter_options_json', $_POST['filter_options_json']);
+$stmt->bindParam(':filter_options_json', $filterOptionsJson);
 $stmt->bindParam(':visualization_options', json_encode(array()));
 //generate random url hash
 
