@@ -18,7 +18,7 @@ h1, h2, h3 { font-weight: 800; font-size: 22px;  text-align: center;  margin: 0;
 h1 { margin-bottom: 2em;}
 h3 { padding-top: 25px;}
 td { border: 2px #ccc solid; color: #ababab; height: 26px;}
-
+#about h1 { margin-bottom: 10px;}
 .logo { float: left; }
 .logo img { margin: 0 0 0 20px;}
 
@@ -33,7 +33,7 @@ td { border: 2px #ccc solid; color: #ababab; height: 26px;}
 #help { float: right; margin: -25px 20px 0 0; font-size: 16px; font-weight: bold; text-decoration: none; color: #000;}
 #help:hover { border-bottom: 4px solid #ff8900; -webkit-transition:.2s; -moz-transition:.2s; -o-transition:.2s; transition:.2s;}
 #dialog-modal { display: none; height: 600px !important;}
-.descPara { font-family: 'Open Sans', sans-serif; height: 450px; margin-top: 25px; overflow-y: scroll;}
+.descPara { font-family: 'Open Sans', sans-serif; }
 .descPara a { outline: 0; color: #ff8900 !important;}
 .descPara span { font-size: 15px; font-weight: 800;}
 
