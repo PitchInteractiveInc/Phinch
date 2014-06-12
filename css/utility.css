@@ -32,7 +32,7 @@ td { border: 2px #ccc solid; color: #ababab; height: 26px;}
 
 #help { float: right; margin: -25px 20px 0 0; font-size: 16px; font-weight: bold; text-decoration: none; color: #000;}
 #help:hover { border-bottom: 4px solid #ff8900; -webkit-transition:.2s; -moz-transition:.2s; -o-transition:.2s; transition:.2s;}
-#dialog-modal { display: none; height: 600px !important;}
+#dialog-modal { display: none; height: 510px !important; overflow-y: scroll;}
 .descPara { font-family: 'Open Sans', sans-serif; }
 .descPara a { outline: 0; color: #ff8900 !important;}
 .descPara span { font-size: 15px; font-weight: 800;}
@@ -111,7 +111,7 @@ table { border-collapse: collapse; border-spacing: 0;}
 
 #ui-id-1 {display: none !important;}
 .ui-widget-overlay { background: #000; opacity: 0.5; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 4;}
-.ui-dialog { z-index: 5; background: #fff; border: 1px solid rgba(0,0,0,0.2); box-shadow: 0 3px 9px rgba(0,0,0,0.5); outline: 0; color: #222222; width: 800px !important; height: 600px !important; top: 120px !important; position: fixed !important; left: 300px !important;}
+.ui-dialog { z-index: 5; background: #fff; border: 1px solid rgba(0,0,0,0.2); box-shadow: 0 3px 9px rgba(0,0,0,0.5); outline: 0; color: #222222; width: 800px !important; height: 580px !important; top: 120px !important; position: fixed !important; left: 300px !important;}
 .ui-dialog-titlebar { background: #fff; }
 .ui-dialog-titlebar-close { background: none !important; border: none !important; margin-left: 760px;}
 .ui-dialog-content {border: none !important; padding: 0 20px; }
