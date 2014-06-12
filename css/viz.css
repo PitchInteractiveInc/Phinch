@@ -56,9 +56,9 @@
 
 /* Legend */
 
-#legend_header { display: none; position: fixed; top: 350px; right: 0px; width: 146px; height: 30px; border: 2px solid #ff8900; border-right: none; color: #ff8900; font-weight: bold; text-align: center; line-height: 30px;}
+#legend_header { display: none; position: fixed; top: 320px; right: 0px; width: 146px; height: 30px; border: 2px solid #ff8900; border-right: none; color: #ff8900; font-weight: bold; text-align: center; line-height: 30px;}
 #legend_header:hover { cursor: pointer;}
-#legend_container { opacity: 0; position: fixed; top: 384px; right: 0; border-left: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; background: rgba(255,255,255,0.6);}
+#legend_container { opacity: 0; position: fixed; top: 354px; right: 0; border-left: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; background: rgba(255,255,255,0.6);}
 #legend_container p { padding-left: 20px; font-size: 13px; margin: 10px 0 0 0;}
 #legend_container ul { font-size: 12px; line-height: 16px; list-style: none; margin: 10px 20px; padding: 0;}
 #legend_container ul em { float: right; color: #ff8900;}
@@ -138,9 +138,9 @@
 /* 5 Attributes Column Chart */
 
 #attributes_dropdown { position: absolute; top: 115px; right: 20px; height: 32px; border: 2px solid #ff8900;}
-#count_header { display: none; position: fixed; top: 600px; right: 0px; width: 146px; height: 30px; border: 2px solid #ff8900; border-right: none; color: #ff8900; font-weight: bold; text-align: center; line-height: 30px;}
+#count_header { display: none; position: fixed; top: 550px; right: 0px; width: 146px; height: 30px; border: 2px solid #ff8900; border-right: none; color: #ff8900; font-weight: bold; text-align: center; line-height: 30px;}
 #count_header:hover { cursor: pointer;}
-#count_container { opacity: 0; position: fixed; top: 634px; right: 0; border-left: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; background: rgba(255,255,255,0.6); width: 400px; overflow-wrap: break-word; padding-bottom: 10px;}
+#count_container { opacity: 0; position: fixed; top: 584px; height: 125px; overflow-y: scroll; right: 0; border-left: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; background: rgba(255,255,255,0.6); width: 400px; overflow-wrap: break-word; padding-bottom: 10px;}
 #count_container span { font-size: 14px;  font-weight: bold; color: #ff8900; text-align: center; display: block; margin: 5px 0;}
 #count_container p { margin: 0; font-size: 12px; padding: 1px 20px;	}
 .attrColHead { margin: 10px; border-bottom: 1px solid #bbb; }

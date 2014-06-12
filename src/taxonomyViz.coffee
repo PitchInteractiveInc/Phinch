@@ -1099,6 +1099,9 @@ class taxonomyViz
 
 	drawTaxonomyDonuts: (cur_attribute) -> 
 
+		# 0 Clear the canvas
+		d3.select('#taxonomy_container').html("")
+
 		# 1 prepare data - find different categories under this groupable attr
 		groupable_array = []
 		for i in [0..selected_samples.length-1]
