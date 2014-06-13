@@ -828,8 +828,12 @@ class taxonomyViz
 					content += '</ul>'
 					$('#autoCompleteList').append(content)
 					$('#autoCompleteList ul li').each (index) ->
-						$(this).mouseout () -> d3.select('#bub_' + index).style({opacity:'0.6',stroke: 'none'})
-						$(this).mouseover () -> d3.select('#bub_' + index).style({opacity:'1', stroke: '#000', 'stroke-width': '3' })
+						$(this).mouseout () -> 
+							newIndex = availableTags.indexOf($(this)[0].innerText.replace(/\s+/g, '')) # find the correct index
+							d3.select('#bub_' + newIndex).style({opacity:'0.6',stroke: 'none'})
+						$(this).mouseover () -> 
+							newIndex = availableTags.indexOf($(this)[0].innerText.replace(/\s+/g, ''))
+							d3.select('#bub_' + newIndex).style({opacity:'1', stroke: '#000', 'stroke-width': '3' })
 					$('#iconRemover').click () -> $('#autoCompleteList').fadeOut(200)
 					$('#autoCompleteList').show()
 				else
