@@ -767,23 +767,23 @@ class taxonomyViz
 				txtrect = infoPanel.select('svg').selectAll('text').data(selected_samples)
 
 				txtrect.enter().append('text')
-					.text( (d,i) -> return String(selected_phinchID_array[i]).substr(-6) )
-					.attr("x", (d,i) -> return ( (i % 5) * 160 + 50 ) + 'px' )
+					.text( (d,i) -> return String(selected_phinchID_array[i]).substr(-15) )
+					.attr("x", (d,i) -> return ( (i % 5) * 160 + 82 ) + 'px' )
 					.attr("y", (d,i) -> return 25 * Math.floor(i / 5) + 30 + 'px' )
 					.attr("text-anchor", 'end')
-					.attr("font-size", "10px")
+					.attr("font-size", "9px")
 
 				barrect.enter().append('rect')
 					.attr('height', '15px' )
-					.attr('width', '115px' )
-					.attr("x", (d,i) -> return ( (i % 5) * 160 + 55 ) + 'px' )  # 30 bars every line, 20 padding on left & right
+					.attr('width', '85px' )
+					.attr("x", (d,i) -> return ( (i % 5) * 160 + 85 ) + 'px' )  # 30 bars every line, 20 padding on left & right
 					.attr("y", (d,i) -> return 25 * Math.floor(i / 5) + 20 + 'px' ) # 50 padding top and bottom
 					.style("fill", '#f2f2f2')
 
 				barrect.enter().append('rect')
 					.attr('height', '15px' )
 					.attr('width', (d) -> return y(d) )
-					.attr("x", (d,i) -> return ( (i % 5) * 160 + 55 ) + 'px' )  # 30 bars every line, 20 padding on left & right
+					.attr("x", (d,i) -> return ( (i % 5) * 160 + 85 ) + 'px' )  # 30 bars every line, 20 padding on left & right
 					.attr("y", (d,i) -> return 25 * Math.floor(i / 5) + 20 + 'px' ) # 50 padding top and bottom
 					.style("fill", curColor)
 
