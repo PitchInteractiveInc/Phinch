@@ -40,7 +40,9 @@ class filter
 				# Build
 				$("#file_details").append( "ANALYZING &nbsp;<span>" + filename.substring(0,52) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Samples &nbsp;<em>" + format(biom.shape[1]) + "</em>")
 				$('#goExport').click( () => @downloadPhinch(0) )
-				$('#goGallery').click( () => @downloadPhinch(1) )
+				$('#goGallery').click () =>
+					$('#right_live_panel').html('<i class="icon-spinner icon-spin icon-large icon-4x" style="float:right;"></i>')
+					@downloadPhinch(1)
 				@generateLeftDates()
 				@generateLeftNumeric()
 				@generateLeftNonNumeric()
@@ -644,7 +646,7 @@ class filter
 		@server.biom.add(biomToStore).done () -> 
 			# Step 4 - stringify
 			if param == 0 # Download 			
-				saveAs(blob, filename.replace('.biom','.phinch'))
+				saveAs(blob, filename)
 			# Step 5 - jump to gallery 	
 			else if param == 1 
 				that.jumpToGallery()

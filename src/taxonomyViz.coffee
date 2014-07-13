@@ -957,7 +957,7 @@ class taxonomyViz
 		infoPanel.html(content)
 		@drawSmallSankey(infoPanel,d,taxonomySankey, svg)
 		svg.transition().duration(250).ease("quad-in-out").style({"opacity":0, "z-index": -1})
-		infoPanel.style('z-index', 3).transition().duration(250).ease("quad-in-out").style({"opacity": 1})
+		infoPanel.style('z-index', 4).transition().duration(250).ease("quad-in-out").style({"opacity": 1})
 
 		$('#sankeyRemover').click () ->
 			infoPanel.transition().duration(250).ease("quad-in-out").style({"opacity":0, "z-index": -1})
@@ -968,8 +968,8 @@ class taxonomyViz
 		smlTaxonomySankey = {'nodes':[], 'links':[]}
 		smlTaxonomySankey.nodes.push(_.clone(targetNode))
 
-		minHeight = 600
-		targetHeight = 600
+		minHeight = 500
+		targetHeight = 500
 		maxNodesOnSide = 1
 		if targetNode.targetLinks.length > maxNodesOnSide
 			maxNodesOnSide = targetNode.targetLinks.length
@@ -990,7 +990,7 @@ class taxonomyViz
 			targetHeight = acceptableHeight
 
 		divHeight = targetHeight + 80
-		maxDivHeight = 800
+		maxDivHeight = 600
 
 		divLarge = false
 		if divHeight > maxDivHeight

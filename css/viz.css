@@ -125,7 +125,7 @@
 .node text { pointer-events: none;}
 .link:hover { fill-opacity: .6; cursor: pointer;}
 
-#sankeyInfo { position: fixed; top: 50px; width: 100%; height: 750px; margin-top: 100px; background: rgba(255,255,255,0.9); color: #000; }
+#sankeyInfo { position: fixed; top: 20px; width: 100%; height: 750px; margin-top: -100px; background: rgba(255,255,255,0.9); color: #000; }
 .sankeyInfobox { width: 800px; height: 850px; padding: 0 20px; border: 1px solid #c8c8c8; margin: 0 auto; margin-top: 100px; background-color:white; position: relative;}
 #sankeyRemover { cursor: pointer; width: 15px; height: 20px; margin: 15px; position: absolute; right: 0; top: 0;}
 
