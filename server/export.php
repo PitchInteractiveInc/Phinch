@@ -22,7 +22,6 @@ putenv('OMP_NUM_THREADS=1');
 
 
 $process = proc_open('convert svg: png:-', $pipeDescriptions, $pipes, NULL, $_ENV);
-echo $cmd;
 //$process = proc_open('convert tmp.svg png:-', $pipeDescriptions, $pipes, NULL, $_ENV);
 //$process = proc_open('convert -version', $pipeDescriptions, $pipes, NULL, $_ENV);
 if (is_resource($process)) {

@@ -563,8 +563,33 @@ class taxonomyViz
 		for i in [0..sumEachTax.length-1]
 			temp = {'originalID': i, 'value': sumEachTax[i], 'name': unique_taxonomy_comb_onLayer[i].join(",")}
 			legendArr.push(temp)
-		@createLegend(legendArr)
 
+		@createLegend(legendArr)
+		legendClone = _.clone(legendArr)
+		legendClone.sort( (a,b) -> return b.value - a.value ) # specify the sorting order
+		maxLegendItems = 10
+		if legendClone.length > maxLegendItems
+			legendClone.length = maxLegendItems
+		gLegend = svg.selectAll('g.legend').data([0])
+		gLegend.enter().append('g').attr('class','legend')
+		gLegend.append('text').text('Top 10 Samples')
+			.attr('transform', 'translate(' + (width - 300 - 100) + ',' + (height - legendClone.length * 16 - 10 - 75) + ')')
+		legendItem = gLegend.selectAll('g.legendItem').data(legendClone)
+		legendItemEnter = legendItem.enter().append('g').attr('class','legendItem')
+		legendItemEnter.attr('transform', (d,i) ->
+			xPos = width - 300 - 100
+			yDiff = 16
+			yPos = height - legendClone.length * yDiff + i * yDiff - 75
+			return 'translate(' + xPos + ', ' + yPos + ')'
+		)
+		legendItemEnter.append('rect')
+			.attr('x', 0).attr('y', 0).attr('width', 12).attr('height', 12)
+			.style('fill', (d,i) ->
+				return fillCol[ d.originalID % 20]
+			)
+		legendItemEnter.append('text').text((d,i) ->
+			return d.name
+		).attr('x', 14).attr('y', 12).style('font-size', '12px')
 		# 9 create fake divs for minimap
 		divCont = ''
 		if !percentView
