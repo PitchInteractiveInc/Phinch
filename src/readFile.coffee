@@ -115,7 +115,7 @@ class readFile
 				if results.length > 10
 					@clearOldEntries(results)
 					location.reload(true);
-							
+						
 				if results.length > 0
 					$('#recent').show()
 					@currentData = results

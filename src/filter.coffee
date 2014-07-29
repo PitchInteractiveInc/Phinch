@@ -42,7 +42,9 @@ class filter
 				$('#goExport').click( () => @downloadPhinch(0) )
 				$('#goGallery').click () =>
 					$('#right_live_panel').html('<i class="icon-spinner icon-spin icon-large icon-4x" style="float:right;"></i>')
-					@downloadPhinch(1)
+					setTimeout(() =>
+						@downloadPhinch(1)
+					, 200)
 				@generateLeftDates()
 				@generateLeftNumeric()
 				@generateLeftNonNumeric()
