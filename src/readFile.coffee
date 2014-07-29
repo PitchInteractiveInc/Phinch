@@ -112,18 +112,19 @@ class readFile
 						@server.biom.remove(results[p].id).done # () -> console.log 'remove '
 						results.splice(p,1)
 
-				# @server.biom.remove(results[0].id) while results.length > 10
-
+				if results.length > 10
+					@clearOldEntries(results)
+					location.reload(true);
+							
 				if results.length > 0
 					$('#recent').show()
 					@currentData = results
 					content = "<table id='recent_data'>"
 					for k in [0..results.length-1]
 						tk = results.length - 1 - k
-						if k < 10
-							content += '<tr><td class="reload" id="reload_' + k + '">LOAD' + '</td><td>' 
-							content += results[tk].name.substring(0,45) + '</td><td>' + (results[tk].size / 1000000).toFixed(1) + " MB" + '</td><td>' + results[tk].date
-							content += '</td><td class="del" id="del_' + k + '"><i class="icon-fa-times icon-large"></i></td></tr>'		
+						content += '<tr><td class="reload" id="reload_' + k + '">LOAD' + '</td><td>' 
+						content += results[tk].name.substring(0,45) + '</td><td>' + (results[tk].size / 1000000).toFixed(1) + " MB" + '</td><td>' + results[tk].date
+						content += '</td><td class="del" id="del_' + k + '"><i class="icon-fa-times icon-large"></i></td></tr>'
 					content += "</table>"
 					$("#recent").append(content)
 					for k in [0..results.length-1]
@@ -131,7 +132,7 @@ class readFile
 						$('#del_' + k).click( @removeRow )
 
 	reloadRow: (evt) =>
-		i = evt.currentTarget.id.replace("reload_","")
+		i = @currentData.length - 1 - evt.currentTarget.id.replace("reload_","") # reverse order id 
 		biomToStore = {}
 		biomToStore.name = @currentData[i].name
 		biomToStore.size = @currentData[i].size
@@ -148,10 +149,13 @@ class readFile
 		for k in [0..totalrows-1] 
 			if i == $('#recent_data tr .del')[k].id
 				console.log @currentData[totalrows - k - 1].id
-				@server.biom.remove( @currentData[totalrows - k - 1].id ).done( () -> 
-					# $('#recent_data tr')[k].remove()
-					# break
+				@server.biom.remove( @currentData[totalrows - k - 1].id ).done () -> 
 					location.reload(true);
-				)
+				
+	clearOldEntries: (results) =>
+		if results.length > 10
+			@server.biom.remove(results[0].id).done () =>
+				results.splice(0,1)
+				@clearOldEntries(results)
 
 window.readFile = readFile
