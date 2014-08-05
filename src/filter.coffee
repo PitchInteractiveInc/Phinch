@@ -287,6 +287,7 @@ class filter
 								@livePreview()
 						})
 
+	# find the attributes with numeric values 
 	generateLeftNumeric: () ->
 
 		if attributes_array.length == 0 
@@ -334,6 +335,7 @@ class filter
 
 					$('#numeric_check_' + (i+1) ).click () => @livePreview() 
 
+	# deals with the non-numeric attributes
 	generateLeftNonNumeric: () ->
 		if no_data_attributes_array.length == 0
 			$('#att_head_descriptive').hide()
@@ -345,6 +347,7 @@ class filter
 					$('#non_numeric_att').append("<div>" + content + "</div>")
 					$('#non_numeric_check_' + (i+1)).click () => @livePreview()
 
+	# generate the groupable attributes panel 
 	generateLeftGroupable: () ->
 		pointer_left = 1
 		pointer_right = groupable_array_content.length-1
@@ -384,6 +387,7 @@ class filter
 							for k in [0..toprocess.length-1]
 								$('#groupable_check_' + (k+1) ).click () => @livePreview()
 
+	# generate the thumbnails for users to filter 
 	generateThumbnails: () ->
 		@range_array = []
 
@@ -447,7 +451,7 @@ class filter
 				$( "#range_" + (i+1) + "_right").text(each_numeric_linechart_max ) 
 				$( "#range_" + (i+1) + "_new").text("range: [" +  each_numeric_linechart_min  + " — " + each_numeric_linechart_max + "]" )
 
-	# 3 Live Preview
+	# 3 Live Preview, the right section
 	livePreview: () -> 
 		@selected_sample = []
 		@selected_groupable_array = []
@@ -566,7 +570,7 @@ class filter
 
 		console.log 'selected_sample: ' + @selected_sample.length
 
-	# 4 Download
+	# 4 Download button
 	downloadPhinch: (param) ->
 		
 		that = this
@@ -676,13 +680,12 @@ class filter
 
 	removeFromObjectByKey: (thisObject, key) -> delete thisObject[key]	
 
-	editPhinchID: () -> 
+	editPhinchID: () -> # make the PhinchID column editable 
 		changedID = parseInt( $(this)[0].id.replace('phinchID_','') ) 
 		phinchID_array[changedID] = $(this).html()
-		# console.log phinchID_array
 
+	# draw basic bar chart on the canvas 
 	drawBasicBars: (div, each_numeric_linechart0, each_numeric_linechart1, values, size) => 
-
 		d3.select(div + " svg").remove()
 		max_single = d3.max( each_numeric_linechart1 )
 		y = d3.scale.linear().domain([0, max_single]).range([1, size[1] ])

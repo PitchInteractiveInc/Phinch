@@ -4,19 +4,19 @@ class init
 
 	constructor: (page) ->
 		console.log page
-		if (@mobilecheck()) # if it's on mobile
+
+		if (@mobilecheck()) # Check if it's mobile.If so, hide the features, just display info
 			$('body').css({'min-width': window.screen.width});
 			$('#NotSupported').css({'width': window.screen.width, 'display': 'block', 'margin': '-20px 0 0 0'});
 			$('#NotSupported p').html('Desktop Chrome Recommended!');
 			$('h1, h3, #bottom_sec, #menu, #help, .orange_btn, hr, #viz_container, #Page1, #readFile, #recent, .footer_copyright span').hide();
-
 			$('.footer_copyright').css({'font-size': '8px', 'line-height': '16px'});
 			$('#top_sec').height(50);
 			$('#about').css({'width': window.screen.width - 40, 'margin': ' -80px 20px 0px 20px'});
 			$('.descPara').height('auto');
 			$( "#GraphGallery .col3").width(window.screen.width - 30);
 		else if ( !navigator.userAgent.match(/Chrome/i) || !window.File || !window.FileReader || !window.FileList || !window.Blob )
-			# || navigator.userAgent.match(/Firefox/i) || navigator.userAgent.match(/Safari/) )
+			# || navigator.userAgent.match(/Firefox/i) || navigator.userAgent.match(/Safari/) )  # Support only chrome now
 			$('#NotSupported').show();
 			$('#top_sec').animate({height:50}, 200);
 			$('#head_sec').animate({height:50}, 200);
@@ -37,12 +37,14 @@ class init
 
 	viz: () =>
 
+		# 2 different scenarios 
+
 		name = 'shareID';
 		regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
 		results = regex.exec(location.search);
 		results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " ")); # full results
 		
-		if results isnt null # if shared from a url
+		if results isnt null # 1 - if shared from a url
 
 			$('#share_box').show()
 			$("#GraphGallery .col3").off('click')
@@ -62,17 +64,15 @@ class init
 				$('#share_box .info').eq(4).find('span').html(shareJSON.LayerName)
 
 				$.get(shareFile, (data) =>
-
 					w = new Worker('scripts/unzipWorker.js')
 					w.addEventListener('message', (e) =>
 						@saveIndexedDb(e.data, shareJSON, optionJSON)
 					)
 					w.postMessage(data)
-
 				).fail () ->
 					alert( "This shared link no long exists ..." )
 
-		else # not from a shared url
+		else # 2 - not from a shared url
 			$( "#GraphGallery .col3").each (index) ->
 				$(this).click () -> 
 					if(index == 5)
@@ -83,6 +83,7 @@ class init
 						$('#GraphGallery').fadeOut(300, () -> $('#up_sec').fadeIn(300); ); # 2 fade in and out 
 						app = new taxonomyViz(index+1, 2); # 3 generate viz
 
+	# save the file to browser indexedDB
 	saveIndexedDb: (shareBiom, shareJSON, optionJSON) =>
 		d = new Date();
 		biomToStore = {name: optionJSON.name, size: shareBiom.length, data: shareBiom, date: d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"}					
@@ -110,6 +111,7 @@ class init
 							$('#GraphGallery').fadeOut(300, () -> $('#up_sec').fadeIn(300); ); # 2 fade in and out
 							app = new taxonomyViz(parseInt(shareJSON.visualization_id), parseInt(shareJSON.layer_id));
 
+	# Build the help menu on all pages
 	helpMenu: () ->
 		$('#help').click (e) ->
 			e.preventDefault();

@@ -1,3 +1,4 @@
+# Webworkder for generating a zip package, including biom file and log json file
 importScripts('../lib/jszip.min.js')
 self.addEventListener('message', (e) ->
 	filename = e.data.filename

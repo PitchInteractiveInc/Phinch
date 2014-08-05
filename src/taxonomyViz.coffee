@@ -95,7 +95,7 @@ class taxonomyViz
 							$('#layer_1').addClass('selected_layer');
 						)
 
-						$('.circle').click (evt) =>
+						$('.circle').click (evt) => # sliders selection
 							that = this
 							LayerID = parseInt evt.currentTarget.id.replace("layer_","");
 
@@ -966,7 +966,7 @@ class taxonomyViz
 		# 4 sankey click and filter control
 		@sankeyFilterControl(nodesArr, taxonomySankey, svg)
 
-	clickLargeSnakeyNode: (d,i,taxonomySankey,svg) =>
+	clickLargeSnakeyNode: (d,i,taxonomySankey,svg) => # set up the click events for each sankey diagram nodes 
 		infoPanel = d3.select("#taxonomy_container #sankeyInfo")
 		content = "<div class='sankeyInfobox'><div id='sankeyRemover'><i class='icon-remove icon-large'></i></div>"
 		if d.targetLinks.length == 0
@@ -988,7 +988,7 @@ class taxonomyViz
 			infoPanel.transition().duration(250).ease("quad-in-out").style({"opacity":0, "z-index": -1})
 			svg.transition().duration(250).ease("quad-in-out").style({"opacity": 1, "z-index":1})
 
-	drawSmallSankey: (div,targetNode,originalSankey,originalSVG) -> 
+	drawSmallSankey: (div,targetNode,originalSankey,originalSVG) -> # generate each small sankey diagram when clicked on each flow
 		
 		smlTaxonomySankey = {'nodes':[], 'links':[]}
 		smlTaxonomySankey.nodes.push(_.clone(targetNode))
@@ -1518,7 +1518,7 @@ class taxonomyViz
 	############################################### Bubble by OTU #######################################################  
 	#####################################################################################################################  
 
-	drawOTUBubble: () ->
+	drawOTUBubble: () -> # not in use right now
 		
 		# 0 Prepare the data 
 		data = {name: 'BIOM', children: new Array(unique_taxonomy_comb_onLayer.length)}

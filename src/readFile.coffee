@@ -18,6 +18,7 @@ class readFile
 				@checkFile(files)
 		false)
 
+		# load test file
 		document.getElementById('loadTestFile').addEventListener('click', (evt) =>
 			$('#loadTestFile').html('Loading...&nbsp;&nbsp;<i class="icon-spinner icon-spin icon-large"></i>');
 			hostURL = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/'))
@@ -34,6 +35,7 @@ class readFile
 			)
 		false)
 
+		# handles file selection / uploading
 		document.getElementById('files').addEventListener('change', @handleFileSelect, false)
 		fileDrag = document.getElementById('fileDrag')
 		fileDrag.addEventListener('dragover', @dragFileProc, false)
@@ -84,7 +86,8 @@ class readFile
 				$('#fileDrag').removeClass('hover')
 				files = evt.target.files || evt.dataTransfer.files
 				@checkFile(files)
-		
+
+	# store new biom file to the browser indexeddb
 	readBlob: (file) =>
 		reader.onloadend = (evt) => 
 			if evt.target.readyState == FileReader.DONE
@@ -104,6 +107,7 @@ class readFile
 					alert "Incorrect biom format field! Please check your file content!"
 		reader.readAsBinaryString(file)
 
+	# list 10 most recent files uploaded to this browser
 	listRecentFiles: () => 
 		@server.biom.query().all().execute().done (results) =>
 			if results.length > 0
@@ -131,6 +135,7 @@ class readFile
 						$('#reload_' + k).click( @reloadRow )
 						$('#del_' + k).click( @removeRow )
 
+	# allows users to reload old files 
 	reloadRow: (evt) =>
 		i = @currentData.length - 1 - evt.currentTarget.id.replace("reload_","") # reverse order id 
 		biomToStore = {}
@@ -143,6 +148,7 @@ class readFile
 			@currentData = item
 			setTimeout( "window.location.href = 'preview.html'", 1000)
 
+	# allows users to remove certain files
 	removeRow: (evt) =>
 		i = evt.currentTarget.id
 		totalrows = $('#recent_data tr .del').length
@@ -151,7 +157,8 @@ class readFile
 				console.log @currentData[totalrows - k - 1].id
 				@server.biom.remove( @currentData[totalrows - k - 1].id ).done () -> 
 					location.reload(true);
-				
+	
+	# leave only 10 files, remove older files
 	clearOldEntries: (results) =>
 		if results.length > 10
 			@server.biom.remove(results[0].id).done () =>
