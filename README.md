@@ -17,6 +17,14 @@ Second, add your sample metadata to your .biom file. Where your input file (-i) 
 ```Python
 add_metadata.py -i otu_table_mc2_w_tax.biom -o otu_table_mc2_w_tax_and_metadata.biom -m sample_metadata_mapping_file.txt
 ```
+## Run the repo locally
+```
+# install CoffeeScript
+sudo npm install -g coffee-script
+
+# cd to your local phinch folder 
+coffee -o scripts/ -cw src/ 
+```
 
 ## Libraries 
 D3: http://d3js.org/ <br>
