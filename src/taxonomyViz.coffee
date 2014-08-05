@@ -422,7 +422,7 @@ class taxonomyViz
 		margin = {top: 75, right: 20, bottom: 20, left: 100}
 		x = d3.scale.ordinal().domain(vizdata[0].map( (d) -> return d.x )).rangeRoundBands([0, height - margin.top - margin.bottom])
 		y = d3.scale.linear().domain([0, max_single ]).range([0, width - margin.right - margin.left - 50])
-		svg = d3.select("#taxonomy_container").append("svg").attr("width", width).attr("height", height).append("g")
+		svg = d3.select("#taxonomy_container").append("svg").attr("width", width).attr("height", height + 100).append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
 		infoPanel = d3.select("#taxonomy_container").append("div").attr("class", "basicTooltip").style("visibility", "hidden")
@@ -573,13 +573,13 @@ class taxonomyViz
 		gLegend = svg.selectAll('g.legend').data([0])
 		gLegend.enter().append('g').attr('class','legend')
 		gLegend.append('text').text('Top 10 Samples')
-			.attr('transform', 'translate(' + (width - 300 - 100) + ',' + (height - legendClone.length * 16 - 10 - 75) + ')')
+			.attr('transform', 'translate(0' + ',' + (height - legendClone.length * 16 - 10 - 75 + 100) + ')')
 		legendItem = gLegend.selectAll('g.legendItem').data(legendClone)
 		legendItemEnter = legendItem.enter().append('g').attr('class','legendItem')
 		legendItemEnter.attr('transform', (d,i) ->
-			xPos = width - 300 - 100
+			xPos = 0
 			yDiff = 16
-			yPos = height - legendClone.length * yDiff + i * yDiff - 75
+			yPos = height - legendClone.length * yDiff + i * yDiff - 75 + 100
 			return 'translate(' + xPos + ', ' + yPos + ')'
 		)
 		legendItemEnter.append('rect')
@@ -590,6 +590,7 @@ class taxonomyViz
 		legendItemEnter.append('text').text((d,i) ->
 			return d.name
 		).attr('x', 14).attr('y', 12).style('font-size', '12px')
+
 		# 9 create fake divs for minimap
 		divCont = ''
 		if !percentView
@@ -1162,7 +1163,7 @@ class taxonomyViz
 				maxCount = count[i].length
 
 		# 4 reorder pie charts in alphabetical order
-		d3.select('#taxonomy_container').append('svg').attr("width", maxCount * 20 + 450).attr("height", 250 * groupable_array.length + 200)
+		d3.select('#taxonomy_container').append('svg').attr("width", maxCount * 20 + 450).attr("height", 290 * groupable_array.length + 200)
 		alphagroupble_array = _.clone(groupable_array).sort()
 
 		for i in [0..groupable_array.length-1]
