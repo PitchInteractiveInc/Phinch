@@ -15,10 +15,11 @@ make_otu_table.py -i final_otu_map_mc2.txt -o otu_table_mc2_w_tax.biom -t rep_se
 
 Second, add your sample metadata to your .biom file. Where your input file (-i) is your OTU Map (defining clusters of raw sequences reads), taxonomy file (-t) contains the taxonomy or gene ontology strings that correspond to each OTU, and mapping file (-m) is a tab-delimited file containing sample metadata ([instructions](http://qiime.org/documentation/file_formats.html#metadata-mapping-files)).
 ```Python
-add_metadata.py -i otu_table_mc2_w_tax.biom -o otu_table_mc2_w_tax_and_metadata.biom -m sample_metadata_mapping_file.txt
+biom add-metadata -i otu_table_mc2_w_tax.biom -o otu_table_mc2_w_tax_and_metadata.biom -m sample_metadata_mapping_file.txt
 ```
 ## Run the repo locally
 ```
+Phinch is written in CoffeeScript (http://coffeescript.org/), a programming language that compiles into JavaScript. To install Phinch locally, you will need to install CoffeeScript and compile the code, as follows:
 # install CoffeeScript
 sudo npm install -g coffee-script
 
