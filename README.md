@@ -18,8 +18,8 @@ Second, add your sample metadata to your .biom file. Where your input file (-i) 
 biom add-metadata -i otu_table_mc2_w_tax.biom -o otu_table_mc2_w_tax_and_metadata.biom -m sample_metadata_mapping_file.txt
 ```
 ## Run the repo locally
-```
 Phinch is written in CoffeeScript (http://coffeescript.org/), a programming language that compiles into JavaScript. To install Phinch locally, you will need to install CoffeeScript and compile the code, as follows:
+```
 # install CoffeeScript
 sudo npm install -g coffee-script
 
