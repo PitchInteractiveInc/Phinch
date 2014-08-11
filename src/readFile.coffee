@@ -127,7 +127,7 @@ class readFile
 					for k in [0..results.length-1]
 						tk = results.length - 1 - k
 						content += '<tr><td class="reload" id="reload_' + k + '">LOAD' + '</td><td>' 
-						content += results[tk].name.substring(0,45) + '</td><td>' + (results[tk].size / 1000000).toFixed(1) + " MB" + '</td><td>' + results[tk].date
+						content += results[tk].name.substring(0,55) + '</td><td>' + (results[tk].size / 1000000).toFixed(1) + " MB" + '</td><td>' + results[tk].date
 						content += '</td><td class="del" id="del_' + k + '"><i class="icon-fa-times icon-large"></i></td></tr>'
 					content += "</table>"
 					$("#recent").append(content)

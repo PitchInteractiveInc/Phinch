@@ -40,7 +40,7 @@
 <body>
 	<section id = "top_sec">
 		<section id = "header">
-			<p class = "logo"><img src="img/phinch-logo.jpg" height="50px"><img alt="Chrome" src="img/chrome_logo_2x.png" height="20px" style="margin-top: 20px;"></p>
+			<p class = "logo"><img src="img/phinch.png" height="50px"><!-- <img alt="Chrome" src="img/chrome_logo_2x.png" height="20px" style="margin-top: 20px;"> --></p>
 			<ul id = "menu">
 				<li><a href="http://phinch.org/blog/" target="_blank">BLOG</a></li>
 				<li><a href="#about">ABOUT</a></li>
@@ -79,22 +79,25 @@
 
 	            </p>            
 	        </div>
-
 		</section>
 
 		<section id = "readFile">
-			<div id = "frmUpload">
-				<!-- Real Input field, hidden-->
-				<input type="file" id="files" name="myFile" onchange="$('#txtFakeText').val($('#files').val().replace('C:\\fakepath\\', '') ); " style="display: none" />
-				<input type="text" id="txtFakeText" name="txtFakeText" readonly="true" value="DROP FILE HERE OR BROWSE">
-				<input type="button" id = "fakeBrowse" class="file_btn" onclick="$('#files').click(); " value="BROWSE">
-			</div>
+			<div id = "fileContainer">
+				<div id = "frmUpload">
+					<!-- Real Input field, hidden-->
+					<input type="file" id="files" name="myFile" onchange="$('#txtFakeText').val($('#files').val().replace('C:\\fakepath\\', '') ); " style="display: none" />
+					<input type="text" id="txtFakeText" name="txtFakeText" readonly="true" value="Drop file here or browse">
+					<input type="button" id = "fakeBrowse" class="file_btn" onclick="$('#files').click(); " value="BROWSE">
+				</div>
 
-			<div id = "fileDrag">DROP FILE HERE!</div>
-			<div id="progress_bar"><div class="percent"></div></div>
-			<button id="parse" class="file_btn">LOAD FILE</button>
-			<button id="loadTestFile">Load a test file</button>
+				<div id = "fileDrag">Drop file here or browse</div>
+				<div id="progress_bar"><div class="percent"></div></div>
+				<button id="parse" class="file_btn">LOAD FILE</button>
+				<button id="loadTestFile">load a test file</button>
+			</div>
 		</section>
+
+
 	</section>
 
 	<section id = "NotSupported">
@@ -105,16 +108,16 @@
 
 	<br/><br/>
 	<section id = "recent">
-		<h1>RECENT FILES</h1>
+		<h1>Recent Files</h1>
 	</section>
 
 	<br/><br/>
 	<section id="about">
-		<h1>CITE PHINCH</h1>
+		<h1>Cite Phinch</h1>
 		<p class = "descPara">
 			Please cite the Phinch framework as follows:
 			Bik, H.M., Bu, S., Grubbs, W. (manuscript in preparation) Phinch: An interactive, exploratory data visualization framework for environnmental sequence data <a href="https://github.com/shujianbu/Phinch">https://github.com/shujianbu/Phinch</a> 
-		<h1>ABOUT PHINCH</h1>
+		<h1>About Phinch</h1>
 		<p class = "descPara">
 		<img src="img/Sloan_Logo_Primary_Web.png" height="50" style="float:right;">
             Phinch is an open-source framework for visualizing biological data, funded by a grant from the Alfred P. Sloan foundation. This project represents an interdisciplinary collaboration between Pitch Interactive, a data visualization studio in Berkeley, CA, and biological researchers at UC Davis. </br></br>
@@ -124,14 +127,6 @@
 
             Scientific visualization represents an innovative method towards tackling the current bottleneck in bioinformatics; in addition to giving researchers a unique approach for exploring large datasets, it stands to empower biologists with the ability to conduct powerful analyses without requiring a deep level of computational knowledge. </br>
 		</p>
-<!-- 		<h1>PEOPLE</h1>
-		<p class = "descPara">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tincidunt risus erat, non tempus risus aliquam non. Quisque pharetra mattis interdum. Proin dignissim tempus turpis et sodales. Nulla euismod consequat elementum. Quisque ut turpis dui. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce eleifend commodo lectus. </br></br>
-
-            sed sollicitudin. Maecenas adipiscing nunc vel malesuada dapibus. Pellentesque ut purus sed orci scelerisque consequat. In sem metus, lobortis a dolor ac, convallis pretium urna. Morbi risus velit, adipiscing vel faucibus eu, mollis eu justo. Etiam at pulvinar arcu, id volutpat enim. Curabitur pharetra iaculis ipsum, quis vehicula massa viverra nec. Quisque commodo, arcu nec volutpat ullamcorper, turpis massa facilisis ante, feugiat tempus nibh risus nec velit. Duis erat est, hendrerit ut placerat a, accumsan eu nulla. Nunc leo nibh, malesuada in risus id, bibendum aliquam ante. Nulla fringilla. </br></br>
-
-            dolor llamcorper dolor,piscing vel faucibus eu, mollis eu justo. Etiam at pulvinar arcu, id volutpat enim. Curabitur pharetra iaculis ipsum, quis vehicula massa viverra nec. Quisque commodo, arcu nec  vitae auctor velit. Nulla tempus quam iaculis magna pretium, quis rutrum turpis consequat. Pellentesque mollis aliquam aliquam. Sed egestas diam sed nibh dignissim tempor. </br></br></br></br>
-		</p> -->
 	</section>
 	
 	<section class = "footer">
