@@ -32,14 +32,14 @@
 
 /* Tables */
 
-.myTableHeader { padding-left: 14px; font-size: 15px; border-right: 8px solid #fff; background-color: #f0f0f0;}
+.myTableHeader { padding-left: 14px; font-size: 15px; border-right: 8px solid #fff; background-color: #f0f0f0; color: #000;}
 #myTable { width: 100%; line-height: 28px; border-bottom: none; }
 #myTable_length { display: none; margin-top: 5px;  height: 25px; margin-left: 10px;}
 #myTable_filter { display: none; float: right; height: 25px; margin-right: 10px; margin-top: -25px; margin-bottom: 10px;}
 #myTable select { border: none; }
 #myTable tbody { text-align: left; }
 #myTable thead { width: 35px; background: #cfd1d2; color: #444; }
-#myTable th { height: 35px; line-height: 35px; outline: none;}
+#myTable th { height: 35px; line-height: 35px; outline: none; font-weight: normal;}
 #myTable tr { text-align: left; }
 #myTable tr:hover {background-color: #f0f0f0; }
 #myTable td { padding-left: 14px; border:none; color: #555; outline: none;}

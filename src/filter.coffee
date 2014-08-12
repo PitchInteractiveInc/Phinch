@@ -545,7 +545,7 @@ class filter
 				@selected_sample.splice(@selected_sample.indexOf(delete_index[i]), 1)
 		
 		# Step 3 Now based on the filters, selected sample now contains all the right sample # within that range.
-		content = "<table id='myTable'><thead><tr><th class = 'headerID myTableHeader'>Phinch Name</th><th class = 'headerID myTableHeader'>Biom Sample ID" + "</th><th class='myTableHeader'>Sample Name</th><th class='headerCount myTableHeader'>Sequence Reads</th></thead>"
+		content = "<table id='myTable'><thead><tr><th class = 'headerID myTableHeader'>PHINCH NAME</th><th class = 'headerID myTableHeader'>BIOM SAMPLE ID" + "</th><th class='myTableHeader'>SAMPLE NAME</th><th class='headerCount myTableHeader'>SEQUENCE READS</th></thead>"
 		if @selected_sample.length > 0
 			for i in [0..@selected_sample.length-1] 
 				content += '<tr><td contenteditable="true" id="phinchID_' + @selected_sample[i] + '">' +  phinchID_array[@selected_sample[i]] + '</td><td>' + (@selected_sample[i] + 1) + '</td><td>' + columns_sample_name_array[@selected_sample[i]] + '</td><td>' + columns_sample_count_list[@selected_sample[i]] + '</td></tr>'
