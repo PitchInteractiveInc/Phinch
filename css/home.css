@@ -14,7 +14,6 @@
 }
 
 #fileContainer{ width: 800px; height: 180px; position: absolute; background-color: #E5E6E8; border: 50px #e5e6e7 solid; margin: -55px 0 0 -50px;}
-
 .file_btn {
 	color: #241f20;
 	background: #fff; 
@@ -23,7 +22,6 @@
 	     -o-transition:background 0.2s;
 	        transition:background 0.2s;
 }
-
 .file_btn:hover { background: #241f20; color: #fff;}
 #readFile { width: 800px; margin: 120px auto 0 auto;}
 #frmUpload { width: 797px; height: 60px; border-bottom: none; display: inline-block;}
@@ -43,7 +41,6 @@
 	     -o-transition:opacity .3s linear;
 	        transition:opacity .3s linear;
 }
-
 #progress_bar.loading { opacity: 1.0;}
 #progress_bar .percent {
 	width: 0; 
@@ -95,9 +92,7 @@
 .reload:hover {color: #241f20; cursor: pointer;}
 .del {background-color: #efefef; color: #b4b4b4; width: 30px;}
 .del:hover {color: #241f20; cursor: pointer;}
-
-.footer { bottom: 0; width: 100%;}
-.footer_copyright {font-size: 12px; line-height: 50px;color: #fff;background: #babcbe; padding-left: 20px;margin: 0;}
-.footer_copyright span {float: right; margin-right: 20px;}
+.footer_copyright {position: fixed; width: 100%; bottom: 0; font-size: 12px; line-height: 50px;color: #fff; background: #babcbe; padding-left: 20px;}
+.footer_copyright span {float: right; margin-right: 40px;}
 .footer_copyright a {text-decoration: none; color: #fff;}
 .footer_copyright a:hover {color: #241f20;}

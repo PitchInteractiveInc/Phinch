@@ -1,17 +1,17 @@
 
-#goGallery { width: 245px; border: none; background-image: url('images/right_arrow.jpg');}
+#goGallery { width: 245px; border: none; background-image: url('images/right_arrow.png');}
 #bottom_sec { width: 100%; margin: 0px 10px;}
 #left_control_panel { width: 320px; float: left; margin: 10px 0px 30px 10px;}
 #right_live_panel { float: right; min-width: 600px; width: calc(100% - 400px); margin: 10px 40px 30px 30px;	}
 
 /* Filters */
 
-.att_head { height: 35px; color: #444; background: #fff; font-size: 15px; font-weight: bold;  line-height: 35px; border: 2px solid #444; margin: 0; padding: 1px 0px 0px 10px;}
+.att_head { height: 35px; color: #fff; background: #241f20; font-size: 15px; line-height: 35px; border: none; margin: 0; padding: 1px 0px 0px 10px;}
 .att_block { border: 1px solid #bbb; border-top: none; padding: 5px 0 5px 10px;}
 
 .biom_valid_attr { margin-left: 10px; line-height: 32px;}
 .biom_valid_attr_dates { line-height: 32px; }
-.biom_valid_attr_units { display: none; width: 50px; height: 16px; margin-left: 10px; text-align: center; border: 1px #bbb solid;}
+.biom_valid_attr_units { display: none; width: 50px; height: 16px; margin-left: 10px; text-align: center; border: none; background-color: #f0f0f0; line-height: 16px; font-size: 12px;}
 .biom_valid_attr_grp { margin-left: 10px;}
 .overflowControl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .biom_valid_notes { font-size: 12px; font-style: italic;}
@@ -32,23 +32,23 @@
 
 /* Tables */
 
-.myTableHeader { padding-left: 14px; font-size: 15px; border: 2px solid #444;}
-#myTable { width: 100%; line-height: 28px; border-bottom: 2px solid #ccc;}
+.myTableHeader { padding-left: 14px; font-size: 15px; border-right: 8px solid #fff; background-color: #f0f0f0;}
+#myTable { width: 100%; line-height: 28px; border-bottom: none; }
 #myTable_length { display: none; margin-top: 5px;  height: 25px; margin-left: 10px;}
 #myTable_filter { display: none; float: right; height: 25px; margin-right: 10px; margin-top: -25px; margin-bottom: 10px;}
 #myTable select { border: none; }
-#myTable tbody { text-align: left;  }
-#myTable thead { width: 35px; background: #fff; color: #444; }
-#myTable th { height: 35px; line-height: 35px; }
+#myTable tbody { text-align: left; }
+#myTable thead { width: 35px; background: #cfd1d2; color: #444; }
+#myTable th { height: 35px; line-height: 35px; outline: none;}
 #myTable tr { text-align: left; }
-#myTable tr:hover {background-color: #fff5eb; }
-#myTable td { padding-left: 14px; border-bottom: none; border-top: none; color: #555; outline: none;}
-#myTable td:focus { border-top: 2px inset #ccc; border-bottom: 2px inset #ccc; }
-#myTable_info { margin-top: 5px;  height: 25px; margin-left: 10px; }
+#myTable tr:hover {background-color: #f0f0f0; }
+#myTable td { padding-left: 14px; border:none; color: #555; outline: none;}
+#myTable td:focus { border: 1px inset #241f20;  }
 #myTable .sorting_asc { background: url('images/asc.png') no-repeat center right; background-size:28px 15px; }
 #myTable .sorting_desc { background: url('images/dec.png') no-repeat center right; background-size: 28px 15px;}
 #myTable .phinchCol {background: url('images/edit.png') no-repeat center right; background-size: 50px 30px; }
 
+#myTable_info { margin-top: 5px;  height: 25px; margin-left: 10px; }
 #myTable_paginate { float: right; height: 25px; margin: -20px -5px 5px 0px;}
 a.paginate_enabled_next{ background: #ccc; padding: 3px; cursor: pointer; margin-right: 5px; }
 a.paginate_enabled_previous{ background: #ccc; padding: 3px; cursor: pointer; margin-right: 5px; }

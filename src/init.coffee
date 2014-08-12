@@ -3,13 +3,12 @@ class init
 	vizNames = ['Taxonomy Bar Chart', 'Bubble Chart', 'Sankey Diagram', 'Donut Partition', 'Attributes Column Chart']
 
 	constructor: (page) ->
-		console.log page
 
 		if (@mobilecheck()) # Check if it's mobile.If so, hide the features, just display info
 			$('body').css({'min-width': window.screen.width});
 			$('#NotSupported').css({'width': window.screen.width, 'display': 'block', 'margin': '-20px 0 0 0'});
 			$('#NotSupported p').html('Desktop Chrome Recommended!');
-			$('h1, h3, #bottom_sec, #menu, #help, .orange_btn, hr, #viz_container, #Page1, #readFile, #recent, .footer_copyright span').hide();
+			$('h1, .pageName, #bottom_sec, #menu, #help, .orange_btn, hr, #viz_container, #Page1, #readFile, #recent, .footer_copyright span').hide();
 			$('.footer_copyright').css({'font-size': '8px', 'line-height': '16px'});
 			$('#top_sec').height(50);
 			$('#about').css({'width': window.screen.width - 40, 'margin': ' -80px 20px 0px 20px'});
@@ -18,9 +17,7 @@ class init
 		else if ( !navigator.userAgent.match(/Chrome/i) || !window.File || !window.FileReader || !window.FileList || !window.Blob )
 			# || navigator.userAgent.match(/Firefox/i) || navigator.userAgent.match(/Safari/) )  # Support only chrome now
 			$('#NotSupported').show();
-			$('#top_sec').animate({height:50}, 200);
-			$('#head_sec').animate({height:50}, 200);
-			$('#viz_container, #bottom_sec, h3, hr, .orange_btn, #Page1, #readFile, #recent').hide();
+			$('#viz_container, #bottom_sec, .pageName, hr, .orange_btn, #Page1, #readFile, #recent').hide();
 			alert('Chrome Browser Recommended! Your browser does not support the Phinch framework!');
 		else
 			@helpMenu()

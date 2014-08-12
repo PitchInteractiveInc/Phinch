@@ -75,7 +75,7 @@ class taxonomyViz
 						filename = filename.substring(0,filename.length-5)
 
 						$("#file_details").html("");
-						$("#file_details").append( "ANALYZING &nbsp;<span>" + currentData.name.substring(0,30) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Selected Samples &nbsp;<em>" + format(selected_samples.length) + "</em>")
+						$("#file_details").append( "ANALYZING &nbsp;<span>" + currentData.name.substring(0,30) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />OBSERVATION &nbsp;&nbsp;&nbsp;<span>" + format(biom.shape[0]) + "</span> &nbsp;&nbsp;&nbsp; SELECTED SAMPLES &nbsp;&nbsp;&nbsp;<span>" + format(selected_samples.length) + "</span>")
 
 						# 3 handle slider click events 
 						if (LayerID != 2) # if this is from a shared link, change the slider 

@@ -38,7 +38,7 @@ class filter
 				@generateDate()
 
 				# Build
-				$("#file_details").append( "ANALYZING &nbsp;<span>" + filename.substring(0,52) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />Observation &nbsp;<em>" + format(biom.shape[0]) + "</em> &nbsp;&nbsp;&nbsp; Samples &nbsp;<em>" + format(biom.shape[1]) + "</em>")
+				$("#file_details").append( "ANALYZING &nbsp;<span>" + filename.substring(0,52) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />OBSERVATION &nbsp;&nbsp;&nbsp;<span>" + format(biom.shape[0]) + "</span> &nbsp;&nbsp;&nbsp; SELECTED SAMPLES &nbsp;&nbsp;&nbsp;<span>" + format(biom.shape[1]) + "</span>")
 				$('#goExport').click( () => @downloadPhinch(0) )
 				$('#goGallery').click () =>
 					$('#right_live_panel').html('<i class="icon-spinner icon-spin icon-large icon-4x" style="float:right;"></i>')
@@ -559,8 +559,8 @@ class filter
 			# "sLengthMenu": "_MENU_ samples per page",
 			"sLengthMenu": "",
 			"sZeroRecords": "Nothing found - sorry",
-			"sInfo": "Showing _START_ to _END_ of _TOTAL_ Samples",
-			"sInfoEmpty": "Showing 0 to 0 of 0 Samples",
+			"sInfo": "Showing _TOTAL_ Samples", # _START_ to _END_ of 
+			"sInfoEmpty": "Showing 0 Samples", #  0 to 0 of 
 			"sInfoFiltered": "(filtered from _MAX_ total samples)"
 			}
 		})
@@ -708,11 +708,11 @@ class filter
 			.attr('y', (d,i) -> return size[1] - y(d) )
 			.attr('fill', (d,i) ->
 				if values == null
-					return '#ff8900'
+					return '#919396'
 				else if values != null and each_numeric_linechart0[i] >= values[0] and each_numeric_linechart0[i] <= values[1]
-					return '#ff8900'
+					return '#919396'
 				else 
-					return '#aaa'
+					return '#e5e6e7'
 			)
 			.on('mouseover', (d,i) -> 
 				tooltipOverPanel.html( 'Value: ' + each_numeric_linechart0[i] + ', Freq: ' + d )

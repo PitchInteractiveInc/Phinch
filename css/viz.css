@@ -1,8 +1,8 @@
 
 /* Top Section */
 
-#goBackFilter { float: left; margin: 20px; width: 204px; height: 50px; border: none; background-image: url('images/left_arrow.jpg'); }
-#goBackGallery { width: 204px; border: none; background-image: url('images/left_arrow.jpg'); background-repeat: no-repeat;}
+#goBackFilter { float: left; margin: 20px; width: 204px; height: 50px; border: none; background-image: url('images/left_arrow.png'); }
+#goBackGallery { width: 204px; border: none; background-image: url('images/left_arrow.png'); background-repeat: no-repeat;}
 
 .col3 { float: left; width: 31%;  height: auto; min-height: 250px; margin: 0% 10px 2% 10px; border: 2px solid #ccc; font-size: 17px; color: #6f6f6f;}
 .col3:hover { cursor: pointer; border: 2px solid #ff8900; background-color: #ff8900; color: #ffffff; -webkit-transition:.4s; -moz-transition:.4s; -o-transition:.4s; transition:.4s;}
@@ -103,7 +103,7 @@
 
 #bubbleTooltip { padding: 10px 10px 5px 10px; }
 #bubblePanel { position: absolute; top: 350px; left: 200px; width: 880px; text-align: left; background: rgba(255,255,255,0.9);}
-#bubbleRemover{position: absolute; top:358px; left: 1050px; cursor: pointer;}
+#bubbleRemover { position: absolute; top:358px; left: 1050px; cursor: pointer;}
 
 .bubbleTaxHeader { width: 860px; height: 40px; font-size: 12px; line-height: 40px; padding-left: 40px; background: url('images/header.png') no-repeat;}
 .bubbleTaxHeader span { color: #c3c3c3; float: right; margin-right: 65px;}
