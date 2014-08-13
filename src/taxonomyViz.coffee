@@ -458,14 +458,15 @@ class taxonomyViz
 					return y(d.y) / sumEachCol[i] * max_single 
 			.on 'mouseover', (d,i) ->
 				content = ''
-				content += '<div class="PanelHead"><b>SAMPLE NAME:</b> ' + columns_sample_name_array[d.x] + '<br/><b>TAXONOMY:</b> ' + d.name+ '</div>'
+				content += '<img class="PanelImg" src="css/images/tooltip.png">'
+				content += '<div class="PanelHead">SAMPLE NAME:</br><span>' + columns_sample_name_array[d.x] + '</span><br/>TAXONOMY:</br><em>' + d.name+ '</em></div>'
 				content += '<div class="PanelInfo">TAXONOMY OCCURENCE IN THIS SAMPLE<br/><span>' + (d.y / sumEachCol[i] * 100).toFixed(2) + '%</span>&nbsp;&nbsp;<em>(' + format(d.y) + ' out of ' + format(sumEachCol[i]) + ')</em></div>'
 				content += '<progress max="100" value="' + (d.y / sumEachCol[i] * 100).toFixed(2) + '"></progress>'
 				content += '<div class="PanelInfo">OUT OF TOTAL TAXONOMY OCCURENCE IN ALL SAMPLES<br/><span>' + (d.y / sumEachTax[d.i] * 100).toFixed(2) + '%</span>&nbsp;&nbsp;<em>(' + format(d.y) + ' out of ' + format(sumEachTax[d.i]) + ')</em></div>'
 				content += '<progress max="100" value="' + (d.y / sumEachTax[d.i] * 100).toFixed(2) + '"></progress>'
 				content += '<br/><br/>'
 				infoPanel.html(content)
-				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY + 8) + "px", left: (d3.event.pageX + 8) + "px", "background": "rgba(255,255,255,0.9)" })
+				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY + 8) + "px", left: (d3.event.pageX + 8) + "px" })
 				delePanel.style( { "visibility": "hidden"})
 			.on 'mouseout', (d,i) -> 
 				infoPanel.style( { "visibility": "hidden"})
@@ -695,7 +696,6 @@ class taxonomyViz
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
 		tooltip = d3.select("#taxonomy_container").append("div")
-			.attr("id", "bubbleTooltip")
 			.attr("class", 'basicTooltip')
 			.style("visibility", "hidden")
 
@@ -764,8 +764,8 @@ class taxonomyViz
 			.style({opacity:'0.6',stroke: 'none'})
 			.on 'mouseover', (d, i) ->
 				d3.select(this).style({opacity:'1', stroke: '#000', 'stroke-width': '3' })
-				tooltip.html( "<b>TAXONOMY:</b> " + d.name + "<br/><b>TOTAL READS:</b> " + format(d.value) + "<br/><b>OTU QUANTITY:</b> " + format(unique_taxonomy_comb_count[i]))
-				tooltip.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px" })
+				tooltip.html( "<img class = 'PanelImg' src='css/images/tooltip.png'><div class = 'PanelHead'>TAXONOMY:<br/><em>" + d.name + "</em></div><div class = 'PanelHead'><div class='PanelHalf'>TOTAL READS:<br/><span>" + format(d.value) + "</span></div><div class='PanelHalf'>OTU QUANTITY:<br/><span>" + format(unique_taxonomy_comb_count[i]) + "</span></div></div>")
+				tooltip.style( { "visibility": "visible", top: (d3.event.pageY - 20) + "px", left: (d3.event.pageX + 30) + "px" })
 			.on 'mouseout', (d) ->
 				d3.select(this).style({opacity:'0.6',stroke: 'none'})
 				tooltip.style("visibility", "hidden")
@@ -776,11 +776,11 @@ class taxonomyViz
 				d3.select(this).transition().attr('cx', '100').attr('cy', '100').duration(250).ease("quad-in-out")
 				d3.selectAll(".node").filter((d,i) -> (this isnt circleUnderMouse) ).transition().attr('r', '0').duration(250).delay(250).ease("quad-in-out")
 
-				y = d3.scale.linear().domain([0, d3.max(viz_series[d.id])]).range([1,115]) # max_single # standardized 
+				y = d3.scale.linear().domain([0, d3.max(viz_series[d.id])]).range([1,85]) # max_single # standardized 
 				infoPanel.style("visibility", "visible")
 				bubbleRemover.style("visibility",'visible')
 				curColor = d3.select(this).style("fill")
-				infoPanel.html('<div class="bubbleTaxHeader">' + d.name.substring(0,100) + '&nbsp;&nbsp;' + format(d3.sum(viz_series[d.id])) + ' Reads &nbsp;<span>SAMPLE DIST</span></div><svg width="813px" style="float: right; padding: 0 20px; border: 1px solid #c8c8c8; border-top: none;" height="' + Math.ceil(viz_series[d.id].length / 5 + 1) * 25 + '"></svg>')
+				infoPanel.html('<div class="bubbleTaxHeader">' + d.name.substring(0,100) + '<span>&nbsp;&nbsp;<b>' + format(d3.sum(viz_series[d.id])) + ' Reads</b>&nbsp;&nbsp;&nbsp;SAMPLE DIST</span></div><svg width="813px" style="float: right; padding: 0 20px; border: 1px solid #c8c8c8; border-top: none;" height="' + Math.ceil(viz_series[d.id].length / 5 + 1) * 25 + '"></svg>')
 				barrect = infoPanel.select('svg').selectAll('rect').data(viz_series[d.id])
 				valrect = infoPanel.select('svg').selectAll('text').data(viz_series[d.id])
 				txtrect = infoPanel.select('svg').selectAll('text').data(selected_samples)
@@ -964,14 +964,14 @@ class taxonomyViz
 		infoPanel = d3.select("#taxonomy_container #sankeyInfo")
 		content = "<div class='sankeyInfobox'><div id='sankeyRemover'><i class='icon-remove icon-large'></i></div>"
 		if d.targetLinks.length == 0
-			content += "<p>" + d.name + " is a source node. It has " + format(d.sourceLinks.length) + " branches.</p><p>Their distributions are: </p>"
+			content += "<p><b>" + d.name + "</b> is a source node. It has <b>" + format(d.sourceLinks.length) + "</b> branches.</p><p>Their distributions are: </p>"
 		else if d.sourceLinks.length == 0
-			content += "<p>" + d.name + " is an end node. Its absolute reads is " + format(d.targetLinks[0].absValue) + ".</p></div>"
+			content += "<p><b>" + d.name + "</b> is an end node. Its absolute reads is <b>" + format(d.targetLinks[0].absValue) + "</b>.</p></div>"
 		else 
 			sourceTotal = 0
 			for k in [0..d.sourceLinks.length-1] 
 				sourceTotal += d.sourceLinks[k].absValue					
-			content += "<p>" + d.name + " has " + format(d.sourceLinks.length) + " branches. Its total reads is " + format(sourceTotal) + ".</p><p>Their distributions are: </p>"
+			content += "<p><b>" + d.name + "</b> has <b>" + format(d.sourceLinks.length) + "</b> branches. Its total reads is <b>" + format(sourceTotal) + "</b>.</p><p>Their distributions are: </p>"
 		content += "</div>"
 		infoPanel.html(content)
 		@drawSmallSankey(infoPanel,d,taxonomySankey, svg)
@@ -1287,7 +1287,7 @@ class taxonomyViz
 			.attr('width', eachBarWidth - 3 )
 			.attr("x", (d,i) -> return eachBarWidth * i + 50 )
 			.attr("y", (d,i) -> return 170 - yScale(d))
-			.style("fill", (d,i) -> if totalFlag then return '#ff8900' else return fillCol[selectedTaxnomy%20] )
+			.style("fill", (d,i) -> if totalFlag then return '#919396' else return fillCol[selectedTaxnomy%20] )
 		rectContainedSamp.selectAll('text')
 			.data(containedSamp)
 		.enter().append('text')
@@ -1569,7 +1569,7 @@ class taxonomyViz
 			.attr("cx", (d) -> if isNaN(d.x) then return 0 else return d.x )
 			.attr("cy", (d) -> if isNaN(d.y) then return 0 else return d.y)
 			.attr("r", (d) -> return d.r)
-			.style("fill", '#ff8900')
+			.style("fill", '#919396')
 
 		svg.selectAll("text").data(nodes)
 			.enter().append("svg:text")
@@ -1578,7 +1578,7 @@ class taxonomyViz
 			.attr("y", (d) -> d.y += d.r * (Math.random() - 0.5); return d.y )  ## return d.y ## but d.y could be the same in most cases, so give it a random y position
 			.attr("font-size", (d) -> return fontScale( d.r / r) + "px")
 			.attr("text-anchor", "middle")
-			.style("fill",'#ff8900')
+			.style("fill",'#919396')
 			.style("opacity", (d) -> if d.r > 50 then return 0.8 else return 0 )
 			.text((d) -> return d.name )
 
@@ -1615,7 +1615,7 @@ class taxonomyViz
 					$('#MsgBox').html("* If the page is not showing correctly, please refresh!")
 				when 2
 					$('#ListBubble, #tags, #bubbleSliderContainer').fadeIn(fadeInSpeed)
-					$('.ui-slider-horizontal .ui-slider-handle').css({ "margin-top": "-2px", "border": "2px solid #ff8900","background": "#fff"})
+					$('.ui-slider-horizontal .ui-slider-handle').css({ "margin-top": "-2px", "border": "none","background": "#241F20"})
 				when 3
 					$('#tags').fadeIn(fadeInSpeed)
 					$('#MsgBox').html( "* " + unique_taxonomy_comb_count.length + " unique paths, cannot go deeper to the 6th or 7th layer.")

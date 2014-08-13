@@ -7,6 +7,7 @@
 .col3 { float: left; width: 31%;  height: auto; min-height: 250px; margin: 0% 10px 2% 10px; border: 2px solid #241f20; font-size: 16px; color: #000;}
 .col3:hover { cursor: pointer; border: 2px solid #241f20; background-color: #241f20; color: #fff; -webkit-transition:.4s; -moz-transition:.4s; -o-transition:.4s; transition:.4s;}
 .col3 img { width: 100%; display: inline-block; border-top: 2px #241f20 solid;}
+#GraphGallery {margin-left: 10px;}
 .graphGalleryTitle { width: 100%; height: 25px; float: left; text-align: center;}
 
 #share_box { display: none; z-index: 5; background: #fff; border: 1px solid rgba(0,0,0,0.2); box-shadow: 0 3px 9px rgba(0,0,0,0.5); outline: 0; color: #222222; width: 700px; height: 300px; top: 310px; position: fixed; left: calc(40% - 250px);}
@@ -34,9 +35,9 @@
 
 /* Layer Switch Part */
 #layerSwitch { display: none;  width: 802px; height: 36px; margin: -80px 0px 0px 20px;}
-.rectLayer { float: left; padding: 0 10px; height: 33px; line-height: 33px; color: #919396; z-index: 3;}
+.rectLayer { float: left; padding: 0 10px; height: 33px; line-height: 33px; color: #c2c4c6; z-index: 3;}
 .rectLayer:hover { cursor: pointer; color: #fff; background-color: #241f20; -webkit-transition:.4s; -moz-transition:.4s; -o-transition:.4s; transition:.4s;}
-.cntline {width: 35px; height: 3px; float: left; border-top: 15px solid #fff; background-color: #919396; border-bottom: 15px solid #fff;}
+.cntline {width: 35px; height: 3px; float: left; border-top: 15px solid #fff; background-color: #c2c4c6; border-bottom: 15px solid #fff;}
 .selectedLayer {color: #241f20;}
 .selectedLine {background-color: #241f20;}
 
@@ -51,7 +52,7 @@
 
 #legend_header { display: none; position: fixed; top: 320px; right: 0px; width: 148px; height: 34px; border: none; color: #241f20; background-color: #f0f0f0; text-align: center; line-height: 34px;}
 #legend_header:hover { cursor: pointer;}
-#legend_container { opacity: 0; position: fixed; top: 354px; right: 0; border-left: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; background: rgba(255,255,255,0.6);}
+#legend_container { opacity: 0; position: fixed; top: 354px; right: 0; border-left: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; background: rgba(255,255,255,0.9);}
 #legend_container p { padding-left: 20px; font-size: 13px; margin: 10px 0 0 0;}
 #legend_container ul { font-size: 12px; line-height: 16px; list-style: none; margin: 10px 20px; padding: 0;}
 #legend_container ul em { float: right; color: #8d9195; font-style: normal;}
@@ -62,26 +63,29 @@
 #autoCompleteList {  display: none; position: absolute; right: 20px; top: 240px; font-size: 12px;  line-height: 16px;  border-radius: 3px;  background: rgba(255,255,255,0.9);  color: #000;  box-shadow: 0 1px 5px rgba(0,0,0,0.4);  -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4); overflow-y: scroll; max-height: 400px; z-index: 1;}
 #autoCompleteList ul { list-style: none; padding: 15px 10px 0px 15px;}
 #autoCompleteList ul li { padding: 5px 0;}
-#autoCompleteList ul li:hover{ background: rgba(239,193,79,0.6); cursor: pointer;}
-#autoCompleteList ul em { color: #ff8900; float: right; font-style: normal;}
+#autoCompleteList ul li:hover{ background: rgba(229,229,229,0.6); cursor: pointer;}
+#autoCompleteList ul em { color: #241f20; float: right; font-style: normal;}
 
 /* 1 Taxonomy Bar Chart */
+.PanelImg {position: absolute; margin-left: -30px; margin-top: -6px; height: 50px;}
+.PanelHead { color: #919191; margin: 10px; padding-bottom: 5px; line-height: 20px;}
+.PanelHead span { color: #241f20; font-size: 16px; font-weight: bold;}
+.PanelHead em { color: #241f20; font-weight: bold; font-style: normal;}
+.PanelHalf {width: 50%; float: left;}
+.PanelInfo { color: #919191; margin: 10px 10px -10px 10px;}
+.PanelInfo span { color: #241f20; font-size: 14px; font-weight: bold;}
 
-.PanelHead { color: #444; margin: 10px; padding-bottom: 5px; border-bottom: 1px solid #bbb;}
-.PanelInfo { color: #444; margin: 10px 10px -10px 10px;}
-.PanelInfo span { font-size: 14px; font-weight: bold;}
-
-.basicTooltip progress { width: 100%; height: 3px; padding: 0 10px; background-color: #fff; border: none; -webkit-appearance: none; appearance: none;}
-.basicTooltip progress[value]::-webkit-progress-bar { background-color: #bbb; }
-.basicTooltip progress[value]::-webkit-progress-value { background-color: #ff8900; }
-.basicTooltip progress[value]::-moz-progress-bar { background-color: #ff8900; color: red;}
+.basicTooltip progress { width: 100%; height: 25px; padding: 15px 10px 0 10px; background-color: transparent; border: none; -webkit-appearance: none; appearance: none;}
+.basicTooltip progress[value]::-webkit-progress-bar { background-color: #f0f0f0; }
+.basicTooltip progress[value]::-webkit-progress-value { background-color: #58595b; }
+.basicTooltip progress[value]::-moz-progress-bar { background-color: #58595b; color: #f0f0f0;}
 
 .hideSampleContainer { position: absolute; font-size: 12px; padding: 5px; }
-.hideSample { color: #ff8900; font-weight: bold; border: 2px solid #ff8900; margin: -35px 10px 0px 25px; padding: 5px 10px; background: #fff;}
+.hideSample { color: #241f20; font-weight: bold; border: none; margin: -35px 10px 0px 25px; padding: 5px 10px; background: #f0f0f0;}
 .hideSample:hover { cursor: pointer;}
 
 #deleteSampleArr { margin: 30px 0px 0px 20px;}
-#deleteSampleArr p { margin: 0; font-style: italic; color: #ff8900; }
+#deleteSampleArr p { margin: 0; font-style: italic; color: #241f20; }
 #deleteSampleArr span { cursor: pointer;}
 #deleteSampleArr ul { opacity: 0; width: 400px; list-style: none; padding: 20px 0 0 0;}
 #deleteSampleArr ul li { padding: 5px 10px;	}
@@ -94,16 +98,16 @@
 
 /* 2 Bubble Chart */
 
-#bubbleTooltip { padding: 10px 10px 5px 10px; }
+
 #bubblePanel { position: absolute; top: 350px; left: 200px; width: 880px; text-align: left; background: rgba(255,255,255,0.9);}
 #bubbleRemover { position: absolute; top:358px; left: 1050px; cursor: pointer;}
 
 .bubbleTaxHeader { width: 860px; height: 40px; font-size: 12px; line-height: 40px; padding-left: 40px; background: url('images/header.png') no-repeat;}
-.bubbleTaxHeader span { color: #c3c3c3; float: right; margin-right: 65px;}
+.bubbleTaxHeader span { color: #241f20; float: right; margin-right: 65px;}
 
-#bubbleSliderContainer { display: none; width: 180px; margin-left: 30px; margin-top: 15px; color: #ff8900; font-size: 12px;}
+#bubbleSliderContainer { display: none; width: 180px; margin-left: 30px; margin-top: 15px; color: #222020; font-size: 12px;}
 #bubbleSlider { width: 175px; position: absolute; height: 3px; border: none; background: #bbb;}
-#bubbleSlider .ui-widget-header { background: #ff8900;}
+#bubbleSlider .ui-widget-header { background: #241f20;}
 .sliderIcons { text-align: center; margin: 0px 5px -18px 0px;}
 #bubbleSliderLeft { margin-bottom: 10px;}
 #bubbleSliderRight { float: right; margin: -26px -4px 0 0;}
@@ -124,9 +128,9 @@
 
 /* 4 Donut Partition */
 
-.donutSwitch{ position: absolute; float: right; right: 20px; border: 2px solid #ff8900; height: 28px;}
-.donutSwitch button { border: none; margin: 0; height: 28px; color: #ff8900; background: #fff; padding: 0 10px; font-weight: bold; font-size: 12px;}
-.donutSwitch .clicked { color: #fff; background: #ff8900; -o-transition: background .6s; -ms-transition: background .6s; -moz-transition: background .6s; -webkit-transition: background .6s; transition: background .6s;}
+.donutSwitch{ position: absolute; float: right; right: 20px; border: 2px solid #.bubbleTaxHeader span; height: 28px;}
+.donutSwitch button { border: none; margin: 0; height: 28px; color: #241f20; background: #f0f0f0; padding: 0 10px; font-weight: bold; font-size: 12px;}
+.donutSwitch .clicked { color: #fff; background: #241f20; -o-transition: background .6s; -ms-transition: background .6s; -moz-transition: background .6s; -webkit-transition: background .6s; transition: background .6s;}
 
 /* 5 Attributes Column Chart */
 

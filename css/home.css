@@ -15,17 +15,17 @@
 
 #fileContainer{ width: 800px; height: 180px; position: absolute; background-color: #E5E6E8; border: 50px #e5e6e7 solid; margin: -55px 0 0 -50px;}
 .file_btn {
-	color: #241f20;
-	background: #fff; 
+	color: #fff;
+	background: #241f20;
 	-webkit-transition:background 0.2s;
 	   -moz-transition:background 0.2s;
 	     -o-transition:background 0.2s;
 	        transition:background 0.2s;
 }
-.file_btn:hover { background: #241f20; color: #fff;}
+.file_btn:hover { background: #babcbe; color: #241f20;}
 #readFile { width: 800px; margin: 120px auto 0 auto;}
 #frmUpload { width: 797px; height: 60px; border-bottom: none; display: inline-block;}
-#fakeBrowse { width: 200px; height: 60px;  float: right; border: 4px solid #241f20; font-size: 20px;}
+#fakeBrowse { width: 200px; height: 60px;  float: right; border: none; font-size: 20px;}
 #txtFakeText { width: 585px; height: 54px; font-size: 18px;  text-align: center; }
 #fileDrag { width: 590px; height: 56px; margin-top: -58px; font-size: 20px; text-align: center; line-height: 60px; border-top: none; z-index:0; opacity:0; }
 #fileDrag.hover { z-index:5; opacity:1;}
@@ -56,7 +56,9 @@
 #parse {
 	width: 797px;
 	height: 60px; 
-	border: 4px solid #241f20;
+	border: none;
+	color: #fff;
+	background: #241f20;
 	font-size: 20px; 
 	-webkit-transition:background 0.2s;
 	   -moz-transition:background 0.2s;
@@ -65,8 +67,8 @@
 }
 
 #parse:hover {
-	background: #241f20;
-	color: #fff;
+	background: #babcbe;
+	color: #241f20;
 }
 
 #loadTestFile {

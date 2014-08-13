@@ -37,7 +37,7 @@ td { border: 2px #ccc solid; color: #ababab; height: 26px;}
 #file_details span { color: #000; font-size: 20px;}
 
 .orange_btn { width: 150px; height: 50px; float: right; border: none; font-size: 16px; background-color: #241f20; color: #fff; margin: 15px 20px 0 0;}
-.basicTooltip { position: absolute; font-size: 12px; color: #000; background: rgba(255,255,255,0.9); border: 1px solid rgba(200,200,200,0.85); border-radius: 3px; padding: 5px; box-shadow: 0 1px 5px rgba(0,0,0,0.4); -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4);}
+.basicTooltip { position: absolute; font-size: 12px; color: #000; background: #fff; border: 1px solid rgba(200,200,200,0.85); border-radius: 1px; padding: 5px; }
 
 /* ==========================================================================
    Normalize
@@ -148,12 +148,12 @@ a .icon-stack, a .icon-spin {display: inline-block;text-decoration: none;}
 .icon-file-text-o:before { content: "\f0f6"; }
 .icon-fa-times:before { content: "\f00d"; }
 .icon-fa-users:before { content: "\f03a"; }
-.icon-fa-level-up:before {  content: "\f0d8"; font-weight: bold; }
-.icon-fa-level-down:before {content: "\f0d7"; font-weight: bold; }
-.icon-circle:before {content: "\f111"; vertical-align: middle;}
+.icon-fa-level-up:before {  content: "\f0d8"; }
+.icon-fa-level-down:before {content: "\f0d7"; }
+.icon-circle:before {content: "\f111"; vertical-align: middle; padding: 0 3px;}
 .icon-download:before {content: "\f019";}
 .icon-chart:before {content: "\f080";}
 
-.icon-remove:hover {color: #241f20; cursor: pointer;}
-.icon-fa-level-up:hover { color: #ff8900; cursor: pointer;}
-.icon-fa-level-down:hover { color: #ff8900; cursor: pointer;}
+.icon-remove:hover {color: #babcbe; cursor: pointer;}
+.icon-fa-level-up:hover { color: #babcbe; cursor: pointer;}
+.icon-fa-level-down:hover { color: #babcbe; cursor: pointer;}
