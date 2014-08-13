@@ -80,6 +80,7 @@ class taxonomyViz
 						# 3 handle slider click events
 						if (LayerID != 2) # if this is from a shared link, change the slider 
 							$('.rectLayer').removeClass('selectedLayer');
+							$('.cntline').removeClass('selectedLine')
 							for i in [1..LayerID]
 								$('#layer_' + i).addClass('selectedLayer');
 							if LayerID > 1
@@ -96,7 +97,8 @@ class taxonomyViz
 							else if (VizID == 3 and (LayerID == 6 || LayerID == 7)) 
 								alert('Cannot go deeper to the 6th or 7th layer!')
 							else
-								$('.rectLayer').removeClass('selected_layer');
+								$('.rectLayer').removeClass('selectedLayer');
+								$('.cntline').removeClass('selectedLine')
 								for i in [1..LayerID]
 									$('#layer_' + i).addClass('selectedLayer');
 								if LayerID > 1
@@ -113,14 +115,14 @@ class taxonomyViz
 						$('#valueBtn').click (evt) =>
 							if percentView
 								percentView = false 
-								LayerID = parseInt($('.selected_layer').length) + 1
+								LayerID = parseInt($('.selectedLayer').length)
 								$('#valueBtn').addClass('clicked')
 								$('#percentBtn').removeClass('clicked')
 								@generateVizData()
 						$('#percentBtn').click (evt) =>
 							if !percentView
 								percentView = true
-								LayerID = parseInt($('.selected_layer').length) + 1
+								LayerID = parseInt($('.selectedLayer').length)
 								$('#valueBtn').removeClass('clicked')
 								$('#percentBtn').addClass('clicked')
 								@generateVizData()								
@@ -129,17 +131,18 @@ class taxonomyViz
 						$('#bubbleBtn').click (evt) =>
 							if !bubbleView
 								bubbleView = true 
-								LayerID = parseInt($('.selected_layer').length) + 1
+								LayerID = parseInt($('.selectedLayer').length)
 								$('#bubbleBtn').addClass('clicked')
 								$('#listBtn').removeClass('clicked')
 								@generateVizData()
 						$('#listBtn').click (evt) =>
 							if bubbleView
 								bubbleView = false
-								LayerID = parseInt($('.selected_layer').length) + 1
+								LayerID = parseInt($('.selectedLayer').length)
 								$('#bubbleBtn').removeClass('clicked')
 								$('#listBtn').addClass('clicked')
 								@generateVizData()
+
 
 						# 6 legends  
 						$('#legend_header').click () => 
