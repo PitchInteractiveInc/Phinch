@@ -28,7 +28,7 @@
 
     <!-- Disable Console Msg -->
     <script type="text/javascript">
-        if (true || !(window.console && console.log)) {(function() {
+        if (false && !(window.console && console.log)) {(function() {
             var noop = function() {};
             var methods = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log', 'markTimeline', 'profile', 'profileEnd', 'markTimeline', 'table', 'time', 'timeEnd', 'timeStamp', 'trace', 'warn'];
             var length = methods.length;
@@ -42,7 +42,6 @@
 <body>
     <section id = "head_sec">
         <p class = "logo"><a href="index.html"><img src="img/phinch.png" height="50px"></a><!-- <img alt="Chrome" src="img/chrome_logo_2x.png" height="20px" style="margin-top: 20px;"> --></p>
-        <!-- <h3>GRAPH GALLERY</h3> -->
         <p id="help">HELP</p>
         <div id="dialog-modal">
             <h2>How to Use</h2>
@@ -95,11 +94,12 @@
         <p>Chrome Browser Recommended! Your browser does not support the Phinch framework!</p>
     </section>
 
-    <section id="GraphGallery">
+    <section id = "graphNameCont">
+        <p class="pageName">GRAPH GALLERY</p>
+        <a href="preview.html"><button id="goBackFilter" class="orange_btn">FILTER DATA</button></a>
+    </section>
 
-        <a href="preview.html"><button id="goBackFilter" class="orange_btn">FILTER DATA </button></a>
-        <hr width="100%">
-        <br><br>
+    <section id="GraphGallery">
 
         <div class="col3">
             <p class = "graphGalleryTitle"><span>Taxonomy Bar Chart</span></p>
@@ -137,20 +137,23 @@
     </section>
 
     <section id = "viz_container">
-        <hr width="100%">
-        </br> 
         
         <div id="layerSwitch">
-            <div class="circle selected_layer" id="layer_1"></div>
-            <div class="circle" id="layer_2" style="background: url('css/images/phylum.png') no-repeat"></div>
-            <div class="circle" id="layer_3"></div>
-            <div class="circle" id="layer_4"></div>
-            <div class="circle" id="layer_5"></div>
-            <div class="circle" id="layer_6"></div>
-            <div class="circle" id="layer_7"></div>
-            <div class="line"></div>
-            <div class="progressLine"></div>
-            
+
+            <div class="rectLayer selectedLayer" id="layer_1">Kingdom</div>
+            <div class="cntline selectedLine"></div>
+            <div class="rectLayer selectedLayer" id="layer_2">Phylum</div>
+            <div class="cntline"></div>
+            <div class="rectLayer" id="layer_3">Class</div>
+            <div class="cntline"></div>
+            <div class="rectLayer" id="layer_4">Order</div>
+            <div class="cntline"></div>
+            <div class="rectLayer" id="layer_5">Family</div>
+            <div class="cntline"></div>
+            <div class="rectLayer" id="layer_6">Genus</div>
+            <div class="cntline"></div>
+            <div class="rectLayer" id="layer_7">Species</div>
+
             <div id="PercentValue" class="switchGroup">
                 <button id = "valueBtn" class="clicked">VALUE</button>
                 <button id = "percentBtn">%</button>

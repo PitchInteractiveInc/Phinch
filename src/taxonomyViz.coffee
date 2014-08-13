@@ -77,25 +77,17 @@ class taxonomyViz
 						$("#file_details").html("");
 						$("#file_details").append( "ANALYZING &nbsp;<span>" + currentData.name.substring(0,30) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />OBSERVATION &nbsp;&nbsp;&nbsp;<span>" + format(biom.shape[0]) + "</span> &nbsp;&nbsp;&nbsp; SELECTED SAMPLES &nbsp;&nbsp;&nbsp;<span>" + format(selected_samples.length) + "</span>")
 
-						# 3 handle slider click events 
+						# 3 handle slider click events
 						if (LayerID != 2) # if this is from a shared link, change the slider 
-							$('.circle').removeClass('selected_layer');
-							$('.circle').css('background-image', 'url("css/images/circle.png")')
-							$('#layer_' + LayerID).css('background-image', 'url("css/images/' + layerNameArr[LayerID-1] + '.png")');	
-							$('.progressLine').animate({width: (120 + (LayerID - 2) * 111 ) + 'px'}, {duration: 500, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
-								if LayerID > 1
-									for i in [1..LayerID-1]
-										$('#layer_' + i).addClass('selected_layer');
-							});
+							$('.rectLayer').removeClass('selectedLayer');
+							for i in [1..LayerID]
+								$('#layer_' + i).addClass('selectedLayer');
+							if LayerID > 1
+								for i in [1..LayerID-1]
+									$('.cntline:eq(' + (i-1) + ')').addClass('selectedLine');
+									
 
-						$('#layer_1').on('mouseover', () -> # resolve the first layer button mousevoer problem 
-							$('#layer_1').removeClass('selected_layer');
-							$('#layer_1').css('background-image', 'url("css/images/kingdom.png")');
-						).on('mouseout', () ->
-							$('#layer_1').addClass('selected_layer');
-						)
-
-						$('.circle').click (evt) => # sliders selection
+						$('.rectLayer').click (evt) => # sliders selection
 							that = this
 							LayerID = parseInt evt.currentTarget.id.replace("layer_","");
 
@@ -104,20 +96,18 @@ class taxonomyViz
 							else if (VizID == 3 and (LayerID == 6 || LayerID == 7)) 
 								alert('Cannot go deeper to the 6th or 7th layer!')
 							else
-								$('.circle').removeClass('selected_layer');
-								$('.circle').css('background-image', 'url("css/images/circle.png")')
-								$('#layer_' + LayerID).css('background-image', 'url("css/images/' + layerNameArr[LayerID-1] + '.png")');
-								$('.progressLine').animate({width: (120 + (LayerID - 2) * 111 ) + 'px'}, {duration: 500, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
-									if LayerID > 1
-										for i in [1..LayerID-1]
-											$('#layer_' + i).addClass('selected_layer');
-									if $('#valueBtn').hasClass('clicked')
-										percentView = false
-									else 
-										percentView = true
-									that.generateVizData()
-
-								});
+								$('.rectLayer').removeClass('selected_layer');
+								for i in [1..LayerID]
+									$('#layer_' + i).addClass('selectedLayer');
+								if LayerID > 1
+									for i in [1..LayerID-1]
+										$('.cntline:eq(' + (i-1) + ')').addClass('selectedLine');
+												
+								if $('#valueBtn').hasClass('clicked')
+									percentView = false
+								else 
+									percentView = true
+								that.generateVizData()
 
 						# 4 percentView 
 						$('#valueBtn').click (evt) =>
@@ -155,31 +145,31 @@ class taxonomyViz
 						$('#legend_header').click () => 
 							if $('#legend_header').html() == 'TOP SEQS'
 								$('#outline').hide()
-								$('#legend_header').animate( {width: ( $('#legend_container').width() - 1) + 'px'}, {duration: 250, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
+								$('#legend_header').animate( {width: ( $('#legend_container').width() + 1) + 'px'}, {duration: 250, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
 									$('#legend_container').animate( {opacity: 1}, {duration: 250} )
 									$('#legend_header').html('TOP SEQUENCES')
-									$('#legend_header').css('background', 'url("css/images/collapse.png") no-repeat')
+									$('#legend_header').css({'background': '#241f20 url("css/images/collapse.png") no-repeat', 'color': '#fff'})
 								})
 							else
 								$('#legend_container').animate( {opacity: '0'}, {duration: 250, specialEasing: {opacity: "easeInOutQuad"}, complete: () -> 
-									$('#legend_header').animate( {width: '146px'}, {duration: 250} )
+									$('#legend_header').animate( {width: '148px'}, {duration: 250} )
 									$('#legend_header').html('TOP SEQS')
-									$('#legend_header').css('background', 'none')
+									$('#legend_header').css({'background':'#f0f0f0', 'color':'#241f20'})
 									$('#outline').show()
 								})
 
 						$('#count_header').click () => 
 							if $('#count_header').html() == 'SAMPLE DIST'
-								$('#count_header').animate( {width: '399px'}, {duration: 250, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
+								$('#count_header').animate( {width: '401px'}, {duration: 250, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
 									$('#count_container').animate( {opacity: 1}, {duration: 250} )
 									$('#count_header').html('SAMPLE DISTRIRBUTION')
-									$('#count_header').css('background', 'url("css/images/collapse.png") no-repeat')
+									$('#count_header').css({'background':'#241f20 url("css/images/collapse.png") no-repeat', 'color':'#fff'})
 								})
 							else
 								$('#count_container').animate( {opacity: '0'}, {duration: 250, specialEasing: {opacity: "easeInOutQuad"}, complete: () -> 
-									$('#count_header').animate( {width: '146px'}, {duration: 250} )
+									$('#count_header').animate( {width: '148px'}, {duration: 250} )
 									$('#count_header').html('SAMPLE DIST')
-									$('#count_header').css('background', 'none')
+									$('#count_header').css({'background':'#f0f0f0','color':'#241f20'})
 								})		
 
 						# 7 download 
@@ -607,7 +597,7 @@ class taxonomyViz
 		if selected_samples.length > 80 
 			$('#outline').fracs('outline', {
 				crop: true,
-				styles: [{ selector: 'section', fillStyle: 'rgb(230,230,230)'}, {selector:'#header, #file_details, #autoCompleteList', fillStyle: 'rgb(68,68,68)'}, { selector: '.fake', fillStyle: 'rgb(255,193,79)'}],
+				styles: [{ selector: 'section', fillStyle: 'rgb(230,230,230)'}, {selector:'#header, #file_details, #autoCompleteList', fillStyle: 'rgb(68,68,68)'}, { selector: '.fake', fillStyle: 'rgb(36,36,36)'}],
 				viewportStyle: { fillStyle: 'rgba(29,119,194,0.3)' },
 				viewportDragStyle: { fillStyle: 'rgba(29,119,194,0.4)'}
 			})

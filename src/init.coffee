@@ -3,12 +3,12 @@ class init
 	vizNames = ['Taxonomy Bar Chart', 'Bubble Chart', 'Sankey Diagram', 'Donut Partition', 'Attributes Column Chart']
 
 	constructor: (page) ->
-
+		console.log page
 		if (@mobilecheck()) # Check if it's mobile.If so, hide the features, just display info
 			$('body').css({'min-width': window.screen.width});
 			$('#NotSupported').css({'width': window.screen.width, 'display': 'block', 'margin': '-20px 0 0 0'});
 			$('#NotSupported p').html('Desktop Chrome Recommended!');
-			$('h1, .pageName, #bottom_sec, #menu, #help, .orange_btn, hr, #viz_container, #Page1, #readFile, #recent, .footer_copyright span').hide();
+			$('h1, .pageName, #bottom_sec, #menu, #help, .orange_btn, hr, #viz_container, #Page1, #readFile, #recent, .footer_copyright span, #graphNameCont').hide();
 			$('.footer_copyright').css({'font-size': '8px', 'line-height': '16px'});
 			$('#top_sec').height(50);
 			$('#about').css({'width': window.screen.width - 40, 'margin': ' -80px 20px 0px 20px'});
@@ -17,7 +17,7 @@ class init
 		else if ( !navigator.userAgent.match(/Chrome/i) || !window.File || !window.FileReader || !window.FileList || !window.Blob )
 			# || navigator.userAgent.match(/Firefox/i) || navigator.userAgent.match(/Safari/) )  # Support only chrome now
 			$('#NotSupported').show();
-			$('#viz_container, #bottom_sec, .pageName, hr, .orange_btn, #Page1, #readFile, #recent').hide();
+			$('#viz_container, #bottom_sec, .pageName, hr, .orange_btn, #Page1, #readFile, #recent, #graphNameCont').hide();
 			alert('Chrome Browser Recommended! Your browser does not support the Phinch framework!');
 		else
 			@helpMenu()
@@ -76,8 +76,12 @@ class init
 						alert('Implementing... ');
 					else
 						$('#loadingIcon').css('opacity','1')
-						$('h3').html( $(this).find('p').text() ); # 1 change the big title 
-						$('#GraphGallery').fadeOut(300, () -> $('#up_sec').fadeIn(300); ); # 2 fade in and out 
+						$('#goBackFilter').fadeOut(200)
+						title = $(this).find('p').text()
+						$('#GraphGallery').fadeOut(300, () -> 
+							$('#up_sec').fadeIn(300); 
+							$('.pageName').html(title).css('margin-top','-74px'); # 1 change the big title 
+						); # 2 fade in and out 
 						app = new taxonomyViz(index+1, 2); # 3 generate viz
 
 	# save the file to browser indexedDB
@@ -103,9 +107,13 @@ class init
 						$('#shareGO').click () =>
 							# need to update the countView
 							$('#share_box').fadeOut(200)
+							$('#goBackFilter').fadeOut(200)
 							$('#loadingIcon').css('opacity','1')
-							$('h3').html( vizNames[parseInt(shareJSON.visualization_id) - 1]); # 1 change the big title 
-							$('#GraphGallery').fadeOut(300, () -> $('#up_sec').fadeIn(300); ); # 2 fade in and out
+							title = vizNames[parseInt(shareJSON.visualization_id) - 1]
+							$('#GraphGallery').fadeOut(300, () -> 
+								$('#up_sec').fadeIn(300); 
+								$('.pageName').html(title).css('margin-top','-74px'); # change title
+							); # 2 fade in and out
 							app = new taxonomyViz(parseInt(shareJSON.visualization_id), parseInt(shareJSON.layer_id));
 
 	# Build the help menu on all pages
