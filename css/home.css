@@ -26,7 +26,7 @@
 #readFile { width: 800px; margin: 120px auto 0 auto;}
 #frmUpload { width: 797px; height: 60px; border-bottom: none; display: inline-block;}
 #fakeBrowse { width: 200px; height: 60px;  float: right; border: none; font-size: 20px;}
-#txtFakeText { width: 585px; height: 54px; font-size: 18px;  text-align: center; }
+#txtFakeText { width: 585px; height: 58px; font-size: 18px;  text-align: center; border: none;}
 #fileDrag { width: 590px; height: 56px; margin-top: -58px; font-size: 20px; text-align: center; line-height: 60px; border-top: none; z-index:0; opacity:0; }
 #fileDrag.hover { z-index:5; opacity:1;}
 

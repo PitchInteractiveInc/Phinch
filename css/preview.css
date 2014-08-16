@@ -1,5 +1,5 @@
 
-#goGallery { width: 245px; border: none; background-image: url('images/right_arrow.png');}
+#goGallery { width: 225px; border: none; background-image: url('images/right_arrow.png'); background-size: 100% 40px;}
 #bottom_sec { width: 100%; margin: 0px 10px;}
 #left_control_panel { width: 320px; float: left; margin: 10px 0px 30px 10px;}
 #right_live_panel { float: right; min-width: 600px; width: calc(100% - 400px); margin: 10px 40px 30px 30px;	}
@@ -15,7 +15,7 @@
 .biom_valid_attr_grp { margin-left: 10px;}
 .overflowControl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .biom_valid_notes { font-size: 12px; font-style: italic;}
-.biom_valid_att_slider { opacity: 0.4; height: 50px !important;  margin: -57px 0px 0px 20px;}
+.biom_valid_att_slider { opacity: 0.4; height: 53px !important;  margin: -57px 0px 0px 20px;}
 .biom_valid_att_thumbnail { margin: 10px 0px 0px 20px;}
 .biom_valid_att_thumbnail_sm { width: 130px; float: right; margin: 8px 25px 0px 0px;}
 .biom_valid_att_thumbnail_dates { height: 57px; margin: 10px 0px 0px 20px;}
@@ -26,8 +26,8 @@
 .range_left { margin-top: 2px;  margin-left: 20px;}
 .range_right { margin-top: -22px; margin-left: 260px;}
 .range_new { float: right; display: none;  margin-top: 8px; margin-right: 10px;}
-.range_left_dates { margin-left: 0px;}
-.range_right_dates { margin-top: -25px; margin-left: 250px;}
+.range_left_dates { float: left;}
+.range_right_dates { margin-left: 240px;}
 .range_new_dates { float: right; font-size: 12px;  margin-top: 0px; margin-right: 20px;}
 
 /* Tables */

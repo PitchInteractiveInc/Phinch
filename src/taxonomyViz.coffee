@@ -155,7 +155,7 @@ class taxonomyViz
 								})
 							else
 								$('#legend_container').animate( {opacity: '0'}, {duration: 250, specialEasing: {opacity: "easeInOutQuad"}, complete: () -> 
-									$('#legend_header').animate( {width: '148px'}, {duration: 250} )
+									$('#legend_header').animate( {width: '180px'}, {duration: 250} )
 									$('#legend_header').html('TOP SEQS')
 									$('#legend_header').css({'background':'#f0f0f0', 'color':'#241f20'})
 									$('#outline').show()
@@ -170,7 +170,7 @@ class taxonomyViz
 								})
 							else
 								$('#count_container').animate( {opacity: '0'}, {duration: 250, specialEasing: {opacity: "easeInOutQuad"}, complete: () -> 
-									$('#count_header').animate( {width: '148px'}, {duration: 250} )
+									$('#count_header').animate( {width: '180px'}, {duration: 250} )
 									$('#count_header').html('SAMPLE DIST')
 									$('#count_header').css({'background':'#f0f0f0','color':'#241f20'})
 								})		
@@ -780,7 +780,7 @@ class taxonomyViz
 				infoPanel.style("visibility", "visible")
 				bubbleRemover.style("visibility",'visible')
 				curColor = d3.select(this).style("fill")
-				infoPanel.html('<div class="bubbleTaxHeader">' + d.name.substring(0,100) + '<span>&nbsp;&nbsp;<b>' + format(d3.sum(viz_series[d.id])) + ' Reads</b>&nbsp;&nbsp;&nbsp;SAMPLE DIST</span></div><svg width="813px" style="float: right; padding: 0 20px; border: 1px solid #c8c8c8; border-top: none;" height="' + Math.ceil(viz_series[d.id].length / 5 + 1) * 25 + '"></svg>')
+				infoPanel.html('<div class="bubbleTaxHeader"><b>' + d.name.substring(0,100) + '</b><span>&nbsp;&nbsp;<b>' + format(d3.sum(viz_series[d.id])) + ' READS</b>&nbsp;&nbsp;&nbsp;SAMPLE DIST</span></div><svg width="813px" style="float: right; padding: 0 20px; border: 1px solid #c8c8c8; border-top: none;" height="' + Math.ceil(viz_series[d.id].length / 5 + 1) * 25 + '"></svg>')
 				barrect = infoPanel.select('svg').selectAll('rect').data(viz_series[d.id])
 				valrect = infoPanel.select('svg').selectAll('text').data(viz_series[d.id])
 				txtrect = infoPanel.select('svg').selectAll('text').data(selected_samples)
@@ -812,7 +812,7 @@ class taxonomyViz
 					.attr("y", (d,i) -> return 25 * Math.floor(i / 5) + 31 + 'px' )
 					.attr("text-anchor", 'end')
 					.attr("font-size", "10px")
-					.attr("fill", "#aaa")
+					.attr("fill", "#555")
 
 		d3.select('#bubbleRemover').on 'click', (d) ->
 			tooltip.style("display", "block")

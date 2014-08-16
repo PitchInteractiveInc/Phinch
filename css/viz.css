@@ -1,8 +1,8 @@
 
 /* Top Section */
 #graphNameCont {width: 100%; height: 100px;}
-#goBackFilter { float: left; margin: 18px 0 0 20px; width: 204px; height: 50px; border: none; background-image: url('images/left_arrow.png'); }
-#goBackGallery { width: 204px; border: none; background-image: url('images/left_arrow.png'); background-repeat: no-repeat;}
+#goBackFilter { float: left; margin: 23px 0 0 20px; width: 188px; height: 40px; border: none; background-image: url('images/left_arrow.png'); background-size: 100% 40px;}
+#goBackGallery { width: 204px; border: none; background-image: url('images/left_arrow.png'); background-repeat: no-repeat; background-size: 100% 40px;}
 
 .col3 { float: left; width: 31%;  height: auto; min-height: 250px; margin: 0% 10px 2% 10px; border: 2px solid #241f20; font-size: 16px; color: #000;}
 .col3:hover { cursor: pointer; border: 2px solid #241f20; background-color: #241f20; color: #fff; -webkit-transition:.4s; -moz-transition:.4s; -o-transition:.4s; transition:.4s;}
@@ -34,23 +34,23 @@
 #sharingInfo .results a { color: #ff8900; }
 
 /* Layer Switch Part */
-#layerSwitch { display: none;  width: 802px; height: 36px; margin: -80px 0px 0px 20px;}
+#layerSwitch { display: none;  width: 802px; height: 36px; margin: -90px 0px 0px 20px;}
 .rectLayer { float: left; padding: 0 10px; height: 33px; line-height: 33px; color: #c2c4c6; z-index: 3;}
 .rectLayer:hover { cursor: pointer; color: #fff; background-color: #241f20; -webkit-transition:.4s; -moz-transition:.4s; -o-transition:.4s; transition:.4s;}
-.cntline {width: 35px; height: 3px; float: left; border-top: 15px solid #fff; background-color: #c2c4c6; border-bottom: 15px solid #fff;}
-.selectedLayer {color: #241f20;}
+.cntline {width: 35px; height: 2px; float: left; background-color: #c2c4c6; border-top: 16px solid #fff; border-bottom: 15px solid #fff;}
+.selectedLayer {color: #241f20; font-weight: bold;}
 .selectedLine {background-color: #241f20;}
 
 
 /* Button Switch */
 
-.switchGroup { display: none; position: absolute; border: none; height: 36px; margin-left: 830px;}
+.switchGroup { display: none; position: absolute; border: none; height: 36px; margin-left: 750px;}
 .switchGroup button { border: none; margin: 0; height: 36px; color: #241f20; background: #f0f0f0; padding: 0 10px; font-size: 12px; float: left;}
 .switchGroup .clicked { color: #fff; background: #241f20; -o-transition: background .6s; -ms-transition: background .6s; -moz-transition: background .6s; -webkit-transition: background .6s; transition: background  .6s; }
 
 /* Legend */
 
-#legend_header { display: none; position: fixed; top: 320px; right: 0px; width: 148px; height: 34px; border: none; color: #241f20; background-color: #f0f0f0; text-align: center; line-height: 34px;}
+#legend_header { display: none; position: fixed; top: 320px; right: 0px; width: 180px; height: 34px; border: none; color: #241f20; background-color: #f0f0f0; text-align: center; line-height: 34px;}
 #legend_header:hover { cursor: pointer;}
 #legend_container { opacity: 0; position: fixed; top: 354px; right: 0; border-left: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; background: rgba(255,255,255,0.9);}
 #legend_container p { padding-left: 20px; font-size: 13px; margin: 10px 0 0 0;}
@@ -59,7 +59,7 @@
 
 /* Auto-Complete Sections */
 
-#tags { display: none; width: 200px; height: 32px; position: absolute; right: 20px; top: 191px; font-size: 15px; border: none; background: #f0f0f0; z-index: 3;}
+#tags { display: none; width: 200px; height: 32px; position: absolute; right: 20px; top: 191px; font-size: 15px; border: none; background: #f0f0f0; z-index: 3; text-align: right; padding-right: 15px;}
 #autoCompleteList {  display: none; position: absolute; right: 20px; top: 240px; font-size: 12px;  line-height: 16px;  border-radius: 3px;  background: rgba(255,255,255,0.9);  color: #000;  box-shadow: 0 1px 5px rgba(0,0,0,0.4);  -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4); overflow-y: scroll; max-height: 400px; z-index: 1;}
 #autoCompleteList ul { list-style: none; padding: 15px 10px 0px 15px;}
 #autoCompleteList ul li { padding: 5px 0;}
@@ -103,10 +103,11 @@
 #bubbleRemover { position: absolute; top:358px; left: 1050px; cursor: pointer;}
 
 .bubbleTaxHeader { width: 860px; height: 40px; font-size: 12px; line-height: 40px; padding-left: 40px; background: url('images/header.png') no-repeat;}
+.bubbleTaxHeader em {font-style: normal; font-size: 16px; font-weight: bold;}
 .bubbleTaxHeader span { color: #241f20; float: right; margin-right: 65px;}
 
 #bubbleSliderContainer { display: none; width: 180px; margin-left: 30px; margin-top: 15px; color: #222020; font-size: 12px;}
-#bubbleSlider { width: 175px; position: absolute; height: 3px; border: none; background: #bbb;}
+#bubbleSlider { width: 175px; position: absolute; height: 2px; border: none; background: #bbb;}
 #bubbleSlider .ui-widget-header { background: #241f20;}
 .sliderIcons { text-align: center; margin: 0px 5px -18px 0px;}
 #bubbleSliderLeft { margin-bottom: 10px;}
@@ -135,7 +136,7 @@
 /* 5 Attributes Column Chart */
 
 #attributes_dropdown { position: absolute; top: 115px; right: 20px; height: 32px; border: none; }
-#count_header { display: none; position: fixed; top: 550px; right: 0px; width: 148px; height: 34px; border: none; color: #241f20; background-color: #f0f0f0; text-align: center; line-height: 34px;}
+#count_header { display: none; position: fixed; top: 550px; right: 0px; width: 180px; height: 34px; border: none; color: #241f20; background-color: #f0f0f0; text-align: center; line-height: 34px;}
 #count_header:hover { cursor: pointer;}
 #count_container { opacity: 0; position: fixed; top: 584px; height: 125px; overflow-y: scroll; right: 0; border-left: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; background: rgba(255,255,255,0.6); width: 400px; overflow-wrap: break-word; padding-bottom: 10px;}
 #count_container span { font-size: 14px;  font-weight: bold; text-align: center; display: block; margin: 5px 0;}

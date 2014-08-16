@@ -240,13 +240,13 @@ class filter
 						content += "<div class='biom_valid_att_slider' id='slider_dates_" + (m+1) + "'></div>"
 
 						if @sorted_number_date_array_d[m][0].length < 9 
-							content += "<p class='range range_left_dates' id='range_dates_" + (m+1) + "_left'>" + moment(@sorted_number_date_array_d[m][0], "YYYYMMDD").format("YYYY-MM-DD") + "</p>"
-							content += "<p class='range range_right_dates' id='range_dates_" + (m+1) + "_right'>" + moment(@sorted_number_date_array_d[m][@sorted_number_date_array_d[m].length-1], "YYYYMMDD").format("YYYY-MM-DD") + "</p>"
+							content += "<div class='range range_left_dates' id='range_dates_" + (m+1) + "_left'>" + moment(@sorted_number_date_array_d[m][0], "YYYYMMDD").format("YYYY-MM-DD") + "</div>"
+							content += "<div class='range range_right_dates' id='range_dates_" + (m+1) + "_right'>" + moment(@sorted_number_date_array_d[m][@sorted_number_date_array_d[m].length-1], "YYYYMMDD").format("YYYY-MM-DD") + "</div>"
 							min_timestamp = moment(@sorted_number_date_array_d[m][0], "YYYYMMDD").utc().format("X")
 							max_timestamp = moment(@sorted_number_date_array_d[m][@sorted_number_date_array_d[m].length-1], "YYYYMMDD").utc().format("X")
 						else 
-							content += "<p class='range range_left_dates' id='range_dates_" + (m+1) + "_left'>" + moment(@sorted_number_date_array_d[m][0], "YYYYMMDDHHmmss").format("YYYY-MM-DD<br/>HH:mm:ss") + "</p>"
-							content += "<p class='range range_right_dates' id='range_dates_" + (m+1) + "_right'>" + moment(@sorted_number_date_array_d[m][@sorted_number_date_array_d[m].length-1], "YYYYMMDDHHmmss").format("YYYY-MM-DD<br/>HH:mm:ss") + "</p>"
+							content += "<div class='range range_left_dates' id='range_dates_" + (m+1) + "_left'>" + moment(@sorted_number_date_array_d[m][0], "YYYYMMDDHHmmss").format("YYYY-MM-DD<br/>HH:mm:ss") + "</div>"
+							content += "<div class='range range_right_dates' id='range_dates_" + (m+1) + "_right'>" + moment(@sorted_number_date_array_d[m][@sorted_number_date_array_d[m].length-1], "YYYYMMDDHHmmss").format("YYYY-MM-DD<br/>HH:mm:ss") + "</div>"
 							min_timestamp = moment(@sorted_number_date_array_d[m][0], "YYYYMMDDHHmmss Z").utc().format("X")
 							max_timestamp = moment(@sorted_number_date_array_d[m][@sorted_number_date_array_d[m].length-1], "YYYYMMDDHHmmss Z").utc().format("X")
 
@@ -383,14 +383,13 @@ class filter
 								check_count++
 
 							$('#groupable_att').append("<div class='overflowControl'>" + content + "</div>")
-
+							
 							for k in [0..toprocess.length-1]
 								$('#groupable_check_' + (k+1) ).click () => @livePreview()
 
 	# generate the thumbnails for users to filter 
 	generateThumbnails: () ->
 		@range_array = []
-
 		@lines_array = new Array(@columns_metadata_array.length)
 		if @columns_metadata_array.length > 0
 			step = new Array(@columns_metadata_array.length)  # keeps the step value between each bar
