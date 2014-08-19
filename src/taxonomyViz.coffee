@@ -33,13 +33,14 @@ class taxonomyViz
 	selectedSampleCopy = []
 	new_data_matrix_onLayer = []
 	unique_taxonomy_comb_onLayer = []
+	taxonomy_comb_count_onLayer = []
 
 	phinchCol_0 = ['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#e6550d', '#fd8d3c', '#fdae6b', '#fdd0a2', '#31a354', '#74c476', '#a1d99b', '#c7e9c0', '#756bb1', '#9e9ac8', '#bcbddc', '#dadaeb', '#636363', '#969696', '#bdbdbd', '#d9d9d9']
-	phinchCol_1 = ['#ab80b6','#b07c83','#b3c4db','#3e3994','#583c9e','#8c3c9e','#953884','#5f3a87','#47b8b7','#f15e76','#d7473e','#7f759e','#5a598f','#7a8fa6','#547f86','#3e61c2','#449acd','#349a74','#8ddba0','#ee7051','#f69f4b','#d77440']
-	phinchCol_2 = []
+	phinchCol_1 = ['#ab80b6','#b07c83','#b3c4db','#3e3994','#583c9e','#8c3c9e','#953884','#5f3a87','#47b8b7','#f15e76','#d7473e','#7f759e','#5a598f','#7a8fa6','#547f86','#3e61c2','#449acd','#ee7051','#f69f4b','#d77440']
+	phinchCol_2 = ['#449acd','#fee889','#d7473e','#7f759e','#d77440','#3e61c2','#f15e76','#5a598f','#f69f4b','#b07c83','#ab80b6','#47b8b7','#ee7051','#5f3a87','#8ddba0','#953884','#349a74','#8c3c9c','#583c9e','#547f86']
 	phinchCol_3 = []
 
-	fillCol = phinchCol_1
+	fillCol = phinchCol_2
 	phinchPalete = () -> return d3.scale.ordinal().range(fillCol);
 	globalColoring = phinchPalete()
 
@@ -298,6 +299,7 @@ class taxonomyViz
 				@barFilterControl()
 				@drawTaxonomyBar()
 			when 2
+				@calculateOTUonLayer()
 				@bubbleFilterControl()
 				@drawTaxonomyBubble()
 			when 3
@@ -770,7 +772,7 @@ class taxonomyViz
 			.style({opacity:'0.6',stroke: 'none'})
 			.on 'mouseover', (d, i) ->
 				d3.select(this).style({opacity:'1', stroke: '#000', 'stroke-width': '3' })
-				tooltip.html( "<img class = 'PanelImg' src='css/images/tooltip.png'><div class = 'PanelHead'>TAXONOMY:<br/><em>" + d.name + "</em></div><div class = 'PanelHead'><div class='PanelHalf'>TOTAL READS:<br/><span>" + format(d.value) + "</span></div><div class='PanelHalf'>OTU QUANTITY:<br/><span>" + format(unique_taxonomy_comb_count[i]) + "</span></div></div>")
+				tooltip.html( "<img class = 'PanelImg' src='css/images/tooltip.png'><div class = 'PanelHead'>TAXONOMY:<br/><em>" + d.name + "</em></div><div class = 'PanelHead'><div class='PanelHalf'>TOTAL READS:<br/><span>" + format(d.value) + "</span></div><div class='PanelHalf'>OTU QUANTITY:<br/><span>" + format(taxonomy_comb_count_onLayer[i]) + "</span></div></div>")
 				tooltip.style( { "visibility": "visible", top: (d3.event.pageY - 20) + "px", left: (d3.event.pageX + 30) + "px" })
 			.on 'mouseout', (d) ->
 				d3.select(this).style({opacity:'0.6',stroke: 'none'})
@@ -786,7 +788,10 @@ class taxonomyViz
 				infoPanel.style("visibility", "visible")
 				bubbleRemover.style("visibility",'visible')
 				curColor = d3.select(this).style("fill")
-				infoPanel.html('<div class="bubbleTaxHeader"><b>' + d.name.substring(0,100) + '</b><span>&nbsp;&nbsp;<b>' + format(d3.sum(viz_series[d.id])) + ' READS</b>&nbsp;&nbsp;&nbsp;SAMPLE DIST</span></div><svg width="813px" style="float: right; padding: 0 20px; border: 1px solid #c8c8c8; border-top: none;" height="' + Math.ceil(viz_series[d.id].length / 5 + 1) * 25 + '"></svg>')
+				if(d.name.length < 90)
+					infoPanel.html('<div class="bubbleTaxHeader">' + d.name + '<div class="descInfo"><span>' + format(d3.sum(viz_series[d.id])) + '</span>&nbsp;&nbsp;READS&nbsp;&nbsp;&nbsp;SAMPLE DIST</div></div><svg width="813px" style="float: right; padding: 0 20px; border: 1px solid #c8c8c8; border-top: none;" height="' + Math.ceil(viz_series[d.id].length / 5 + 1) * 25 + '"></svg>')
+				else
+					infoPanel.html('<div class="bubbleTaxHeader"><div class = "descName">' + d.name + '</div><div class="descInfo"><span>' + format(d3.sum(viz_series[d.id])) + '</span>&nbsp;&nbsp;READS&nbsp;&nbsp;&nbsp;SAMPLE DIST</div></div><svg width="813px" style="float: right; padding: 0 20px; border: 1px solid #c8c8c8; border-top: none;" height="' + Math.ceil(viz_series[d.id].length / 5 + 1) * 25 + '"></svg>')
 				barrect = infoPanel.select('svg').selectAll('rect').data(viz_series[d.id])
 				valrect = infoPanel.select('svg').selectAll('text').data(viz_series[d.id])
 				txtrect = infoPanel.select('svg').selectAll('text').data(selected_samples)
@@ -826,6 +831,26 @@ class taxonomyViz
 			bubbleRemover.style("visibility",'hidden')
 			if bubbleView then force.resume() 
 			d3.selectAll(".node").transition().style({opacity:'0.7',stroke: 'none'}).attr("cx", (d) -> return d.x).attr("cy", (d) -> return d.y).attr('r', (d) -> return d.radius ).duration(250).ease("quad")
+
+	calculateOTUonLayer: () ->
+
+		comb_name_list = new Array(unique_taxonomy_comb_onLayer.length)
+		taxonomy_comb_count_onLayer = new Array(unique_taxonomy_comb_onLayer.length);
+		for i in [0..unique_taxonomy_comb_onLayer.length-1]
+			comb_name_list[i] = ""
+			for j in [0..LayerID-2]
+				comb_name_list[i] += unique_taxonomy_comb_onLayer[i][j] + "," 
+			comb_name_list[i] += unique_taxonomy_comb_onLayer[i][LayerID-1]
+			taxonomy_comb_count_onLayer[i] = 0
+
+		for i in [0..unique_taxonomy_comb.length-1] # 1476
+			matchStr = ""
+			for j in [0..LayerID-2]
+				matchStr += unique_taxonomy_comb[i][j] + "," 
+			matchStr += unique_taxonomy_comb[i][LayerID-1]
+			matchInd = comb_name_list.indexOf(matchStr)
+			if matchInd != -1
+				taxonomy_comb_count_onLayer[matchInd] += unique_taxonomy_comb_count[i]
 
 	bubbleFilterControl: () ->
 
@@ -1252,7 +1277,7 @@ class taxonomyViz
 			.style("text-anchor", "start")
 			.style("font-style","italic")
 			.attr("x", -100)
-			.attr("y", 150)
+			.attr("y", 130)
 		
 		@drawBasicRect(true, donutContainedSamp, donutID, null, 'dynamic')
 
@@ -1468,7 +1493,7 @@ class taxonomyViz
 								content += selected_phinchID_array[count[i][j]] + ' (<i>' + count[i][j] + '</i>), '
 							content += selected_phinchID_array[count[i][count[i].length - 1]] + ' (<i>' + count[i][count[i].length - 1] + '</i>)'
 						content += '</br>'
-				tooltip.html( "<div class='attrColHead'><b>TAXONOMY: </b>" + d.name + "<br/><b>TOTAL READS: </b> " + format(d.y) + "</div><div class='attrColBody'>" + content + "</div>")
+				tooltip.html( "<img class='PanelImg' src='css/images/tooltip.png'><div class='PanelHead'>TAXONOMY:</br><em>" + d.name + "</em><br/>TOTAL READS:</br><span> " + format(d.y) + "</span></div><div class='PanelBody'>" + content + "</div>")
 				tooltip.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px" })
 			.on 'mouseout', (d,i) -> 
 				tooltip.style("visibility", "hidden")

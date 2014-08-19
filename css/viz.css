@@ -75,6 +75,7 @@
 .PanelInfo { font-family: 'Karla', sans-serif; color: #919191; margin: 10px 10px -10px 10px;}
 .PanelInfo span { font-family: 'Varela Round', sans-serif; color: #241f20; font-size: 15px; font-weight: 700;}
 .PanelInfo em { color: #241f20; font-style: normal;}
+.PanelBody { font-family: 'Karla', sans-serif; margin: 10px;}
 
 .basicTooltip progress { width: 100%; height: 25px; padding: 15px 10px 0 10px; background-color: transparent; border: none; -webkit-appearance: none; appearance: none;}
 .basicTooltip progress[value]::-webkit-progress-bar { background-color: #f0f0f0; }
@@ -103,9 +104,10 @@
 #bubblePanel { position: absolute; top: 350px; left: 200px; width: 880px; text-align: left; background: rgba(255,255,255,0.9);}
 #bubbleRemover { position: absolute; top:358px; left: 1050px; cursor: pointer;}
 
-.bubbleTaxHeader { width: 860px; height: 40px; font-size: 12px; line-height: 40px; padding-left: 40px; background: url('images/header.png') no-repeat;}
-.bubbleTaxHeader em {font-style: normal; font-size: 16px; font-weight: bold;}
-.bubbleTaxHeader span { color: #241f20; float: right; margin-right: 65px;}
+.bubbleTaxHeader { font-family: 'Karla', sans-serif; width: 860px; height: 40px; font-size: 12px; line-height: 40px; padding-left: 40px; background: url('images/header.png') no-repeat;}
+.bubbleTaxHeader .descName { float: left; width: 550px; height: 40px; line-height: 20px; word-wrap: break-word;}
+.bubbleTaxHeader .descInfo { color: #241f20; float: right; margin-right: 65px;}
+.bubbleTaxHeader .descInfo span {font-size: 16px; font-weight: 700;}
 
 #bubbleSliderContainer { display: none; width: 180px; margin-left: 30px; margin-top: 15px; color: #222020; font-size: 12px;}
 #bubbleSlider { width: 175px; position: absolute; height: 2px; border: none; background: #bbb;}
@@ -130,20 +132,18 @@
 
 /* 4 Donut Partition */
 
-.donutSwitch{ position: absolute; float: right; right: 20px; border: 2px solid #.bubbleTaxHeader span; height: 28px;}
+.donutSwitch{ position: absolute; float: right; right: 20px; border: none; height: 28px;}
 .donutSwitch button { border: none; margin: 0; height: 28px; color: #241f20; background: #f0f0f0; padding: 0 10px; font-weight: bold; font-size: 12px;}
 .donutSwitch .clicked { color: #fff; background: #241f20; -o-transition: background .6s; -ms-transition: background .6s; -moz-transition: background .6s; -webkit-transition: background .6s; transition: background .6s;}
 
 /* 5 Attributes Column Chart */
 
 #attributes_dropdown { position: absolute; top: 115px; right: 20px; height: 32px; border: none; }
-#count_header { display: none; position: fixed; top: 550px; right: 0px; width: 180px; height: 34px; border: none; color: #241f20; background-color: #f0f0f0; text-align: center; line-height: 34px;}
+#count_header { font-family: 'Karla', sans-serif; display: none; position: fixed; top: 550px; right: 0px; width: 180px; height: 34px; border: none; color: #241f20; background-color: #f0f0f0; text-align: center; line-height: 34px;}
 #count_header:hover { cursor: pointer;}
 #count_container { opacity: 0; position: fixed; top: 584px; height: 125px; overflow-y: scroll; right: 0; border-left: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; background: rgba(255,255,255,0.6); width: 400px; overflow-wrap: break-word; padding-bottom: 10px;}
-#count_container span { font-size: 14px;  font-weight: bold; text-align: center; display: block; margin: 5px 0;}
+#count_container span { font-size: 14px;  font-weight: bold; display: block; margin: 5px 0; margin: 10px 0 10px 20px; color: #919191;}
 #count_container p { margin: 0; font-size: 12px; padding: 1px 20px;	}
-.attrColHead { margin: 10px; border-bottom: 1px solid #bbb; }
-.attrColBody { margin: 10px;}
 
 /* 6 Bubble Chart By OTU */
 
