@@ -34,12 +34,12 @@
 #sharingInfo .results a { color: #ff8900; }
 
 /* Layer Switch Part */
-#layerSwitch { display: none;  width: 802px; height: 36px; margin: -90px 0px 0px 20px;}
+#layerSwitch { font-family: 'Karla', sans-serif; display: none;  width: 802px; height: 36px; margin: -90px 0px 0px 20px;}
 .rectLayer { float: left; padding: 0 10px; height: 33px; line-height: 33px; color: #c2c4c6; z-index: 3;}
 .rectLayer:hover { cursor: pointer; color: #fff; background-color: #241f20; -webkit-transition:.4s; -moz-transition:.4s; -o-transition:.4s; transition:.4s;}
 .cntline {width: 35px; height: 2px; float: left; background-color: #c2c4c6; border-top: 16px solid #fff; border-bottom: 15px solid #fff;}
-.selectedLayer {color: #241f20; font-weight: bold;}
-.selectedLine {background-color: #241f20;}
+.selectedLayer {color: #241f20; font-weight: 700;}
+.selectedLine { background-color: #241f20;}
 
 
 /* Button Switch */
@@ -50,16 +50,16 @@
 
 /* Legend */
 
-#legend_header { display: none; position: fixed; top: 320px; right: 0px; width: 180px; height: 34px; border: none; color: #241f20; background-color: #f0f0f0; text-align: center; line-height: 34px;}
+#legend_header { font-family: 'Karla', sans-serif; display: none; position: fixed; top: 320px; right: 0px; width: 180px; height: 34px; border: none; color: #241f20; background-color: #f0f0f0; text-align: center; line-height: 34px;}
 #legend_header:hover { cursor: pointer;}
-#legend_container { opacity: 0; position: fixed; top: 354px; right: 0; border-left: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; background: rgba(255,255,255,0.9);}
+#legend_container { font-family: 'Karla', sans-serif; opacity: 0; position: fixed; top: 354px; right: 0; border-left: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3; background: rgba(255,255,255,0.9);}
 #legend_container p { padding-left: 20px; font-size: 13px; margin: 10px 0 0 0;}
 #legend_container ul { font-size: 12px; line-height: 16px; list-style: none; margin: 10px 20px; padding: 0;}
 #legend_container ul em { float: right; color: #8d9195; font-style: normal;}
 
 /* Auto-Complete Sections */
 
-#tags { display: none; width: 200px; height: 32px; position: absolute; right: 20px; top: 191px; font-size: 15px; border: none; background: #f0f0f0; z-index: 3; text-align: right; padding-right: 15px;}
+#tags { font-family: 'Karla', sans-serif;display: none; width: 200px; height: 32px; position: absolute; right: 20px; top: 191px; font-size: 15px; border: none; background: #f0f0f0; z-index: 3; text-align: right; padding-right: 15px;}
 #autoCompleteList {  display: none; position: absolute; right: 20px; top: 240px; font-size: 12px;  line-height: 16px;  border-radius: 3px;  background: rgba(255,255,255,0.9);  color: #000;  box-shadow: 0 1px 5px rgba(0,0,0,0.4);  -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4); overflow-y: scroll; max-height: 400px; z-index: 1;}
 #autoCompleteList ul { list-style: none; padding: 15px 10px 0px 15px;}
 #autoCompleteList ul li { padding: 5px 0;}
@@ -68,12 +68,13 @@
 
 /* 1 Taxonomy Bar Chart */
 .PanelImg {position: absolute; margin-left: -30px; margin-top: -6px; height: 50px;}
-.PanelHead { color: #919191; margin: 10px; padding-bottom: 5px; line-height: 20px;}
-.PanelHead span { color: #241f20; font-size: 16px; font-weight: bold;}
+.PanelHead { font-family: 'Karla', sans-serif; color: #919191; margin: 10px; padding-bottom: 5px; line-height: 20px;}
+.PanelHead span { font-family: 'Varela Round', sans-serif; color: #241f20; font-size: 16px; font-weight: 700;}
 .PanelHead em { color: #241f20; font-weight: bold; font-style: normal;}
-.PanelHalf {width: 50%; float: left;}
-.PanelInfo { color: #919191; margin: 10px 10px -10px 10px;}
-.PanelInfo span { color: #241f20; font-size: 14px; font-weight: bold;}
+.PanelHalf { font-family: 'Karla', sans-serif; width: 50%; float: left;}
+.PanelInfo { font-family: 'Karla', sans-serif; color: #919191; margin: 10px 10px -10px 10px;}
+.PanelInfo span { font-family: 'Varela Round', sans-serif; color: #241f20; font-size: 15px; font-weight: 700;}
+.PanelInfo em { color: #241f20; font-style: normal;}
 
 .basicTooltip progress { width: 100%; height: 25px; padding: 15px 10px 0 10px; background-color: transparent; border: none; -webkit-appearance: none; appearance: none;}
 .basicTooltip progress[value]::-webkit-progress-bar { background-color: #f0f0f0; }
@@ -123,7 +124,7 @@
 .node text { pointer-events: none;}
 .link:hover { fill-opacity: .6; cursor: pointer;}
 
-#sankeyInfo { position: fixed; top: 20px; width: 100%; height: 750px; margin-top: -100px; background: rgba(255,255,255,0.9); color: #000; }
+#sankeyInfo { font-family: 'Karla', sans-serif; position: fixed; top: 20px; width: 100%; height: 750px; margin-top: -100px; background: rgba(255,255,255,0.9); color: #000; }
 .sankeyInfobox { width: 800px; height: 850px; padding: 0 20px; border: 1px solid #c8c8c8; margin: 0 auto; margin-top: 100px; background-color:white; position: relative;}
 #sankeyRemover { cursor: pointer; width: 15px; height: 20px; margin: 15px; position: absolute; right: 0; top: 0;}
 

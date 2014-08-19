@@ -1,8 +1,8 @@
 
 #goGallery { width: 225px; border: none; background-image: url('images/right_arrow.png'); background-size: 100% 40px;}
 #bottom_sec { width: 100%; margin: 0px 10px;}
-#left_control_panel { width: 320px; float: left; margin: 10px 0px 30px 10px;}
-#right_live_panel { float: right; min-width: 600px; width: calc(100% - 400px); margin: 10px 40px 30px 30px;	}
+#left_control_panel { font-family: 'Karla', sans-serif; width: 320px; float: left; margin: 10px 0px 30px 10px;}
+#right_live_panel { font-family: 'Karla', sans-serif; float: right; min-width: 600px; width: calc(100% - 400px); margin: 10px 40px 30px 30px;	}
 
 /* Filters */
 
@@ -32,14 +32,14 @@
 
 /* Tables */
 
+#myTable {  width: 100%; line-height: 28px; border-bottom: none; }
 .myTableHeader { padding-left: 14px; font-size: 15px; border-right: 8px solid #fff; background-color: #f0f0f0; color: #000;}
-#myTable { width: 100%; line-height: 28px; border-bottom: none; }
 #myTable_length { display: none; margin-top: 5px;  height: 25px; margin-left: 10px;}
 #myTable_filter { display: none; float: right; height: 25px; margin-right: 10px; margin-top: -25px; margin-bottom: 10px;}
 #myTable select { border: none; }
 #myTable tbody { text-align: left; }
 #myTable thead { width: 35px; background: #cfd1d2; color: #444; }
-#myTable th { height: 35px; line-height: 35px; outline: none; font-weight: normal;}
+#myTable th { height: 35px; line-height: 35px; outline: none; font-weight: 700; }
 #myTable tr { text-align: left; }
 #myTable tr:hover {background-color: #f0f0f0; }
 #myTable td { padding-left: 14px; border:none; color: #555; outline: none;}

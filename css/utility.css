@@ -5,8 +5,9 @@
 @font-face { font-family: 'Source Sans Pro'; font-style: normal; font-weight: 400; src: local('Source Sans Pro'), local('SourceSansPro-Regular'), url(font/sansPro.woff) format('woff');}
 @font-face { font-family: 'Varela Round'; font-style: normal; font-weight: 400; src: local('Varela Round'), local('VarelaRound-Regular'), url(font/VarelaRound.woff2) format('woff2'), url(font/VarelaRound.woff) format('woff');}
 @font-face { font-family: 'Karla'; font-style: normal; font-weight: 400; src: local('Karla'), local('Karla-Regular'), url(font/Karla) format('woff2'), url(font/Karla) format('woff');}
+@font-face { font-family: 'Karla'; font-style: normal; font-weight: 700; src: local('Karla Bold'), local('Karla-Bold'), url(font/Karla-Bold.woff2) format('woff2'), url(font/Karla-Bold.woff) format('woff');}
 
-html, body { font-family: 'Open Sans', sans-serif; height: 100%; margin: 0; padding: 0; min-width: 1200px; font-size: 14px; line-height: 1.4;}
+html, body { font-family: 'Varela Round', sans-serif; height: 100%; margin: 0; padding: 0; min-width: 1200px; font-size: 14px; line-height: 1.4;}
 
 textarea, input, table, button, select { -webkit-box-shadow: none; -moz-box-shadow: none; box-shadow: none; outline: none; }
 input[type=radio],input[type=checkbox] {display: none;} 
@@ -17,18 +18,19 @@ input[type=checkbox]:checked + label:before { content: "\2713"; font-size: 12px;
 .checkbox label {margin-bottom: 10px;}
 .checkbox label:before {border-radius: 3px;}
 
-h1, h2 { font-weight: 600; font-size: 22px;  text-align: center;  margin: 0; color: #241f20;}
-h1 { margin-bottom: 20px;}
+h1, h2 { font-size: 22px;  text-align: center;  margin: 0; color: #241f20;}
+h1 { margin-bottom: 20px; font-weight: 400;}
+h2 { font-family: 'Karla', sans-serif; font-weight: 700;}
 td { border: 2px #ccc solid; color: #ababab; height: 26px;}
 #about h1 { margin-bottom: 10px;}
-.logo { float: left; }
+.logo { float: left;}
 .logo img { margin: 0 0 0 20px;}
 #NotSupported { width: 800px; margin: auto; text-align: center; display: none;}
 
 #help { float: right; margin: -25px 20px 0 0; font-size: 16px; text-decoration: none; color: #000;}
 #help:hover { border-bottom: 4px solid #241f20; cursor: pointer; -webkit-transition:.2s; -moz-transition:.2s; -o-transition:.2s; transition:.2s;}
 #dialog-modal { display: none; height: 510px !important; overflow-y: scroll;}
-.descPara { font-family: 'Open Sans', sans-serif; margin: 20px 0;}
+.descPara { font-family: 'Varela Round', sans-serif; margin: 20px 0;}
 .descPara a { outline: 0; color: #241f20 !important;}
 .descPara span { font-size: 15px; font-weight: 800;}
 
@@ -36,10 +38,10 @@ td { border: 2px #ccc solid; color: #ababab; height: 26px;}
 #up_sec { width: 100%; height: 90px; position: relative;}
 .pageName {border: 2px solid #241f20; width: 200px; margin-left: 20px; text-align: center; line-height: 50px; float: left; font-size: 16px;}
 
-#file_details { position: absolute; font-size: 13px; line-height: 13px; color: #919396; margin: 18px 0 0 250px;}
-#file_details span { color: #000; font-size: 20px;}
+#file_details { font-family: 'Karla', sans-serif; position: absolute; font-size: 13px; line-height: 13px; color: #919396; margin: 22px 0 0 250px;}
+#file_details span { font-family: 'Varela Round', sans-serif; color: #000; font-size: 20px;}
 
-.orange_btn { width: 130px; height: 40px; float: right; border: none; font-size: 16px; background-color: #241f20; color: #fff; margin: 15px 20px 0 0;}
+.orange_btn { font-family: 'Karla', sans-serif; width: 130px; height: 40px; float: right; border: none; font-size: 16px; background-color: #241f20; color: #fff; margin: 15px 20px 0 0;}
 .basicTooltip { position: absolute; font-size: 12px; color: #000; background: #fff; border: 1px solid rgba(200,200,200,0.85); border-radius: 1px; padding: 5px 5px 15px 5px;}
 
 /* ==========================================================================
