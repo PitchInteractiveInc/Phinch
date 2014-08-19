@@ -574,7 +574,7 @@ class taxonomyViz
 			legendClone.length = maxLegendItems
 		gLegend = svg.selectAll('g.legend').data([0])
 		gLegend.enter().append('g').attr('class','legend')
-		gLegend.append('text').text('Top 10 Samples')
+		gLegend.append('text').text('Top 10 Sequences')
 			.attr('transform', 'translate(0' + ',' + (height - legendClone.length * 16 - 10 - 75 + 100) + ')')
 		legendItem = gLegend.selectAll('g.legendItem').data(legendClone)
 		legendItemEnter = legendItem.enter().append('g').attr('class','legendItem')
