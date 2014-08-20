@@ -1508,7 +1508,7 @@ class taxonomyViz
 							content += selected_phinchID_array[count[i][count[i].length - 1]] + ' (<i>' + count[i][count[i].length - 1] + '</i>)'
 						content += '</br>'
 				tooltip.html( "<img class='PanelImg' src='css/images/tooltip.png'><div class='PanelHead'>TAXONOMY:</br><em>" + d.name + "</em><br/>TOTAL READS:</br><span> " + format(d.y) + "</span></div><div class='PanelBody'>" + content + "</div>")
-				tooltip.style( { "visibility": "visible", top: (d3.event.pageY - 10) + "px", left: (d3.event.pageX + 10) + "px" })
+				tooltip.style( { "visibility": "visible", top: (d3.event.pageY - 20) + "px", left: (d3.event.pageX + 30) + "px" })
 			.on 'mouseout', (d,i) -> 
 				tooltip.style("visibility", "hidden")
 
