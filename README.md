@@ -1,4 +1,4 @@
-![VizGallery](https://github.com/shujianbu/phinch/blob/master/viz_gallery.png?raw=true)
+![VizGallery](https://raw.githubusercontent.com/shujianbu/Phinch/master/viz_gallery.png)
 
 ## About 
 
