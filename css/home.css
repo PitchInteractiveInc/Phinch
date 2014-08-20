@@ -88,7 +88,7 @@
 
 #about { width: 900px; margin: auto;}
 #recent { width: 900px; margin: auto; display: none;}
-#recent_data { position: relative; z-index:2; width: 900px; font-size: 16px; text-align: center;}
+#recent_data { position: relative; z-index:2; width: 900px; font-size: 14px; text-align: center;}
 .recent_data .del, .recent_data .print, .recent_data .reload { cursor: pointer; }
 .reload { width: 100px; font-weight: bold; }
 .reload:hover {color: #241f20; cursor: pointer;}

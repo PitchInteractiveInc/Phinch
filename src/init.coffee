@@ -6,18 +6,21 @@ class init
 		console.log page
 		if (@mobilecheck()) # Check if it's mobile.If so, hide the features, just display info
 			$('body').css({'min-width': window.screen.width});
-			$('#NotSupported').css({'width': window.screen.width, 'display': 'block', 'margin': '-20px 0 0 0'});
+			$('#NotSupported').css({'width': window.screen.width, 'display': 'block', 'margin': '0'});
 			$('#NotSupported p').html('Desktop Chrome Recommended!');
-			$('h1, .pageName, #bottom_sec, #menu, #help, .orange_btn, hr, #viz_container, #Page1, #readFile, #recent, .footer_copyright span, #graphNameCont').hide();
-			$('.footer_copyright').css({'font-size': '8px', 'line-height': '16px'});
+			$('#NotSupported h1, .pageName, #bottom_sec, #menu, #help, .orange_btn, #viz_container, #readFile, #recent, .footer_copyright span, #graphNameCont, .descPara img').hide();
+			$('.footer_copyright').css({'font-size': '8px', 'line-height': '16px', 'width': '300px'});
 			$('#top_sec').height(50);
-			$('#about').css({'width': window.screen.width - 40, 'margin': ' -80px 20px 0px 20px'});
+			$('#about').css({'width': window.screen.width - 40, 'margin': ' -220px 20px 0px 20px'});
 			$('.descPara').height('auto');
+			$('#GraphGallery').width(300);
 			$( "#GraphGallery .col3").width(window.screen.width - 30);
+
 		else if ( !navigator.userAgent.match(/Chrome/i) || !window.File || !window.FileReader || !window.FileList || !window.Blob )
 			# || navigator.userAgent.match(/Firefox/i) || navigator.userAgent.match(/Safari/) )  # Support only chrome now
 			$('#NotSupported').show();
-			$('#viz_container, #bottom_sec, .pageName, hr, .orange_btn, #Page1, #readFile, #recent, #graphNameCont').hide();
+			$('#top_sec').height(50);
+			$('#viz_container, #bottom_sec, .pageName, hr, .orange_btn, #readFile, #recent, #graphNameCont').hide();
 			alert('Chrome Browser Recommended! Your browser does not support the Phinch framework!');
 		else
 			@helpMenu()

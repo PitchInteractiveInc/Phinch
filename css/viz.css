@@ -10,9 +10,9 @@
 #GraphGallery {margin-left: 10px;}
 .graphGalleryTitle { width: 100%; height: 25px; float: left; text-align: center;}
 
-#share_box { display: none; z-index: 5; background: #fff; border: 1px solid rgba(0,0,0,0.2); box-shadow: 0 3px 9px rgba(0,0,0,0.5); outline: 0; color: #222222; width: 700px; height: 300px; top: 310px; position: fixed; left: calc(40% - 250px);}
+#share_box { display: none; z-index: 5; background: #fff; border: 1px solid #000; outline: 0; color: #919396; width: 700px; height: 300px; top: 310px; position: fixed; left: calc(40% - 250px);}
 #share_box .info { font-size: 16px; margin: 20px 0 0 20px; }
-#share_box .info span { color: #ff8900; font-style: italic; }
+#share_box .info span { color: #241f20; font-style: italic; }
 
 #taxonomy_container { width: 100%; opacity: 0;}
 #loadingIcon { position: absolute; top: 400px; left: 600px; opacity: 0;}
@@ -28,10 +28,10 @@
 #sharingInfo .shareForm { padding: 20px; display: none;}
 #sharingInfo label { display: block; margin-bottom: 3px;}
 #sharingInfo label:before { display: none;}
-#sharingInfo input { display: block; margin-bottom: 10px; outline: none; border: #ff8900 solid 1px; }
-#sharingInfo textarea { outline: none; border: #ff8900 solid 1px; }
+#sharingInfo input { display: block; margin-bottom: 10px; outline: none; border: #241f20 solid 1px; }
+#sharingInfo textarea { outline: none; border: #241f20 solid 1px; resize: none;}
 #sharingInfo .results { padding: 20px; margin-top: 15%; }
-#sharingInfo .results a { color: #ff8900; }
+#sharingInfo .results a { color: #241420; }
 
 /* Layer Switch Part */
 #layerSwitch { font-family: 'Karla', sans-serif; display: none;  width: 802px; height: 36px; margin: -90px 0px 0px 20px;}
@@ -59,7 +59,7 @@
 
 /* Auto-Complete Sections */
 
-#tags { font-family: 'Karla', sans-serif;display: none; width: 200px; height: 32px; position: absolute; right: 20px; top: 191px; font-size: 15px; border: none; background: #f0f0f0; z-index: 3; text-align: right; padding-right: 15px;}
+#tags { font-family: 'Karla', sans-serif;display: none; width: 200px; height: 34px; position: absolute; right: 20px; top: 180px; font-size: 15px; border: none; background: #f0f0f0; z-index: 3; text-align: right; padding-right: 15px;}
 #autoCompleteList {  display: none; position: absolute; right: 20px; top: 240px; font-size: 12px;  line-height: 16px;  border-radius: 3px;  background: rgba(255,255,255,0.9);  color: #000;  box-shadow: 0 1px 5px rgba(0,0,0,0.4);  -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4); overflow-y: scroll; max-height: 400px; z-index: 1;}
 #autoCompleteList ul { list-style: none; padding: 15px 10px 0px 15px;}
 #autoCompleteList ul li { padding: 5px 0;}

@@ -35,10 +35,9 @@ class taxonomyViz
 	unique_taxonomy_comb_onLayer = []
 	taxonomy_comb_count_onLayer = []
 
-	phinchCol_0 = ['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#e6550d', '#fd8d3c', '#fdae6b', '#fdd0a2', '#31a354', '#74c476', '#a1d99b', '#c7e9c0', '#756bb1', '#9e9ac8', '#bcbddc', '#dadaeb', '#636363', '#969696', '#bdbdbd', '#d9d9d9']
+	phinchCol_0 = ['#3182bd','#6baed6','#9ecae1','#c6dbef','#e6550d','#fd8d3c','#fdae6b','#fdd0a2','#31a354','#74c476','#a1d99b','#c7e9c0','#756bb1','#9e9ac8','#bcbddc','#dadaeb','#636363','#969696','#bdbdbd','#d9d9d9']
 	phinchCol_1 = ['#ab80b6','#b07c83','#b3c4db','#3e3994','#583c9e','#8c3c9e','#953884','#5f3a87','#47b8b7','#f15e76','#d7473e','#7f759e','#5a598f','#7a8fa6','#547f86','#3e61c2','#449acd','#ee7051','#f69f4b','#d77440']
 	phinchCol_2 = ['#449acd','#fee889','#d7473e','#7f759e','#d77440','#3e61c2','#f15e76','#5a598f','#f69f4b','#b07c83','#ab80b6','#47b8b7','#ee7051','#5f3a87','#8ddba0','#953884','#349a74','#8c3c9c','#583c9e','#547f86']
-	phinchCol_3 = []
 
 	fillCol = phinchCol_2
 	phinchPalete = () -> return d3.scale.ordinal().range(fillCol);
@@ -212,7 +211,7 @@ class taxonomyViz
 			else 
 				comp_i = biom.rows[i].metadata.taxonomy
 
-			if comp_i[0].indexOf('k__') == -1 
+			if comp_i[0].indexOf('k__') == -1 # "Unclassified" - some taxonomy seqs are marked as "Unclassified"
 				comp_i[0] = 'k__'
 
 			switch comp_i.length
@@ -267,6 +266,8 @@ class taxonomyViz
 							viz_map_array[i] = j
 							flag = false
 							break
+
+
 				if flag
 					viz_map_array[i] = unique_taxonomy_comb_onLayer.length 
 					switch LayerID 
@@ -275,7 +276,8 @@ class taxonomyViz
 						when 4 then comp_i = [comp_i[0], comp_i[1], comp_i[2], comp_i[3], 'f__', 'g__', 's__']
 						when 3 then comp_i = [comp_i[0], comp_i[1], comp_i[2], 'o__', 'f__', 'g__', 's__']
 						when 2 then comp_i = [comp_i[0], comp_i[1], 'c__', 'o__', 'f__', 'g__', 's__']
-
+						when 1 then comp_i = [comp_i[0], 'p__', 'c__', 'o__', 'f__', 'g__', 's__']
+						else comp_i = comp_i
 					unique_taxonomy_comb_onLayer[unique_taxonomy_comb_onLayer.length] = comp_i
 
 			for i in [0..unique_taxonomy_comb_onLayer.length-1]
@@ -365,7 +367,8 @@ class taxonomyViz
 				vizdata[i][j].i = i
 				if deleteOTUArr.indexOf(i) == -1 # not deleted 
 					vizdata[i][j].y = new_data_matrix_onLayer[i][selectedSampleCopy[j]]
-					sumEachTax[i] += new_data_matrix_onLayer[i][selectedSampleCopy[j]]
+					if new_data_matrix_onLayer[i][selectedSampleCopy[j]]?
+						sumEachTax[i] += new_data_matrix_onLayer[i][selectedSampleCopy[j]]
 				else
 					vizdata[i][j].y = 0
 				vizdata[i][j].name = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6]
@@ -439,7 +442,7 @@ class taxonomyViz
 				index = i
 				d3.selectAll('g.taxonomy')
 					.style('fill', (d,i) -> if i == index then return fillCol[index%20] else return d3.rgb(fillCol[i%20]).darker())
-					.style('opacity', (d,i) -> if i != index then return 0.2 )
+					.style('opacity', (d,i) -> if i != index then return 0.4 )
 			.on 'mouseout', (d,i) -> 
 				d3.selectAll('g.taxonomy').style('fill', (d,i) -> return fillCol[i%20]).style('opacity', 1)
 
@@ -474,7 +477,7 @@ class taxonomyViz
 				content += '<progress max="100" value="' + (d.y / sumEachTax[d.i] * 100).toFixed(2) + '"></progress>'
 				content += '<br/><br/>'
 				infoPanel.html(content)
-				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY + 8) + "px", left: (d3.event.pageX + 8) + "px" })
+				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 20) + "px", left: (d3.event.pageX + 25) + "px" })
 				delePanel.style( { "visibility": "hidden"})
 			.on 'mouseout', (d,i) -> 
 				infoPanel.style( { "visibility": "hidden"})
@@ -690,10 +693,11 @@ class taxonomyViz
 			comb_name_list[i] = unique_taxonomy_comb_onLayer[i].join(",")
 			
 			for j in [0..selected_samples.length-1]
-				vizdata[i] += new_data_matrix_onLayer[i][ selected_samples[j] ]
-				viz_series[i][j] = new_data_matrix_onLayer[i][ selected_samples[j] ]
-				if viz_series[i][j] > max_single 
-					max_single = viz_series[i][j]
+				if new_data_matrix_onLayer[i][ selected_samples[j] ]?
+					vizdata[i] += new_data_matrix_onLayer[i][ selected_samples[j] ]
+					viz_series[i][j] = new_data_matrix_onLayer[i][ selected_samples[j] ]
+					if viz_series[i][j] > max_single 
+						max_single = viz_series[i][j]
 
 		# 2 clean the canvas
 		width = 1000
@@ -906,11 +910,11 @@ class taxonomyViz
 			for i in [0..unique_taxonomy_comb_onLayer.length-1]
 				sumEachTax[i] = 0 
 				for j in [0..selected_samples.length-1]
-					sumEachTax[i] += new_data_matrix_onLayer[i][selected_samples[j]]
+					if new_data_matrix_onLayer[i][selected_samples[j]]?
+						sumEachTax[i] += new_data_matrix_onLayer[i][selected_samples[j]]
 			
 			for i in [0..unique_taxonomy_comb_onLayer.length-1]
 				for j in [0..LayerID-1]
-					
 					if nodesArr.indexOf( unique_taxonomy_comb_onLayer[i][j] ) == -1
 						nodesArr.push( unique_taxonomy_comb_onLayer[i][j] )
 						taxonomySankey.nodes.push( {'name': unique_taxonomy_comb_onLayer[i][j]} ) # step 1: push nodes
@@ -958,7 +962,7 @@ class taxonomyViz
 			.attr("class", "link")
 			.attr("d", path)
 			.style('fill', (d,i) -> return globalColoring(d.target.name) )
-			.style("opacity", 0.2)
+			.style("opacity", 0.3)
 			.sort( (a, b) -> return b.dy - a.dy )
 						
 		node = svg.append("g").selectAll(".node")
@@ -1159,8 +1163,8 @@ class taxonomyViz
 		# 1 prepare data - find different categories under this groupable attr
 		groupable_array = []
 		for i in [0..selected_samples.length-1]
-			if groupable_array.indexOf( biom.columns[ selected_samples[i] ].metadata[cur_attribute] ) == -1 
-				groupable_array.push( biom.columns[ selected_samples[i] ].metadata[cur_attribute] )
+			if groupable_array.indexOf( biom.columns[i].metadata[cur_attribute] ) == -1 
+				groupable_array.push( biom.columns[i].metadata[cur_attribute] )
 
 		count = new Array( groupable_array.length)
 		for i in [0..groupable_array.length-1]
@@ -1173,12 +1177,12 @@ class taxonomyViz
 			for j in [0..groupable_array.length-1]
 				selected_new_data_matrix_onLayer[i][j] = 0
 			for j in [0..selected_samples.length-1]
-				arr_id = groupable_array.indexOf( biom.columns[ selected_samples[j] ].metadata[ cur_attribute ] )
-				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][ selected_samples[j] ] 
+				arr_id = groupable_array.indexOf( biom.columns[j].metadata[ cur_attribute ] )
+				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][j] 
 
 		# 2 store the sample IDs in the count 2D array 
 		for i in [0..selected_samples.length-1]
-			count[ groupable_array.indexOf( biom.columns[ selected_samples[i] ].metadata[ cur_attribute ] ) ].push( selected_samples[i] )
+			count[ groupable_array.indexOf( biom.columns[i].metadata[ cur_attribute ] ) ].push( i )
 
 		# 3 plot Pie for each category 
 		maxCount = 0
@@ -1230,6 +1234,9 @@ class taxonomyViz
 			.attr("width", 300)
 			.attr("height", 255)
 
+		infoPanel = d3.select("#taxonomy_container").append("div").attr("class", "basicTooltip").style("visibility", "hidden")
+
+
 		# 3 plot all arc
 		that = this
 		g = svg.selectAll(".arc")
@@ -1239,11 +1246,19 @@ class taxonomyViz
 		g.append("path")
 			.attr('d', arc)
 			.style('fill', (d,i) -> return fillCol[i%20] ) 
-			.on 'mouseover', (d,i) -> 
+			.on 'mouseover', (d,i) ->
 				index = i
 				d3.selectAll('g.arc_' + donutID).style 'opacity', (d,i) -> if i != index then return 0.5
+				content = ''
+				content += '<img class="PanelImg" src="css/images/tooltip.png">'
+				content += '<div class="PanelHead">TAXONOMY: </br><em>' + unique_taxonomy_comb_onLayer[index].join(",") + '</em><br/>' 
+				content += '<div class= "PanelHalf">TOTAL READS:<br/><span>' + format(d.data) + '</span></div><div class= "PanelHalf">PERCENTAGE:<br/><span>' + ((d.endAngle - d.startAngle) / 2 / Math.PI * 100).toFixed(1) + '%</span></div></div>'
+				content += '<br/><br/>'
+				infoPanel.html(content)
+				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 20) + "px", left: (d3.event.pageX + 25) + "px" })
 			.on 'mouseout', (d,i) -> 
 				d3.selectAll('g.arc_' + donutID).style('opacity', 1)
+				infoPanel.style( { "visibility": "hidden"})
 			.on 'click', (d,i) ->
 				if $('#toggleDy_' + donutID).hasClass('clicked')
 					that.drawBasicRect(false, donutContainedSamp, donutID, i, 'dynamic')
@@ -1261,9 +1276,8 @@ class taxonomyViz
 			.attr('dy', '.35em')
 			.style('text-anchor', 'middle')
 			.attr("font-size", "14px")
-			.attr("font-weight", "bold")
 			.attr('y', '7')
-			.text(d3.sum(donutData))
+			.text(format(d3.sum(donutData)))
 
 		# 5 bar chart part
 		d3.select('#donut_' + donutID).append("g")
@@ -1322,7 +1336,7 @@ class taxonomyViz
 		rectContainedSamp.selectAll('text')
 			.data(containedSamp)
 		.enter().append('text')
-			.text( (d,i) -> return String(selected_phinchID_array[i]))  # .substring(0,9) 
+			.text( (d,i) -> return String(selected_phinchID_array[d]))
 			.attr('x', 0)
 			.attr('y', 0)
 			.attr('width', eachBarWidth )
@@ -1362,8 +1376,8 @@ class taxonomyViz
 		attributes_array = []
 		countEmpty = []
 		for i in [0..selected_samples.length-1]
-			if attributes_array.indexOf( parseFloat( biom.columns[ selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) == -1 and biom.columns[ selected_samples[i] ].metadata[cur_attribute] != 'no_data'
-				attributes_array.push( parseFloat( biom.columns[ selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) )
+			if attributes_array.indexOf( parseFloat( biom.columns[ i ].metadata[cur_attribute].split(" ")[0]) ) == -1 and biom.columns[ i ].metadata[cur_attribute] != 'no_data'
+				attributes_array.push( parseFloat( biom.columns[ i ].metadata[cur_attribute].split(" ")[0]) )
 
 		attributes_array.sort( (a,b) -> return a - b )
 		count = new Array( attributes_array.length)
@@ -1376,14 +1390,14 @@ class taxonomyViz
 			for j in [0..attributes_array.length-1]
 				selected_new_data_matrix_onLayer[i][j] = 0.0
 			for j in [0..selected_samples.length-1]
-				arr_id = attributes_array.indexOf( parseFloat( biom.columns[ selected_samples[j] ].metadata[cur_attribute].split(" ")[0]) )
-				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][ selected_samples[j] ] 
+				arr_id = attributes_array.indexOf( parseFloat( biom.columns[j].metadata[cur_attribute].split(" ")[0]) )
+				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][j] 
 
 		for i in [0..selected_samples.length-1]
-			if ! isNaN( parseFloat( biom.columns[ selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) )
-				count[ attributes_array.indexOf( parseFloat( biom.columns[ selected_samples[i] ].metadata[cur_attribute].split(" ")[0]) ) ].push(selected_samples[i])
+			if ! isNaN( parseFloat( biom.columns[ i ].metadata[cur_attribute].split(" ")[0]) )
+				count[ attributes_array.indexOf( parseFloat( biom.columns[ i ].metadata[cur_attribute].split(" ")[0]) ) ].push(i)
 			else 
-				countEmpty.push(selected_samples[i])
+				countEmpty.push(i)
 
 		# 2 Build the viz data 		
 		vizdata = new Array(selected_new_data_matrix_onLayer.length)
