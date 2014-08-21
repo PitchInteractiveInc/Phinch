@@ -4,7 +4,7 @@
 
 @font-face { font-family: 'Source Sans Pro'; font-style: normal; font-weight: 400; src: local('Source Sans Pro'), local('SourceSansPro-Regular'), url(font/sansPro.woff) format('woff');}
 @font-face { font-family: 'Varela Round'; font-style: normal; font-weight: 400; src: local('Varela Round'), local('VarelaRound-Regular'), url(font/VarelaRound.woff2) format('woff2'), url(font/VarelaRound.woff) format('woff');}
-@font-face { font-family: 'Karla'; font-style: normal; font-weight: 400; src: local('Karla'), local('Karla-Regular'), url(font/Karla) format('woff2'), url(font/Karla) format('woff');}
+@font-face { font-family: 'Karla'; font-style: normal; font-weight: 400; src: local('Karla'), local('Karla-Regular'), url(font/Karla) format('woff2'), url(font/Karla.woff) format('woff');}
 @font-face { font-family: 'Karla'; font-style: normal; font-weight: 700; src: local('Karla Bold'), local('Karla-Bold'), url(font/Karla-Bold.woff2) format('woff2'), url(font/Karla-Bold.woff) format('woff');}
 
 html, body { font-family: 'Varela Round', sans-serif; height: 100%; margin: 0; padding: 0; min-width: 1200px; font-size: 14px; line-height: 1.4;}
