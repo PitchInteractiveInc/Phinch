@@ -14,6 +14,7 @@ blog/wp-content/backups/
 blog/sitemap.xml.gz
 blog/wp-config.php
 node_modules/
+biomFiles/
 
 #OS junk files
 [Tt]humbs.db
