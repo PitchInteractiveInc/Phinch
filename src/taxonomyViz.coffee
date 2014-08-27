@@ -450,9 +450,9 @@ class taxonomyViz
 		rect = taxonomy.selectAll('rect')
 			.data(Object)
 		.enter().append('rect')
-			.attr 'class', (d,i) -> return 'sample_' + i
+			.attr('class', (d,i) -> return 'sample_' + i)
 			.attr('height', 12)
-			.attr 'y', (d, i) -> return 14 * i
+			.attr('y', (d, i) -> return 14 * i)
 			.attr 'x', (d, i) ->
 				if isNaN(y(d.y0))
 					return 0
@@ -498,7 +498,7 @@ class taxonomyViz
 			.text (d,i) -> return String(selected_phinchID_array[i]).substr(0,12)
 			.attr('class', (d,i) -> return 'sampleTxt_' + i )
 			.attr('x', -80)
-			.attr 'y', (d,i) ->return 14 * i + 9
+			.attr('y', (d,i) ->return 14 * i + 9)
 			.attr('text-anchor', 'start')
 			.attr("font-size", "10px")
 			.attr('fill', '#444')
@@ -1312,7 +1312,10 @@ class taxonomyViz
 			d3.select('#containedTaxonomy_' + donutID).html( unique_taxonomy_comb_onLayer.length + ' Taxonomy in Total')
 		else
 			thisTaxonomyName = unique_taxonomy_comb_onLayer[selectedTaxnomy].join(",")
-			d3.select('#containedTaxonomy_' + donutID).html( thisTaxonomyName )
+			content = ''
+			for i in [0..thisTaxonomyName.length % 35] # 35 characters in a row
+				content += '<tspan x="-100" dy="1.2em">' + thisTaxonomyName.substring(i * 35, (i + 1) * 35 )+ '</tspan>'
+			d3.select('#containedTaxonomy_' + donutID).html(content)
 
 		# 3 find the max standardized value of all 
 		if d3.max(rectArr) > standardizedValue
