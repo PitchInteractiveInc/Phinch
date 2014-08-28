@@ -595,9 +595,9 @@ class taxonomyViz
 							return m * 14 + 9
 				else
 					if sortDescFlag
-						return 14 * (x.domain().length - 1 - d) + 9
+						return 14 * (x.domain().length - 1 - x.domain().indexOf(d)) + 9
 					else
-						return 14 * d + 9
+						return 14 * x.domain().indexOf(d) + 9
 			)
 			.attr('text-anchor', 'start')
 			.attr("font-size", "10px")
