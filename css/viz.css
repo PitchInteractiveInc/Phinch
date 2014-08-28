@@ -44,7 +44,7 @@
 
 /* Button Switch */
 
-.switchGroup { display: none; position: absolute; border: none; height: 36px; margin-left: 750px;}
+.switchGroup { display: none; position: absolute; border: none; height: 36px; margin-left: 710px;}
 .switchGroup button { border: none; margin: 0; height: 36px; color: #241f20; background: #f0f0f0; padding: 0 10px; font-size: 12px; float: left;}
 .switchGroup .clicked { color: #fff; background: #241f20; -o-transition: background .6s; -ms-transition: background .6s; -moz-transition: background .6s; -webkit-transition: background .6s; transition: background  .6s; }
 
@@ -97,6 +97,7 @@
 .fake { height: 12px; margin-bottom: 2px; background-color: rgba(0,0,0,0); }
 #fake_taxonomy_container { position: absolute; top: 270px; left: 50px; z-index: -1;}
 #outline { display: none; position: fixed; right: 0px; top: 420px; cursor: default !important;}
+#IdNameSort {margin-left: 850px;}
 
 /* 2 Bubble Chart */
 

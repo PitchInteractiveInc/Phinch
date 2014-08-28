@@ -11,6 +11,8 @@ class taxonomyViz
 	percentView = false
 	bubbleView = true
 	shareFlag = false
+	sortIdFlag = false
+	sortDescFlag = false 
 	standardizedValue = 0
 	format = d3.format(',d')
 
@@ -133,6 +135,39 @@ class taxonomyViz
 								$('#percentBtn').addClass('clicked')
 								@generateVizData()								
 
+						# 4 - 5 sort by ID or PhinchName 
+						$('#idBtn').click (evt) => # sort by ID 
+							if sortIdFlag 
+								if ($('#idBtn').html() == 'ID  <i class="icon-sort-amount-asc"></i>')
+									$('#idBtn').html('ID  <i class="icon-sort-amount-desc"></i>')
+									sortDescFlag = true
+								else
+									$('#idBtn').html('ID  <i class="icon-sort-amount-asc"></i>')
+									sortDescFlag = false
+							else
+								sortIdFlag = true
+								sortDescFlag = false
+								$('#idBtn').html('ID  <i class="icon-sort-amount-asc"></i>')
+								$('#nameBtn').removeClass('clicked')
+								$('#idBtn').addClass('clicked')
+							@drawTaxonomyBar()
+
+						$('#nameBtn').click (evt) =>
+							if !sortIdFlag
+								if($('#nameBtn').html() == 'Name  <i class="icon-sort-amount-asc"></i>')
+									$('#nameBtn').html('Name  <i class="icon-sort-amount-desc"></i>')
+									sortDescFlag = true
+								else
+									$('#nameBtn').html('Name  <i class="icon-sort-amount-asc"></i>')
+									sortDescFlag = false
+							else
+								sortIdFlag = false
+								sortDescFlag = false
+								$('#nameBtn').html('Name  <i class="icon-sort-amount-asc"></i>')
+								$('#nameBtn').addClass('clicked')
+								$('#idBtn').removeClass('clicked')			 
+							@drawTaxonomyBar()
+								
 						# 5 listView
 						$('#bubbleBtn').click (evt) =>
 							if !bubbleView
@@ -419,6 +454,40 @@ class taxonomyViz
 					d3.select('#deleteSampleArr ul').html(updateContent)					
 					that.drawTaxonomyBar()
 
+		# pre-2 sort the selected phinchID array
+		if !sortIdFlag
+			phinchID_map = []
+			numericFlag = true
+			if selected_phinchID_array.length > 0
+				for i in [0..selected_phinchID_array.length-1]
+					if deleteSampleArr.indexOf(i) == -1
+						phinchID_map.push({'index': i, 'phinchName': selected_phinchID_array[i]})
+						if !numericFlag || !@IsNumeric(selected_phinchID_array[i])
+							numericFlag = false
+
+			if numericFlag  # 1 phinch names are numeric values
+				phinchID_map.sort (a,b) -> 
+					if !sortDescFlag
+						return a.phinchName - b.phinchName
+					else
+						return b.phinchName - a.phinchName
+			else 			# 2 phinch names are strings 
+				phinchID_map.sort (a,b) ->
+					nameA = String(a.phinchName).toLowerCase()
+					nameB = String(b.phinchName).toLowerCase()
+					if !sortDescFlag
+						if(nameA < nameB)
+							return -1
+						if(nameA > nameB)
+							return 1
+						return 0
+					else
+						if(nameA > nameB)
+							return -1
+						if(nameA < nameB)
+							return 1
+						return 0
+
 		# 2 clean canvas 
 		width = 1200
 		height = sumEachCol.length * 14 + 200
@@ -452,7 +521,17 @@ class taxonomyViz
 		.enter().append('rect')
 			.attr('class', (d,i) -> return 'sample_' + i)
 			.attr('height', 12)
-			.attr('y', (d, i) -> return 14 * i)
+			.attr('y', (d,i) ->
+				if !sortIdFlag
+					for m in [0..phinchID_map.length-1]
+						if(phinchID_map[m].index == i)
+							return m * 14
+				else
+					if sortDescFlag
+						return 14 * (x.domain().length - 1 - i)
+					else
+						return 14 * i
+			)
 			.attr 'x', (d, i) ->
 				if isNaN(y(d.y0))
 					return 0
@@ -490,23 +569,50 @@ class taxonomyViz
 
 		# 5 to keep track of the swap positions 
 		swapPosArr = [0..selectedSampleCopy.length-1]
+		if !sortIdFlag
+			if phinchID_map.length > 0 
+				for i in [0..phinchID_map.length-1]
+					swapPosArr[i] = phinchID_map[i].index
+		else
+			if sortDescFlag
+				swapPosArr = [selectedSampleCopy.length-1..0]
 
 		# 6 add y-axis
 		label = svg.append('g').selectAll('text')
 			.data(x.domain())
 		.enter().append('text')
-			.text (d,i) -> return String(selected_phinchID_array[i]).substr(0,12)
-			.attr('class', (d,i) -> return 'sampleTxt_' + i )
+			.text (d) -> 
+				if !sortIdFlag
+					return String(selected_phinchID_array[d]).substr(0,12)
+				else
+					return d
+			.attr('class', (d) -> return 'sampleTxt_' + d )
 			.attr('x', -80)
-			.attr('y', (d,i) ->return 14 * i + 9)
+			.attr('y', (d) ->
+				if !sortIdFlag
+					for m in [0..phinchID_map.length-1]
+						if(phinchID_map[m].index == d)
+							return m * 14 + 9
+				else
+					if sortDescFlag
+						return 14 * (x.domain().length - 1 - d) + 9
+					else
+						return 14 * d + 9
+			)
 			.attr('text-anchor', 'start')
 			.attr("font-size", "10px")
 			.attr('fill', '#444')
-			.on 'mouseout', (d,i) ->
-				d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[i]).substr(0,12)) # update texts 
-			.on 'mouseover', (d,i) ->
-				d3.select('.sampleTxt_' + i).text(String(selected_phinchID_array[i])) # update texts, full length
-				delePanel.html('<div style="height:15px;"><i class="icon-fa-level-up icon-2x" id="moveup_' + i + '"></i></div><div><i class="icon-fa-level-down icon-2x" id="movedown_' + i + '"></i></div><div class="hideSample">HIDE SAMPLE</div>')
+			.on 'mouseout', (d) ->
+				if !sortIdFlag
+					d3.select('.sampleTxt_' + d).text(String(selected_phinchID_array[d]).substr(0,12))  # update texts 
+				else
+					d3.select('.sampleTxt_' + d).text(d)  # update texts 
+			.on 'mouseover', (d) ->
+				if !sortIdFlag
+					d3.select('.sampleTxt_' + d).text(String(selected_phinchID_array[d])) 				# update texts, full length
+				else
+					d3.select('.sampleTxt_' + d).text(d) 				# update texts, full length
+				delePanel.html('<div style="height:15px;"><i class="icon-fa-level-up icon-2x" id="moveup_' + d + '"></i></div><div><i class="icon-fa-level-down icon-2x" id="movedown_' + d + '"></i></div><div class="hideSample">HIDE SAMPLE</div>')
 				delePanel.style( { "visibility": "visible", top: (d3.event.pageY ) + "px", left: (d3.event.pageX + 5) + "px" })
 
 				$('.hideSample').click (e) ->
@@ -517,7 +623,7 @@ class taxonomyViz
 					swaperId  = parseInt(e.target.id.replace('moveup_',''));  
 					swaperPos = swapPosArr.indexOf(swaperId);          		  
 					if swaperPos != 0
-						swapeePos = swaperPos - 1;                     
+						swapeePos = swaperPos - 1;
 						swapeeId  = swapPosArr[swapeePos]; 
 						d3.selectAll('.sample_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swapeePos )
 						d3.selectAll('.sample_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swaperPos )
@@ -527,11 +633,11 @@ class taxonomyViz
 						swapPosArr[swaperPos] = swapeeId;
 
 				$('.icon-fa-level-down').click (e) ->
-					swaperId  = parseInt(e.target.id.replace('movedown_','')); 
-					swaperPos = swapPosArr.indexOf(swaperId);      
+					swaperId  = parseInt(e.target.id.replace('movedown_',''));
+					swaperPos = swapPosArr.indexOf(swaperId);
 					if swaperPos != swapPosArr.length-1
-						swapeePos = swaperPos + 1;                     
-						swapeeId  = swapPosArr[swapeePos];             
+						swapeePos = swaperPos + 1;          
+						swapeeId  = swapPosArr[swapeePos];  
 						d3.selectAll('.sample_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swapeePos )
 						d3.selectAll('.sample_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swaperPos )
 						d3.select('.sampleTxt_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swapeePos + 9)
@@ -1659,7 +1765,7 @@ class taxonomyViz
 
 			switch VizID
 				when 1
-					$('#outline, #tags, #PercentValue, #legend_header').fadeIn(fadeInSpeed)
+					$('#outline, #tags, #PercentValue, #IdNameSort, #legend_header').fadeIn(fadeInSpeed)
 					$('#MsgBox').html("* If the page is not showing correctly, please refresh!")
 				when 2
 					$('#ListBubble, #tags, #bubbleSliderContainer').fadeIn(fadeInSpeed)
@@ -1804,5 +1910,8 @@ class taxonomyViz
 	validateEmail: (email) ->
 		re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 		return re.test(email);
+
+	IsNumeric: (input) ->
+		return !isNaN(parseFloat(input)) && isFinite(input)
 
 window.taxonomyViz = taxonomyViz
