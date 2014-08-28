@@ -94,7 +94,7 @@
 .reload:hover {color: #241f20; cursor: pointer;}
 .del {background-color: #efefef; color: #b4b4b4; width: 30px;}
 .del:hover {color: #241f20; cursor: pointer;}
-.footer_copyright {position: fixed; width: 100%; bottom: 0; font-size: 12px; line-height: 50px;color: #fff; background: #babcbe; padding-left: 20px;}
+.footer_copyright {position: fixed; width: 100%; bottom: 0; font-size: 12px; line-height: 50px;color: #fff; background: #babcbe; padding-left: 20px; z-index: 3;}
 .footer_copyright span {float: right; margin-right: 40px;}
 .footer_copyright a {text-decoration: none; color: #fff;}
 .footer_copyright a:hover {color: #241f20;}
