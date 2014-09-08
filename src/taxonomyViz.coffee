@@ -21,7 +21,6 @@ class taxonomyViz
 	new_data_matrix = []
 	selected_samples = []
 	unique_taxonomy_comb = []
-	selected_phinchID_array = []
 	selected_attributes_array = []
 	columns_sample_name_array = []
 	unique_taxonomy_comb_count = []
@@ -30,9 +29,11 @@ class taxonomyViz
 	vizdata = []
 	sumEachCol = []
 	sumEachTax = []
+	
 	deleteOTUArr = []
 	deleteSampleArr = []
-	selectedSampleCopy = []
+	selected_phinchID_array = []
+
 	new_data_matrix_onLayer = []
 	unique_taxonomy_comb_onLayer = []
 	taxonomy_comb_count_onLayer = []
@@ -330,7 +331,6 @@ class taxonomyViz
 
 		# 2 VizID
 		@fadeInOutCtrl()
-
 		switch VizID
 			when 1 
 				@barFilterControl()
@@ -380,56 +380,21 @@ class taxonomyViz
 	drawTaxonomyBar: () ->
 
 		@fadeInOutCtrl()
-
-		# 0 clone the @selected_sample array, in case delete elements from selected samples 
-		selectedSampleCopy = selected_samples.slice(0); 
-
-		# 1 data preparation, get the sum of each row, i.e. one taxonomy total over all samples 
-		vizdata = new Array(new_data_matrix_onLayer.length) # only contains selected samples 
-		sumEachTax = new Array(new_data_matrix_onLayer.length)
-
-		# 2 get rid of the deleted samples
-		if deleteSampleArr.length > 0
-			for i in [0..deleteSampleArr.length-1]
-				selectedSampleCopy.splice(selectedSampleCopy.indexOf(deleteSampleArr[i]),1)
-
-		for i in [0..new_data_matrix_onLayer.length-1]
-			vizdata[i] = new Array(selectedSampleCopy.length)
-			sumEachTax[i] = 0
-			for j in [0..selectedSampleCopy.length-1]
-				vizdata[i][j] = {}
-				vizdata[i][j].x = selectedSampleCopy[j]
-				vizdata[i][j].i = i
-				if deleteOTUArr.indexOf(i) == -1 # not deleted 
-					vizdata[i][j].y = new_data_matrix_onLayer[i][selectedSampleCopy[j]]
-					if new_data_matrix_onLayer[i][selectedSampleCopy[j]]?
-						sumEachTax[i] += new_data_matrix_onLayer[i][selectedSampleCopy[j]]
-				else
-					vizdata[i][j].y = 0
-				vizdata[i][j].name = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6]
-		
-		# 3 generate viz - get the max value of each column, i.e. total sequence reads within a sample 
-		sumEachCol = new Array(selectedSampleCopy.length)
-		if selectedSampleCopy.length > 0 # 95 samples
-			for i in [0..selectedSampleCopy.length-1] 
-				sumEachCol[i] = 0
-				for j in [0..new_data_matrix_onLayer.length-1]
-					vizdata[j][i].y0 = sumEachCol[i]
-					if deleteOTUArr.indexOf(j) == -1
-						sumEachCol[i] += new_data_matrix_onLayer[j][selectedSampleCopy[i]] 
-
-		# 4 draw
-		@drawBasicBars()
-
-	drawBasicBars: () -> 
-
 		that = this
 
-		# 1 draw the delete sample section
-		if deleteSampleArr.length > 0
+		# clone the @selected_sample array, in case delete elements from selected samples, from preview page  
+		selected_samples_clone = selected_samples.slice(0); # 43
+		selected_phinchID_array_clone = selected_phinchID_array.slice(0); # 43
+		sorted_selected_phinchID_array = new Array(selected_phinchID_array_clone.length - deleteSampleArr.length); # 43 - 15 
+
+		if deleteSampleArr.length > 0 # deleteSampleArr store the original biom sample index
+
 			content = '<ul class="basicTooltip">'
 			for k in [0..deleteSampleArr.length-1]
-				content += '<li>Sample ' + deleteSampleArr[k] + ', ' + String(selected_phinchID_array[deleteSampleArr[k]]) + '<span id = "delete_' + deleteSampleArr[k] + '">show</span></li>'
+				content += '<li>Sample ' + deleteSampleArr[k] + ', ' + selected_phinchID_array[selected_samples.indexOf(deleteSampleArr[k])] + '<span id = "delete_' + deleteSampleArr[k] + '">show</span></li>'
+				spliceInd = selected_samples_clone.indexOf(deleteSampleArr[k])
+				selected_samples_clone.splice(spliceInd,1)
+				selected_phinchID_array_clone.splice(spliceInd,1)
 			content += '</ul>'
 
 			d3.select("#taxonomy_container").append("div")
@@ -450,20 +415,20 @@ class taxonomyViz
 					deleteSampleArr.splice(deleteSampleArr.indexOf(thisSampID),1)
 					updateContent = ''
 					for k in [0..deleteSampleArr.length-1]
-						updateContent += '<li>Sample ' + deleteSampleArr[k] + ', ' + String(selected_phinchID_array[deleteSampleArr[k]]) + '<span id = "delete_' + deleteSampleArr[k] + '">show</span></li>'
+						updateContent += '<li>Sample ' + deleteSampleArr[k] + ', ' + selected_phinchID_array[selected_samples.indexOf(deleteSampleArr[k])] + '<span id = "delete_' + deleteSampleArr[k] + '">show</span></li>'
 					d3.select('#deleteSampleArr ul').html(updateContent)					
 					that.drawTaxonomyBar()
 
-		# pre-2 sort the selected phinchID array
-		if !sortIdFlag
-			phinchID_map = []
-			numericFlag = true
-			if selected_phinchID_array.length > 0
-				for i in [0..selected_phinchID_array.length-1]
-					if deleteSampleArr.indexOf(i) == -1
-						phinchID_map.push({'index': i, 'phinchName': selected_phinchID_array[i]})
-						if !numericFlag || !@IsNumeric(selected_phinchID_array[i])
-							numericFlag = false
+					
+		# 2 sort the selected phinchID array
+		phinchID_map = []
+		numericFlag = true
+
+		if selected_phinchID_array_clone.length > 0
+			for i in [0..selected_phinchID_array_clone.length-1]
+				phinchID_map.push({'index': i, 'phinchName': selected_phinchID_array_clone[i]})
+				if !numericFlag || !@IsNumeric(selected_phinchID_array_clone[i])
+					numericFlag = false
 
 			if numericFlag  # 1 phinch names are numeric values
 				phinchID_map.sort (a,b) -> 
@@ -488,12 +453,76 @@ class taxonomyViz
 							return 1
 						return 0
 
-		# 2 clean canvas 
+			for i in [0..selected_phinchID_array_clone.length-1]
+				sorted_selected_phinchID_array[i] = phinchID_map[i].index
+
+		# console.log "selected_samples: "
+		# console.log selected_samples
+
+		# console.log "selected_phinchID_array_clone"
+		# console.log selected_phinchID_array_clone
+
+		# console.log "selected_samples_clone: "
+		# console.log selected_samples_clone
+
+		# console.log "sorted_selected_phinchID_array: "
+		# console.log sorted_selected_phinchID_array
+
+		# console.log "columns_sample_name_array: "
+		# console.log columns_sample_name_array
+
+		# console.log "phinchID_map: "
+		# console.log phinchID_map
+
+		# 1 data preparation, get the sum of each row, i.e. one taxonomy total over all samples 
+		vizdata = new Array(new_data_matrix_onLayer.length) # only contains selected samples 43
+		sumEachTax = new Array(new_data_matrix_onLayer.length)
+		sumEachCol = new Array(selected_samples_clone.length)
+
+		for i in [0..new_data_matrix_onLayer.length-1] # 67
+			vizdata[i] = new Array(selected_samples_clone.length)
+			sumEachTax[i] = 0
+			for j in [0..selected_samples_clone.length-1] # 43
+				order = selected_samples.indexOf(selected_samples_clone[j]) # in the selected sample index 
+				vizdata[i][j] = {}
+				vizdata[i][j].taxID = i 
+				vizdata[i][j].taxName = unique_taxonomy_comb_onLayer[i].join(",")
+				vizdata[i][j].vizColInd = j 							# in the viz cols index [0..43]
+				vizdata[i][j].bioColInd = selected_samples_clone[j]		# in the original biom sample index
+				vizdata[i][j].sampleName = columns_sample_name_array[order]
+				# 1 sort 
+				if sortIdFlag
+					vizdata[i][j].phinchName = String(selected_samples_clone[j]) # display the original sample ID 
+					if sortDescFlag
+						vizdata[i][j].sortColInd = selected_samples_clone.length - 1 - j 
+					else 		
+						vizdata[i][j].sortColInd = j 	 						# by default, sort by cols index []
+				else
+					vizdata[i][j].sortColInd = sorted_selected_phinchID_array.indexOf(j)
+					vizdata[i][j].phinchName = selected_phinchID_array_clone[j]
+
+				# 2 delete OTU 
+				if deleteOTUArr.indexOf(i) == -1 and new_data_matrix_onLayer[i][order]? # not deleted & has value
+					vizdata[i][j].y = new_data_matrix_onLayer[i][order]
+					sumEachTax[i] += new_data_matrix_onLayer[i][order]
+				else
+					vizdata[i][j].y = 0
+
+		if selected_samples_clone.length > 0 # 43 samples
+			for i in [0..selected_samples_clone.length-1] 
+				sumEachCol[i] = 0
+				order = selected_samples.indexOf(selected_samples_clone[i])
+				for j in [0..new_data_matrix_onLayer.length-1]
+					vizdata[j][i].y0 = sumEachCol[i]
+					if deleteOTUArr.indexOf(j) == -1
+						sumEachCol[i] += new_data_matrix_onLayer[j][order] 
+
+		# 3 draw
 		width = 1200
 		height = sumEachCol.length * 14 + 200
 		max_single = d3.max(sumEachCol)
 		margin = {top: 75, right: 20, bottom: 20, left: 100}
-		x = d3.scale.ordinal().domain(vizdata[0].map( (d) -> return d.x )).rangeRoundBands([0, height - margin.top - margin.bottom])
+		x = d3.scale.ordinal().domain(vizdata[0].map( (d) -> return d.vizColInd )).rangeRoundBands([0, height - margin.top - margin.bottom])
 		y = d3.scale.linear().domain([0, max_single ]).range([0, width - margin.right - margin.left - 50])
 		svg = d3.select("#taxonomy_container").append("svg").attr("width", width).attr("height", height + 100).append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
@@ -518,20 +547,10 @@ class taxonomyViz
 		# 4 add each bar
 		rect = taxonomy.selectAll('rect')
 			.data(Object)
-		.enter().append('rect')
-			.attr('class', (d,i) -> return 'sample_' + i)
+		.enter().append('rect') 
+			.attr('class', (d,i) -> return 'sample_' + d.bioColInd)
 			.attr('height', 12)
-			.attr('y', (d,i) ->
-				if !sortIdFlag
-					for m in [0..phinchID_map.length-1]
-						if(phinchID_map[m].index == i)
-							return m * 14
-				else
-					if sortDescFlag
-						return 14 * (x.domain().length - 1 - i)
-					else
-						return 14 * i
-			)
+			.attr('y', (d,i) -> return 14 * d.sortColInd)
 			.attr 'x', (d, i) ->
 				if isNaN(y(d.y0))
 					return 0
@@ -549,11 +568,11 @@ class taxonomyViz
 			.on 'mouseover', (d,i) ->
 				content = ''
 				content += '<img class="PanelImg" src="css/images/tooltip.png">'
-				content += '<div class="PanelHead">SAMPLE NAME:</br><span>' + columns_sample_name_array[d.x] + '</span><br/>TAXONOMY:</br><em>' + d.name+ '</em></div>'
+				content += '<div class="PanelHead">SAMPLE NAME:</br><span>' + d.sampleName + '</span><br/>TAXONOMY:</br><em>' + d.taxName + '</em></div>'
 				content += '<div class="PanelInfo">TAXONOMY OCCURENCE IN THIS SAMPLE<br/><span>' + (d.y / sumEachCol[i] * 100).toFixed(2) + '%</span>&nbsp;&nbsp;<em>(' + format(d.y) + ' out of ' + format(sumEachCol[i]) + ')</em></div>'
 				content += '<progress max="100" value="' + (d.y / sumEachCol[i] * 100).toFixed(2) + '"></progress>'
-				content += '<div class="PanelInfo">OUT OF TOTAL TAXONOMY OCCURENCE IN ALL SAMPLES<br/><span>' + (d.y / sumEachTax[d.i] * 100).toFixed(2) + '%</span>&nbsp;&nbsp;<em>(' + format(d.y) + ' out of ' + format(sumEachTax[d.i]) + ')</em></div>'
-				content += '<progress max="100" value="' + (d.y / sumEachTax[d.i] * 100).toFixed(2) + '"></progress>'
+				content += '<div class="PanelInfo">OUT OF TOTAL TAXONOMY OCCURENCE IN ALL SAMPLES<br/><span>' + (d.y / sumEachTax[d.taxID] * 100).toFixed(2) + '%</span>&nbsp;&nbsp;<em>(' + format(d.y) + ' out of ' + format(sumEachTax[d.taxID]) + ')</em></div>'
+				content += '<progress max="100" value="' + (d.y / sumEachTax[d.taxID] * 100).toFixed(2) + '"></progress>'
 				content += '<br/><br/>'
 				infoPanel.html(content)
 				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 20) + "px", left: (d3.event.pageX + 25) + "px" })
@@ -564,86 +583,24 @@ class taxonomyViz
 				infoPanel.style( { "visibility": "hidden"})
 				delePanel.html('<div class="hideSample">HIDE SAMPLE</div>').style( { "visibility": "visible", top: (d3.event.pageY + 15) + "px", left: (d3.event.pageX - 15) + "px" })
 				$('.hideSample').click () ->
-					deleteSampleArr.push(d.x)
+					deleteSampleArr.push(d.bioColInd)
 					that.drawTaxonomyBar()
-
-		# 5 to keep track of the swap positions 
-		swapPosArr = [0..selectedSampleCopy.length-1]
-		if !sortIdFlag
-			if phinchID_map.length > 0 
-				for i in [0..phinchID_map.length-1]
-					swapPosArr[i] = phinchID_map[i].index
-		else
-			if sortDescFlag
-				swapPosArr = [selectedSampleCopy.length-1..0]
 
 		# 6 add y-axis
 		label = svg.append('g').selectAll('text')
-			.data(x.domain())
+			.data(vizdata[0])
 		.enter().append('text')
-			.text (d) -> 
-				if !sortIdFlag
-					return String(selected_phinchID_array[d]).substr(0,12)
-				else
-					return d
-			.attr('class', (d) -> return 'sampleTxt_' + d )
+			.text (d,i) -> return d.phinchName.substring(0,12)
+			.attr('class', (d,i) -> return 'sampleTxt_' + d.bioColInd)
 			.attr('x', -80)
-			.attr('y', (d) ->
-				if !sortIdFlag
-					for m in [0..phinchID_map.length-1]
-						if(phinchID_map[m].index == d)
-							return m * 14 + 9
-				else
-					if sortDescFlag
-						return 14 * (x.domain().length - 1 - x.domain().indexOf(d)) + 9
-					else
-						return 14 * x.domain().indexOf(d) + 9
-			)
+			.attr('y', (d,i) -> return 14 * d.sortColInd + 9)
 			.attr('text-anchor', 'start')
 			.attr("font-size", "10px")
 			.attr('fill', '#444')
-			.on 'mouseout', (d) ->
-				if !sortIdFlag
-					d3.select('.sampleTxt_' + d).text(String(selected_phinchID_array[d]).substr(0,12))  # update texts 
-				else
-					d3.select('.sampleTxt_' + d).text(d)  # update texts 
-			.on 'mouseover', (d) ->
-				if !sortIdFlag
-					d3.select('.sampleTxt_' + d).text(String(selected_phinchID_array[d])) 				# update texts, full length
-				else
-					d3.select('.sampleTxt_' + d).text(d) 				# update texts, full length
-				delePanel.html('<div style="height:15px;"><i class="icon-fa-level-up icon-2x" id="moveup_' + d + '"></i></div><div><i class="icon-fa-level-down icon-2x" id="movedown_' + d + '"></i></div><div class="hideSample">HIDE SAMPLE</div>')
-				delePanel.style( { "visibility": "visible", top: (d3.event.pageY ) + "px", left: (d3.event.pageX + 5) + "px" })
-
-				$('.hideSample').click (e) ->
-					deleteSampleArr.push(d) # d is the index here!
-					that.drawTaxonomyBar()
-
-				$('.icon-fa-level-up').click (e) ->
-					swaperId  = parseInt(e.target.id.replace('moveup_',''));  
-					swaperPos = swapPosArr.indexOf(swaperId);          		  
-					if swaperPos != 0
-						swapeePos = swaperPos - 1;
-						swapeeId  = swapPosArr[swapeePos]; 
-						d3.selectAll('.sample_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swapeePos )
-						d3.selectAll('.sample_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swaperPos )
-						d3.select('.sampleTxt_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swapeePos + 9)
-						d3.select('.sampleTxt_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swaperPos + 9)
-						swapPosArr[swapeePos] = swaperId;
-						swapPosArr[swaperPos] = swapeeId;
-
-				$('.icon-fa-level-down').click (e) ->
-					swaperId  = parseInt(e.target.id.replace('movedown_',''));
-					swaperPos = swapPosArr.indexOf(swaperId);
-					if swaperPos != swapPosArr.length-1
-						swapeePos = swaperPos + 1;          
-						swapeeId  = swapPosArr[swapeePos];  
-						d3.selectAll('.sample_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swapeePos )
-						d3.selectAll('.sample_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swaperPos )
-						d3.select('.sampleTxt_' + swaperId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swapeePos + 9)
-						d3.select('.sampleTxt_' + swapeeId).transition().duration(250).ease("quad-in-out").attr('y', () -> return 14 * swaperPos + 9)
-						swapPosArr[swapeePos] = swaperId;
-						swapPosArr[swaperPos] = swapeeId;
+			.on 'mouseout', (d,i) ->
+				d3.select('.sampleTxt_' + d.bioColInd).text(d.phinchName.substring(0,12)) 
+			.on 'mouseover', (d,i) ->
+				d3.select('.sampleTxt_' + d.bioColInd).text(d.phinchName)
 
 		# 7 add title & x-axis 
 		svg.append("text").attr('y', -35)
@@ -676,6 +633,7 @@ class taxonomyViz
 			legendArr.push(temp)
 
 		@createLegend(legendArr)
+
 		legendClone = _.clone(legendArr)
 		legendClone.sort( (a,b) -> return b.value - a.value ) # specify the sorting order
 		maxLegendItems = 10
@@ -695,12 +653,8 @@ class taxonomyViz
 		)
 		legendItemEnter.append('rect')
 			.attr('x', 0).attr('y', 0).attr('width', 12).attr('height', 12)
-			.style('fill', (d,i) ->
-				return fillCol[ d.originalID % 20]
-			)
-		legendItemEnter.append('text').text((d,i) ->
-			return d.name
-		).attr('x', 14).attr('y', 12).style('font-size', '12px')
+			.style('fill', (d,i) -> return fillCol[ d.originalID % 20])
+		legendItemEnter.append('text').text((d,i) -> return d.name).attr('x', 14).attr('y', 12).style('font-size', '12px')
 
 		# 9 create fake divs for minimap
 		divCont = ''
@@ -1766,7 +1720,7 @@ class taxonomyViz
 			switch VizID
 				when 1
 					$('#outline, #tags, #PercentValue, #IdNameSort, #legend_header').fadeIn(fadeInSpeed)
-					$('#MsgBox').html("* If the page is not showing correctly, please refresh!")
+					# $('#MsgBox').html("* If the page is not showing correctly, please refresh!")
 				when 2
 					$('#ListBubble, #tags, #bubbleSliderContainer').fadeIn(fadeInSpeed)
 					$('.ui-slider-horizontal .ui-slider-handle').css({ "margin-top": "-2px", "border": "none","background": "#241F20"})
