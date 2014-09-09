@@ -28,7 +28,7 @@
 
     <!-- Disable Console Msg -->
     <script type="text/javascript">
-        if (true || !(window.console && console.log)) {(function() {
+        if (!(window.console && console.log)) {(function() {
             var noop = function() {};
             var methods = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log', 'markTimeline', 'profile', 'profileEnd', 'markTimeline', 'table', 'time', 'timeEnd', 'timeStamp', 'trace', 'warn'];
             var length = methods.length;
@@ -154,6 +154,11 @@
             <div id="PercentValue" class="switchGroup">
                 <button id = "valueBtn" class="clicked">VALUE</button>
                 <button id = "percentBtn">%</button>
+            </div>
+
+            <div id="IdNameSort" class="switchGroup">
+                <button id = "nameBtn" class="clicked">Name  <i class="icon-sort-amount-asc"></i></button>
+                <button id = "idBtn">ID  <i class="icon-sort-amount-asc"></i></button>
             </div>
 
             <div id="ListBubble" class="switchGroup">

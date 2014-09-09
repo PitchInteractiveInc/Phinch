@@ -118,7 +118,6 @@ class readFile
 
 				if results.length > 10
 					@clearOldEntries(results)
-					location.reload(true);
 						
 				if results.length > 0
 					$('#recent').show()
@@ -160,9 +159,10 @@ class readFile
 	
 	# leave only 10 files, remove older files
 	clearOldEntries: (results) =>
+		console.log results.length
 		if results.length > 10
 			@server.biom.remove(results[0].id).done () =>
 				results.splice(0,1)
-				@clearOldEntries(results)
-
+				location.reload(true);
+				
 window.readFile = readFile

@@ -158,6 +158,8 @@ a .icon-stack, a .icon-spin {display: inline-block;text-decoration: none;}
 .icon-circle:before {content: "\f111"; vertical-align: middle; padding: 0 3px;}
 .icon-download:before {content: "\f019";}
 .icon-chart:before {content: "\f080";}
+.icon-sort-amount-asc:before {content: "\f160";}
+.icon-sort-amount-desc:before {content: "\f161";}
 
 .icon-remove:hover {color: #babcbe; cursor: pointer;}
 .icon-fa-level-up:hover { color: #babcbe; cursor: pointer;}
