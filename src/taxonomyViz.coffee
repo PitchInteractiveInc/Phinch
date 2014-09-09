@@ -499,7 +499,7 @@ class taxonomyViz
 						vizdata[i][j].sortColInd = j 	 						# by default, sort by cols index []
 				else
 					vizdata[i][j].sortColInd = sorted_selected_phinchID_array.indexOf(j)
-					vizdata[i][j].phinchName = selected_phinchID_array_clone[j]
+					vizdata[i][j].phinchName = String(selected_phinchID_array_clone[j])
 
 				# 2 delete OTU 
 				if deleteOTUArr.indexOf(i) == -1 and new_data_matrix_onLayer[i][order]? # not deleted & has value
