@@ -383,9 +383,9 @@ class taxonomyViz
 		that = this
 
 		# clone the @selected_sample array, in case delete elements from selected samples, from preview page  
-		selected_samples_clone = selected_samples.slice(0); # 43
-		selected_phinchID_array_clone = selected_phinchID_array.slice(0); # 43
-		sorted_selected_phinchID_array = new Array(selected_phinchID_array_clone.length - deleteSampleArr.length); # 43 - 15 
+		selected_samples_clone = selected_samples.slice(0);
+		selected_phinchID_array_clone = selected_phinchID_array.slice(0);
+		sorted_selected_phinchID_array = new Array(selected_phinchID_array_clone.length - deleteSampleArr.length);
 
 		if deleteSampleArr.length > 0 # deleteSampleArr store the original biom sample index
 
@@ -456,38 +456,20 @@ class taxonomyViz
 			for i in [0..selected_phinchID_array_clone.length-1]
 				sorted_selected_phinchID_array[i] = phinchID_map[i].index
 
-		# console.log "selected_samples: "
-		# console.log selected_samples
-
-		# console.log "selected_phinchID_array_clone"
-		# console.log selected_phinchID_array_clone
-
-		# console.log "selected_samples_clone: "
-		# console.log selected_samples_clone
-
-		# console.log "sorted_selected_phinchID_array: "
-		# console.log sorted_selected_phinchID_array
-
-		# console.log "columns_sample_name_array: "
-		# console.log columns_sample_name_array
-
-		# console.log "phinchID_map: "
-		# console.log phinchID_map
-
 		# 1 data preparation, get the sum of each row, i.e. one taxonomy total over all samples 
-		vizdata = new Array(new_data_matrix_onLayer.length) # only contains selected samples 43
+		vizdata = new Array(new_data_matrix_onLayer.length)
 		sumEachTax = new Array(new_data_matrix_onLayer.length)
 		sumEachCol = new Array(selected_samples_clone.length)
 
-		for i in [0..new_data_matrix_onLayer.length-1] # 67
+		for i in [0..new_data_matrix_onLayer.length-1]
 			vizdata[i] = new Array(selected_samples_clone.length)
 			sumEachTax[i] = 0
-			for j in [0..selected_samples_clone.length-1] # 43
+			for j in [0..selected_samples_clone.length-1]
 				order = selected_samples.indexOf(selected_samples_clone[j]) # in the selected sample index 
 				vizdata[i][j] = {}
 				vizdata[i][j].taxID = i 
 				vizdata[i][j].taxName = unique_taxonomy_comb_onLayer[i].join(",")
-				vizdata[i][j].vizColInd = j 							# in the viz cols index [0..43]
+				vizdata[i][j].vizColInd = j 							# in the viz cols index 
 				vizdata[i][j].bioColInd = selected_samples_clone[j]		# in the original biom sample index
 				vizdata[i][j].sampleName = columns_sample_name_array[order]
 				# 1 sort 
@@ -508,7 +490,7 @@ class taxonomyViz
 				else
 					vizdata[i][j].y = 0
 
-		if selected_samples_clone.length > 0 # 43 samples
+		if selected_samples_clone.length > 0
 			for i in [0..selected_samples_clone.length-1] 
 				sumEachCol[i] = 0
 				order = selected_samples.indexOf(selected_samples_clone[i])
