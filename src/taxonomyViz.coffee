@@ -472,6 +472,7 @@ class taxonomyViz
 				vizdata[i][j].vizColInd = j 							# in the viz cols index 
 				vizdata[i][j].bioColInd = selected_samples_clone[j]		# in the original biom sample index
 				vizdata[i][j].sampleName = columns_sample_name_array[order]
+				
 				# 1 sort 
 				if sortIdFlag
 					vizdata[i][j].phinchName = String(selected_samples_clone[j]) # display the original sample ID 
@@ -483,7 +484,7 @@ class taxonomyViz
 					vizdata[i][j].sortColInd = sorted_selected_phinchID_array.indexOf(j)
 					vizdata[i][j].phinchName = String(selected_phinchID_array_clone[j])
 
-				# 2 delete OTU 
+				# 2 delete OTU
 				if deleteOTUArr.indexOf(i) == -1 and new_data_matrix_onLayer[i][order]? # not deleted & has value
 					vizdata[i][j].y = new_data_matrix_onLayer[i][order]
 					sumEachTax[i] += new_data_matrix_onLayer[i][order]
@@ -497,7 +498,7 @@ class taxonomyViz
 				for j in [0..new_data_matrix_onLayer.length-1]
 					vizdata[j][i].y0 = sumEachCol[i]
 					if deleteOTUArr.indexOf(j) == -1
-						sumEachCol[i] += new_data_matrix_onLayer[j][order] 
+						sumEachCol[i] += new_data_matrix_onLayer[j][order]
 
 		# 3 draw
 		width = 1200
@@ -1499,7 +1500,7 @@ class taxonomyViz
 
 		# 1 Plot     
 		height = 800
-		width = 120 + sumEachCol.length * 18
+		width = 200 + sumEachCol.length * 18
 		max_single = d3.max(sumEachCol)
 		margin = {top: 20, right: 20, bottom: 20, left: 100}
 		x = d3.scale.ordinal()
@@ -1537,7 +1538,7 @@ class taxonomyViz
 			.data(Object)
 		.enter().append('rect')
 			.attr('width', 15)
-			.attr('x', (d, i) -> return 20 * i)
+			.attr('x', (d, i) -> return 20 * i + 20)
 			.attr('y', (d, i) -> if !percentView then return height - y(d.y) - y(d.y0) else return height - ( y(d.y) + y(d.y0) ) / sumEachCol[i] * max_single)
 			.attr('height', (d,i) -> if !percentView then return y(d.y) else return y(d.y) / sumEachCol[i] * max_single)
 			.on 'mouseover', (d,i) ->
@@ -1567,7 +1568,7 @@ class taxonomyViz
 			.attr('text-anchor', 'middle')
 			.attr("font-size", "10px")
 			.attr('fill', '#444')
-			.attr('transform', (d,i) -> return "translate(" + (20 * i + 7.5) + ", " + (height + 15) + ")rotate(-45)")
+			.attr('transform', (d,i) -> return "translate(" + (20 * i + 27.5) + ", " + (height + 15) + ")rotate(-45)")
 
 		# add y-axis
 		rule = svg.selectAll('g.rule')
@@ -1577,7 +1578,7 @@ class taxonomyViz
 			.attr('transform', (d) -> return "translate(0," + ( height - y(d) ) + ")" )	
 
 		rule.append('line')
-			.attr('x2', (d,i) -> return width + 20)
+			.attr('x2', (d,i) -> return width )
 			.style("stroke", (d) -> return if d then "#eee" else "#444" )
 			.style("stroke-opacity", (d) -> return if d then 0.7 else null )
 
@@ -1715,8 +1716,8 @@ class taxonomyViz
 
 	exportCallback: (data, textStatus, xhr) ->
 		convertResult = JSON.parse(data)
-		console.log 'exportCallback!'
-		console.log convertResult
+		# console.log 'exportCallback!'
+		# console.log convertResult
 		if convertResult['code'] is 0 and convertResult['err'] is ''
 			$('#downloadPreview img').attr('src', 'data:image/png;base64,' + convertResult['out']);
 			$('#downloadPreview a').attr('href', 'data:image/png;base64,' + convertResult['out']);
@@ -1770,7 +1771,7 @@ class taxonomyViz
 		w = new Worker('scripts/hashWorker.js')
 		w.addEventListener('message', (e) =>
 			console.log 'worker message'
-			console.log e
+			# console.log e
 			hashValue = e.data
 			@shareHashExists(hashValue)
 		)
@@ -1827,7 +1828,7 @@ class taxonomyViz
 		console.log biomData.length
 		w = new Worker('scripts/zipWorker.js')
 		w.addEventListener('message', (e) =>
-			console.log e.data
+			# console.log e.data
 			@shareData.biomFile = e.data
 			@shareRequest()
 		)
