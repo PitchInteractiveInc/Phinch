@@ -472,6 +472,7 @@ class taxonomyViz
 				vizdata[i][j].vizColInd = j 							# in the viz cols index 
 				vizdata[i][j].bioColInd = selected_samples_clone[j]		# in the original biom sample index
 				vizdata[i][j].sampleName = columns_sample_name_array[order]
+				
 				# 1 sort 
 				if sortIdFlag
 					vizdata[i][j].phinchName = String(selected_samples_clone[j]) # display the original sample ID 
@@ -483,7 +484,7 @@ class taxonomyViz
 					vizdata[i][j].sortColInd = sorted_selected_phinchID_array.indexOf(j)
 					vizdata[i][j].phinchName = String(selected_phinchID_array_clone[j])
 
-				# 2 delete OTU 
+				# 2 delete OTU
 				if deleteOTUArr.indexOf(i) == -1 and new_data_matrix_onLayer[i][order]? # not deleted & has value
 					vizdata[i][j].y = new_data_matrix_onLayer[i][order]
 					sumEachTax[i] += new_data_matrix_onLayer[i][order]
@@ -497,7 +498,7 @@ class taxonomyViz
 				for j in [0..new_data_matrix_onLayer.length-1]
 					vizdata[j][i].y0 = sumEachCol[i]
 					if deleteOTUArr.indexOf(j) == -1
-						sumEachCol[i] += new_data_matrix_onLayer[j][order] 
+						sumEachCol[i] += new_data_matrix_onLayer[j][order]
 
 		# 3 draw
 		width = 1200
