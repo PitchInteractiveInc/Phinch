@@ -427,31 +427,9 @@ class taxonomyViz
 		if selected_phinchID_array_clone.length > 0
 			for i in [0..selected_phinchID_array_clone.length-1]
 				phinchID_map.push({'index': i, 'phinchName': selected_phinchID_array_clone[i]})
-				if !numericFlag || !@IsNumeric(selected_phinchID_array_clone[i])
-					numericFlag = false
 
-			if numericFlag  # 1 phinch names are numeric values
-				phinchID_map.sort (a,b) -> 
-					if !sortDescFlag
-						return a.phinchName - b.phinchName
-					else
-						return b.phinchName - a.phinchName
-			else 			# 2 phinch names are strings 
-				phinchID_map.sort (a,b) ->
-					nameA = String(a.phinchName).toLowerCase()
-					nameB = String(b.phinchName).toLowerCase()
-					if !sortDescFlag
-						if(nameA < nameB)
-							return -1
-						if(nameA > nameB)
-							return 1
-						return 0
-					else
-						if(nameA > nameB)
-							return -1
-						if(nameA < nameB)
-							return 1
-						return 0
+			phinchID_map.sort (a,b) ->
+				return naturalSort(a.phinchName, b.phinchName)
 
 			for i in [0..selected_phinchID_array_clone.length-1]
 				sorted_selected_phinchID_array[i] = phinchID_map[i].index
@@ -1847,8 +1825,5 @@ class taxonomyViz
 	validateEmail: (email) ->
 		re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 		return re.test(email);
-
-	IsNumeric: (input) ->
-		return !isNaN(parseFloat(input)) && isFinite(input)
 
 window.taxonomyViz = taxonomyViz
