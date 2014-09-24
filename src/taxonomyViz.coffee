@@ -1732,6 +1732,60 @@ class taxonomyViz
 
 		)
 		w.postMessage({"o1": JSON.stringify(biom), "o2": JSON.stringify(obj_log), "filename": filename})
+	shareViz: () =>
+		biomData = JSON.stringify(biom)
+		$('#sharingInfo').show()
+		$('#sharingInfo .shareForm input, #sharingInfo .shareForm label, #sharingInfo .shareForm textarea').show();
+		$('#sharingInfo #shareToEmail').val("")
+		$('#sharingInfo #shareToName').val("")
+		$('#sharingInfo .results').hide();
+
+		$('#sharingInfo .loading').hide()
+		$('#sharingInfo .shareForm').show()
+		hideShare = (e) -> $('#sharingInfo').fadeOut(200);
+		$('#sharingInfo .icon-remove').off('click', hideShare).on('click', hideShare) 
+		$('#sharingInfo .shareButton').off('click', @submitShare).on('click', @submitShare)
+	submitShare: () =>
+		console.log 'submit share'
+		console.log @shareHash
+		console.log LayerID + " " + VizID
+		layerName = layerNameArr[LayerID - 1]
+		vizName = vizNameArr[VizID-1]
+
+		if @validateEmail($('#sharingInfo #shareFromEmail').val()) and @validateEmail($('#sharingInfo #shareToEmail').val())
+			shareFlag = true
+			$('#sharingInfo .shareForm input, #sharingInfo .shareForm label, #sharingInfo .shareForm textarea').hide();
+			$('#sharingInfo .results').remove();
+			$('#sharingInfo .results').show();			
+			results = d3.select('#sharingInfo').append('div').attr('class','results')
+			results.append('div').html('Your visualization has been shared.')
+			@shareData = {
+				from_email: $('#sharingInfo #shareFromEmail').val(),
+				to_email: $('#sharingInfo #shareToEmail').val(),
+				from_name: $('#sharingInfo #shareFromName').val(),
+				to_name: $('#sharingInfo #shareToName').val(),
+				notes: $('#sharingInfo #shareNotes').val(),
+				layer_name: layerName,
+				filter_options_json: JSON.stringify(filterOptionJSON),
+				viz_name: vizName,
+				biomFile: JSON.stringify(biom)
+
+			}
+			@shareRequest()
+		else
+			alert("Invalid email address ... ")
+
+	
+	shareRequest: () =>
+		shareEndpoint = backendServer + "shareViz2.php"
+		$.post(shareEndpoint, @shareData, @shareCallback, 'json')
+
+	shareCallback: (data, textStatus, xhr) =>
+		console.log(data)
+		if data.status is 'ok'
+			src = document.location.origin + document.location.pathname + "?shareID=" + data.urlHash
+			d3.select('#sharingInfo .results').append('a').attr('href',src).attr('target','_blank').text(src)
+	###
 
 	shareViz: () =>
 		biomData = JSON.stringify(biom)
@@ -1821,7 +1875,7 @@ class taxonomyViz
 		if data.status is 'ok'
 			src = document.location.origin + document.location.pathname + "?shareID=" + data.urlHash
 			d3.select('#sharingInfo .results').append('a').attr('href',src).attr('target','_blank').text(src)
-
+	###
 	validateEmail: (email) ->
 		re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 		return re.test(email);
