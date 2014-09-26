@@ -120,7 +120,7 @@ if($_POST['notes'] !== '') {
 }
 $header = 'From: noreply@phinch.org' . "\r\n" . "Reply-To: " . $_POST['from_email'] . "\r\n" . 'X-Mailer: PHP/' . phpversion();
 echo json_encode(array('status' => 'ok', 'urlHash' => $urlHash));
-//mail($to, $subject, $message, $header);
+mail($to, $subject, $message, $header);
 
 function generateRandomString($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
