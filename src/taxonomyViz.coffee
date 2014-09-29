@@ -1738,6 +1738,9 @@ class taxonomyViz
 		$('#sharingInfo .shareForm input, #sharingInfo .shareForm label, #sharingInfo .shareForm textarea').show();
 		$('#sharingInfo #shareToEmail').val("")
 		$('#sharingInfo #shareToName').val("")
+		#$('#sharingInfo #shareFromEmail').val("")
+		#$('#sharingInfo #shareFromName').val("")
+
 		$('#sharingInfo .results').hide();
 
 		$('#sharingInfo .loading').hide()
@@ -1778,7 +1781,24 @@ class taxonomyViz
 	
 	shareRequest: () =>
 		shareEndpoint = backendServer + "shareViz2.php"
-		$.post(shareEndpoint, @shareData, @shareCallback, 'json')
+#		dataToSend = new FormData();
+#		dataToSend.append('data', new Blob([ @shareData ], { type: 'text/json' }))
+		console.log @shareData
+		$.ajax({
+			url: shareEndpoint,
+			#data: dataToSend,
+			data: JSON.stringify(@shareData)
+			processData: false,
+			contentType: 'multipart/form-data', 
+			mimeType: 'multipart/form-data',
+			type: 'POST',
+			dataType: 'json'
+			success: @shareCallback,
+			error: () ->
+				console.log 'error'
+				console.log arguments
+		})
+		#$.post(shareEndpoint, @shareData, @shareCallback, 'json')
 
 	shareCallback: (data, textStatus, xhr) =>
 		console.log(data)

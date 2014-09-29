@@ -1,11 +1,16 @@
 <?php
 require 'dbconfig.php';
+$request_body = file_get_contents('php://input');
+$post = json_decode($request_body);
 $sharedDataFolder = '../biomFiles/';
 /* check if all vars exist */
-$requiredVars = array('from_email','from_name','to_email','to_name','notes', 'viz_name','layer_name','biomFile');
+$requiredVars = array('from_email','from_name','to_email','to_name','notes', 'viz_name','layer_name','biomFile','filter_options_json');
+$_POST = array();
 foreach($requiredVars as $requiredVar) {
-	if(! isset($_POST[$requiredVar])) {
+	if(! isset($post->{$requiredVar})) {
 		die('missing ' . $requiredVar);
+	} else {
+		$_POST[$requiredVar] = $post->{$requiredVar};
 	}
 }
 
