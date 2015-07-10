@@ -362,7 +362,7 @@ class filter
 					toprocess = []
 
 					content = "" 
-					content += "<span class = 'biom_valid_attr'>" + groupable_array[_i] + "</span><br/>"
+					content += "<span class = 'biom_valid_attr'>" + groupable_array[i] + "</span><br/>"
 
 					if groupable_array_content.length > 0
 						for j in [pointer_left..groupable_array_content.length-1]
@@ -379,7 +379,7 @@ class filter
 
 						if toprocess.length > 0
 							for k in [0..toprocess.length-1]
-								content += "<input type='checkbox' name='groupable_check_group' id='groupable_check_" + check_count + "' checked='checked' /><label for='groupable_check_" + check_count + "'></label><span class = 'biom_valid_attr_grp'>" + toprocess[_k] + "</span><br/>"	
+								content += "<input type='checkbox' name='groupable_check_group' id='groupable_check_" + check_count + "' checked='checked' /><label for='groupable_check_" + check_count + "'></label><span class = 'biom_valid_attr_grp'>" + toprocess[k] + "</span><br/>"	
 								check_count++
 
 							$('#groupable_att').append("<div class='overflowControl'>" + content + "</div>")
