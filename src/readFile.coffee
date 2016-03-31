@@ -18,6 +18,29 @@ class readFile
 				@checkFile(files)
 		false)
 
+		# Load by URL, requires CORS at remote server
+		query = window.location.search.substring(1)
+		raw_vars = query.split("&")
+		params = {}
+		for v in raw_vars
+			[key, val] = v.split("=")
+			params[key] = decodeURIComponent(val)
+		if params['biomURL']?
+			#alert "Found biomURL: " + params['biomURL']
+			$.get(params['biomURL'], (urlData) =>
+				biomToStore = {}
+				#alert 1
+				biomToStore.name = params['biomURL']#.substr( params['biomURL'].lastIndexOf("/") + 1 )
+				#alert 2
+				biomToStore.size = urlData.length
+				biomToStore.data = urlData
+				d = new Date();
+				biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
+				@server.biom.add(biomToStore).done () ->
+					setTimeout( "window.location.href = 'preview.html'", 2000)
+			)
+
+
 		# load test file
 		document.getElementById('loadTestFile').addEventListener('click', (evt) =>
 			$('#loadTestFile').html('loading...&nbsp;&nbsp;<i class="icon-spinner icon-spin icon-large"></i>');
