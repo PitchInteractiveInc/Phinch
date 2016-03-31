@@ -26,6 +26,11 @@ class readFile
 			[key, val] = v.split("=")
 			params[key] = decodeURIComponent(val)
 		if params['biomURL']?
+			$('#loadTestFile').hide()
+			$('#fileDrag').hide()
+			$('#progress_bar').hide()
+			$('#frmUpload').hide()
+			$('#parse').html('loading URL...&nbsp;&nbsp;<i class="icon-spinner icon-spin icon-large"></i>');
 			$.get(params['biomURL'], (urlData) =>
 				if urlData.constructor != String
 					urlData = JSON.stringify( urlData )
