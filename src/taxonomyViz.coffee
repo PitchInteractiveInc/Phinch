@@ -242,6 +242,9 @@ class taxonomyViz
 			comp_i = new Array(7)
 			comb_len = unique_taxonomy_comb.length
 
+			if !biom.rows[i].metadata? or !biom.rows[i].metadata.taxonomy?
+				alert '"taxonomy" metadata needs to be provided in BIOM file'
+
 			if biom.rows[i].metadata.taxonomy.indexOf(';') != -1
 				comp_i = biom.rows[i].metadata.taxonomy.replace(/\s+/g, '').replace(/;/g,',').split(',')
 			else 
