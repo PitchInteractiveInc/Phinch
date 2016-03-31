@@ -95,6 +95,8 @@ class filter
 
 	generateColumns: () ->
 		
+		if !biom.columns[0].metadata?
+			alert "ERROR: Your BIOM file must have metadata defined."
 		for key of biom.columns[0].metadata
 			if key.toLowerCase().indexOf("date") != -1
 				date_array.push(key)
