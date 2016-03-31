@@ -26,18 +26,17 @@ class readFile
 			[key, val] = v.split("=")
 			params[key] = decodeURIComponent(val)
 		if params['biomURL']?
-			#alert "Found biomURL: " + params['biomURL']
 			$.get(params['biomURL'], (urlData) =>
+				if urlData.constructor != String
+					urlData = JSON.stringify( urlData )
 				biomToStore = {}
-				#alert 1
-				biomToStore.name = params['biomURL']#.substr( params['biomURL'].lastIndexOf("/") + 1 )
-				#alert 2
+				biomToStore.name = params['biomURL']
 				biomToStore.size = urlData.length
 				biomToStore.data = urlData
 				d = new Date();
 				biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
 				@server.biom.add(biomToStore).done () ->
-					setTimeout( "window.location.href = 'preview.html'", 2000)
+					setTimeout( "window.location.href = 'preview.html'", 1)
 			)
 
 
@@ -47,9 +46,11 @@ class readFile
 			hostURL = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/'))
 			testfile = hostURL + '/data/testdata.biom'  ## Dev TODO http://phinch.org/data/testdata.biom
 			$.get(testfile, (testdata) => 
+				if testdata.constructor != String
+					testdata = JSON.stringify( testdata )
 				biomToStore = {}
 				biomToStore.name = 'testdata.biom'
-				biomToStore.size = 15427024
+				biomToStore.size = testdata.length
 				biomToStore.data = testdata
 				d = new Date();
 				biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
