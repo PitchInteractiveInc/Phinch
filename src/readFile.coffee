@@ -18,15 +18,44 @@ class readFile
 				@checkFile(files)
 		false)
 
+		# Load by URL, requires CORS at remote server
+		query = window.location.search.substring(1)
+		raw_vars = query.split("&")
+		params = {}
+		for v in raw_vars
+			[key, val] = v.split("=")
+			params[key] = decodeURIComponent(val)
+		if params['biomURL']?
+			$('#loadTestFile').hide()
+			$('#fileDrag').hide()
+			$('#progress_bar').hide()
+			$('#frmUpload').hide()
+			$('#parse').html('loading URL...&nbsp;&nbsp;<i class="icon-spinner icon-spin icon-large"></i>');
+			$.get(params['biomURL'], (urlData) =>
+				if urlData.constructor != String
+					urlData = JSON.stringify( urlData )
+				biomToStore = {}
+				biomToStore.name = params['biomURL']
+				biomToStore.size = urlData.length
+				biomToStore.data = urlData
+				d = new Date();
+				biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
+				@server.biom.add(biomToStore).done () ->
+					setTimeout( "window.location.href = 'preview.html'", 1)
+			)
+
+
 		# load test file
 		document.getElementById('loadTestFile').addEventListener('click', (evt) =>
 			$('#loadTestFile').html('loading...&nbsp;&nbsp;<i class="icon-spinner icon-spin icon-large"></i>');
 			hostURL = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/'))
 			testfile = hostURL + '/data/testdata.biom'  ## Dev TODO http://phinch.org/data/testdata.biom
 			$.get(testfile, (testdata) => 
+				if testdata.constructor != String
+					testdata = JSON.stringify( testdata )
 				biomToStore = {}
 				biomToStore.name = 'testdata.biom'
-				biomToStore.size = 15427024
+				biomToStore.size = testdata.length
 				biomToStore.data = testdata
 				d = new Date();
 				biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"

@@ -95,12 +95,17 @@ class filter
 
 	generateColumns: () ->
 		
+		if !biom.columns[0].metadata?
+			for i in [0..attr_length]
+				if !biom.columns[i].metadata?
+					biom.columns[i].metadata = {}
+
 		for key of biom.columns[0].metadata
 			if key.toLowerCase().indexOf("date") != -1
 				date_array.push(key)
 
 			else if key == 'phinchID'
-				console.log 'PhinchID does exsit!'
+				console.log 'PhinchID does exist!'
 
 			else if (key.toLowerCase().indexOf("barcode") != -1) || (key.toLowerCase().indexOf("sequence") != -1) || (key.toLowerCase().indexOf("reverse") != -1) || (key.toLowerCase() == "internalcode") || (key.toLowerCase() == "description") || (key.toLowerCase().indexOf("adapter") !=-1)
 				no_data_attributes_array.push(key)
@@ -362,7 +367,7 @@ class filter
 					toprocess = []
 
 					content = "" 
-					content += "<span class = 'biom_valid_attr'>" + groupable_array[_i] + "</span><br/>"
+					content += "<span class = 'biom_valid_attr'>" + groupable_array[i] + "</span><br/>"
 
 					if groupable_array_content.length > 0
 						for j in [pointer_left..groupable_array_content.length-1]
@@ -379,7 +384,7 @@ class filter
 
 						if toprocess.length > 0
 							for k in [0..toprocess.length-1]
-								content += "<input type='checkbox' name='groupable_check_group' id='groupable_check_" + check_count + "' checked='checked' /><label for='groupable_check_" + check_count + "'></label><span class = 'biom_valid_attr_grp'>" + toprocess[_k] + "</span><br/>"	
+								content += "<input type='checkbox' name='groupable_check_group' id='groupable_check_" + check_count + "' checked='checked' /><label for='groupable_check_" + check_count + "'></label><span class = 'biom_valid_attr_grp'>" + toprocess[k] + "</span><br/>"	
 								check_count++
 
 							$('#groupable_att').append("<div class='overflowControl'>" + content + "</div>")
@@ -601,16 +606,18 @@ class filter
 		for i in [0..biom.shape[1]-1]
 
 			# If this is a not selected descriptive attribute, delete it 
-			for j in [0..no_data_attributes_array.length-1]
-				if @selected_no_data_attributes_array.indexOf(no_data_attributes_array[j]) == -1 
-					@removeFromObjectByKey(phinch.columns[i].metadata, no_data_attributes_array[j])
-
+			if no_data_attributes_array.length > 0
+				for j in [0..no_data_attributes_array.length-1]
+					if @selected_no_data_attributes_array.indexOf(no_data_attributes_array[j]) == -1
+						@removeFromObjectByKey(phinch.columns[i].metadata, no_data_attributes_array[j])
 			# If this is not a selected attributes, delete it 
-			for k in [0..attributes_array.length-1]
-				if @selected_attributes_array.indexOf(attributes_array[k]) == -1 
-					@removeFromObjectByKey(phinch.columns[i].metadata, attributes_array[k])
-
+			if attributes_array.length > 0
+				for k in [0..attributes_array.length-1]
+					if @selected_attributes_array.indexOf(attributes_array[k]) == -1
+						@removeFromObjectByKey(phinch.columns[i].metadata, attributes_array[k])
 			# Add the new phinch Id column back in the file 
+			if !phinch.columns[i].metadata?
+				phinch.columns[i].metadata = {}
 			phinch.columns[i].metadata['phinchID'] = phinchID_array[i]
 
 
