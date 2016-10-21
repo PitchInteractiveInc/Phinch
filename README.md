@@ -41,6 +41,7 @@ JSZip: http://stuk.github.io/jszip/<br>
 Lo-Dash: http://lodash.com/<br>
 lz-string: https://github.com/pieroxy/lz-string<br>
 md5-js: https://github.com/wbond/md5-js<br>
+biojs-io-biom: https://github.com/molbiodiv/biojs-io-biom<br>
 
 ## License
 The BSD 2-Clause License
