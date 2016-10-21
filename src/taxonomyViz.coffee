@@ -46,7 +46,7 @@ class taxonomyViz
 	phinchPalete = () -> return d3.scale.ordinal().range(fillCol);
 	globalColoring = phinchPalete()
 
-	backendServer = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/')) + "/server/"
+	backendServer = '//' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/')) + "/server/"
 	filterOptionJSON = {}
 
 	constructor: (_VizID, _LayerID) ->
@@ -224,8 +224,10 @@ class taxonomyViz
 							setTimeout(@doZip, 250)
 						)
 
-						# 8 export  
-						$('#export').click( @downloadChart )
+						# 8a export svg
+						$('#export').click( @downloadChartSVG )
+						# 8b export png
+						$('#export_png').click( @downloadChart )
 
 						# 9 share
 						$('#share').click( @shareViz )
@@ -1713,13 +1715,20 @@ class taxonomyViz
 		$('#downloadPreview img').attr('src', '');
 		$('#downloadPreview a').attr('href', '');
 		$('#exportHeader').html('Generating Image')
-		$('#exportShareDiv .icon-remove').click( (e) -> $('#exportShareDiv').fadeOut(500); ) 
+		$('#exportShareDiv .icon-remove').click( (e) -> $('#exportShareDiv').fadeOut(500) )
 
 		svg = $('svg')
 		svgStringData = svg.wrap('<p>').parent().html()
 		postData = {svg: svgStringData}
 		exportEndpoint = backendServer + 'export.php'
 		$.post(exportEndpoint, postData, @exportCallback)
+
+	downloadChartSVG: () =>
+		svg = $('svg')
+		svg.attr( "xmlns", "http://www.w3.org/2000/svg" );
+		svgStringData = svg.wrap('<p>').parent().html()
+		blob = new Blob([svgStringData], { type: "image/svg+xml;charset=utf-8" })
+		saveAs(blob, "Blackbird.svg");
 
 	doZip: () ->
 
