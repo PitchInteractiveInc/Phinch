@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS `SharedData` (
   `visualization_options` text NOT NULL,
   `date_uploaded` datetime NOT NULL,
   `countView` int(10) NOT NULL,
+  `filter_options_json` text NOT NULL,
   PRIMARY KEY (`SharedData_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
