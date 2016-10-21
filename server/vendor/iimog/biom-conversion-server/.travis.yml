@@ -1,0 +1,21 @@
+language: php
+php:
+  - '7.0'
+
+# Setup anaconda
+before_install:
+  - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/home/travis/miniconda3/bin:$PATH
+
+install:
+  - conda install --yes --file explicit-conda-spec.txt
+  - composer install
+
+script:
+  - phpunit
+
+after_success:
+  - travis_retry vendor/bin/coveralls
+  - travis_retry vendor/bin/test-reporter --coverage-report=test/cover/coverage.xml

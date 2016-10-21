@@ -1,0 +1,21 @@
+{
+    "name": "iimog/biom-conversion-server",
+    "description": "Conversion tool for the biom format",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Markus Ankenbrand",
+            "email": "markus.ankenbrand@uni-wuerzburg.de"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^5.4",
+        "squizlabs/php_codesniffer": "2.6",
+        "satooshi/php-coveralls": "^1.0",
+        "codeclimate/php-test-reporter": "dev-master"
+    },
+    "autoload": {
+        "psr-4": { "biomcs\\": "src/biomcs/"}
+    }
+}

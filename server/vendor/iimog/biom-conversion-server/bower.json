@@ -1,0 +1,29 @@
+{
+  "name": "biom-conversion-server",
+  "homepage": "https://github.com/molbiodiv/biom-conversion-server",
+  "authors": [
+    "Markus Ankenbrand <markus@ankenbrand.me>"
+  ],
+  "description": "Convert between biom version 1 and version 2",
+  "main": "",
+  "keywords": [
+    "biom",
+    "converter",
+    "hdf5",
+    "json",
+    "biom-format"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "biojs-io-biom": "^1.0.1",
+    "file-saver": "^1.3.2",
+    "bootstrap": "^3.3.7"
+  }
+}

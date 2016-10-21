@@ -1,0 +1,43 @@
+[
+    {
+        "name": "iimog/biom-conversion-server",
+        "version": "v1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/molbiodiv/biom-conversion-server.git",
+            "reference": "ff2b3d1a53e8c395a606d9b6ab379c9c5660edda"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/molbiodiv/biom-conversion-server/zipball/ff2b3d1a53e8c395a606d9b6ab379c9c5660edda",
+            "reference": "ff2b3d1a53e8c395a606d9b6ab379c9c5660edda",
+            "shasum": ""
+        },
+        "require-dev": {
+            "codeclimate/php-test-reporter": "dev-master",
+            "phpunit/phpunit": "^5.4",
+            "satooshi/php-coveralls": "^1.0",
+            "squizlabs/php_codesniffer": "2.6"
+        },
+        "time": "2016-09-07 09:42:37",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "biomcs\\": "src/biomcs/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Markus Ankenbrand",
+                "email": "markus.ankenbrand@uni-wuerzburg.de"
+            }
+        ],
+        "description": "Conversion tool for the biom format"
+    }
+]

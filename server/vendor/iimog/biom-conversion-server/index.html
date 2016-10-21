@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BiomCS - biom conversion server</title>
+    <!-- Bootstrap -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<script src="bower_components/file-saver/FileSaver.min.js"></script>
+<script src="bower_components/biojs-io-biom/build/biom.js"></script>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<div class="container">
+    <h1>Welcome to the biom conversion server 1.0.0</h1>
+    <p>
+    To use the API call convert.php with parameters "to" and "content".<br>
+    Parameter "to" can be "json" or "hdf5" while parameter "content" is the content of the file to convert in base64 encoding.
+    </p>
+
+    <p>
+    This server is used by the <a href="https://github.com/molbiodiv/biojs-io-biom">biojs-io-biom module</a>.
+    You can also use this page to convert your files directly:
+    </p>
+    <label class="btn btn-default btn-file">
+        Browse <input type="file" style="display: none;" id="input" onchange="loadBiomFile(this.files)">
+    </label>
+    <div id="bootstrap-message-area"></div>
+    <button type="button" class="btn btn-default download-button" aria-label="Left Align" id="v1button" style="display: none;">
+        Version 1 (json)
+    </button>
+    <button type="button" class="btn btn-default download-button" aria-label="Left Align" id="v2button" style="display: none;">
+        Version 2 (hdf5)
+    </button>
+</div>
+
+<script type="text/javascript">
+    var Biom = require('biojs-io-biom').Biom;
+    var currentBiom = null;
+    var filename;
+
+    function bootstrapAlert(message, type, details){
+        if(typeof type === 'undefined'){
+            type = 'info';
+        }
+        var div = $('<div class="alert alert-'+type+' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> '+message+'</div>');
+        $('#bootstrap-message-area').append(div);
+        if(typeof details !== 'undefined'){
+            var unique_id = 'collapse-'+Date.now();
+            div.append($(' <button type="button" class="btn btn-'+type+' pull-right" data-toggle="collapse" data-target="#'+unique_id+'">Details</button><div id="'+unique_id+'" class="collapse">'+details+'</div>'))
+        }
+    }
+
+    function loadBiomFile(files){
+        var reader = new FileReader();
+        reader.onload = function(c) {
+            filename = $('#input').val();
+            Biom.parse('', {conversionServer: 'convert.php', arrayBuffer: c.target.result}).then(
+                    function(biom){
+                        currentBiom = biom;
+                        bootstrapAlert('Success: <strong>'+filename+'</strong> could be interpreted as biom. Continue with the conversion.','success');
+                        $('.download-button').show();
+                    },
+                    function(fail){
+                        bootstrapAlert('Fail: <strong>'+filename+'</strong> could not be interpreted as biom: ','danger', fail.message);
+                        console.log(fail);
+                        $('.download-button').hide();
+                    }
+            );
+        };
+        reader.readAsArrayBuffer(files[0]);
+    }
+
+    $('document').ready(function(){
+        $('.download-button').on('click', function(event){
+            var asHdf5 = (this.id === 'v2button');
+            currentBiom.write({conversionServer: "convert.php", asHdf5: asHdf5}).then(
+                function(success){
+                    saveAs(new Blob([success], {type: "application/octet-stream"}), filename + (asHdf5 ? ".hdf5" : ".json"), true);
+                }
+                , function (fail) {
+                    bootstrapAlert('Fail: <strong>'+filename+'</strong> could not be interpreted as biom: '+fail.message,'danger');
+                    console.log(fail);
+                }
+            );
+        });
+    });
+</script>
+
+</body>
+</html>
