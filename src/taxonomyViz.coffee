@@ -1458,7 +1458,7 @@ class taxonomyViz
 					content += 'no samples'
 				else if count[i].length == 1
 					content += count[i][0]
-				else if count[i].length > 2	
+				else if count[i].length >= 2
 					for j in [0..count[i].length-2]
 						content += count[i][j] + ', '
 					content += count[i][count[i].length - 1]
@@ -1531,7 +1531,7 @@ class taxonomyViz
 						content += '<b>' + attributes_array[i] + '</b>:&nbsp;&nbsp;' 
 						if count[i].length == 1
 							content += selected_phinchID_array[count[i][0]] + ' (<i>' + count[i][0] + '</i>)'
-						else if count[i].length > 2	
+						else if count[i].length >= 2
 							for j in [0..count[i].length-2]
 								content += selected_phinchID_array[count[i][j]] + ' (<i>' + count[i][j] + '</i>), '
 							content += selected_phinchID_array[count[i][count[i].length - 1]] + ' (<i>' + count[i][count[i].length - 1] + '</i>)'
