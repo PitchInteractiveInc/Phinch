@@ -1224,7 +1224,7 @@ class taxonomyViz
 	drawBasicDonut: ( donutID, donutName, donutData, donutContainedSamp, posID ) -> 
 
 		radius = 100
-		yScale = d3.scale.pow().exponent(.4).domain([0, d3.max(donutData)]).range([0, 100]) # linear 
+		yScale = d3.scale.linear().domain([0, d3.max(donutData)]).range([0, 100]) # linear
 		arc = d3.svg.arc().innerRadius(50).outerRadius(radius)
 		pie = d3.layout.pie().sort(null).value( (d) -> return yScale(d) )
 
