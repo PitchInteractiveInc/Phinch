@@ -384,13 +384,12 @@ class filter
 
 						if toprocess.length > 0
 							for k in [0..toprocess.length-1]
-								content += "<input type='checkbox' name='groupable_check_group' id='groupable_check_" + check_count + "' checked='checked' /><label for='groupable_check_" + check_count + "'></label><span class = 'biom_valid_attr_grp'>" + toprocess[k] + "</span><br/>"	
+								content += "<input type='checkbox' name='groupable_check_group' id='groupable_check_" + check_count + "' class='groupable_check' checked='checked' /><label for='groupable_check_" + check_count + "'></label><span class = 'biom_valid_attr_grp'>" + toprocess[k] + "</span><br/>"
 								check_count++
 
 							$('#groupable_att').append("<div class='overflowControl'>" + content + "</div>")
 							
-							for k in [0..toprocess.length-1]
-								$('#groupable_check_' + (k+1) ).click () => @livePreview()
+				$('.groupable_check').click () => @livePreview()
 
 	# generate the thumbnails for users to filter 
 	generateThumbnails: () ->
