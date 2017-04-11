@@ -1,0 +1,24 @@
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: linux-64
+@EXPLICIT
+https://conda.anaconda.org/bioconda/linux-64/biom-format-2.1.5-py35_3.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/click-6.6-py35_0.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/future-0.15.2-py35_0.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/h5py-2.6.0-np111py35_1.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/hdf5-1.8.16-0.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/libgfortran-3.0.0-1.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/mkl-11.3.3-0.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/numpy-1.11.1-py35_0.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/openssl-1.0.2h-1.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/pip-8.1.2-py35_0.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/python-3.5.2-0.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/readline-6.2-2.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/scipy-0.17.1-np111py35_1.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/setuptools-23.0.0-py35_0.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/six-1.10.0-py35_0.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/sqlite-3.13.0-0.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/tk-8.5.18-0.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/wheel-0.29.0-py35_0.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/xz-5.2.2-0.tar.bz2
+https://repo.continuum.io/pkgs/free/linux-64/zlib-1.2.8-3.tar.bz2

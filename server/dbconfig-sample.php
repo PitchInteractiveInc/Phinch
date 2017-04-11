@@ -7,7 +7,6 @@ $dbConfig = array(
 );
 
 
-$db = new PDO('mysql:host=' . $dbConfig['host'].';dbname=' . $dbConfig['host'],
+$db = new PDO('mysql:host=' . $dbConfig['host'].';dbname=' . $dbConfig['dbname'],
  $dbConfig['username'], $dbConfig['password']);
-var_dump($db)
 ?>

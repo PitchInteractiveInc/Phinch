@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<ruleset name="PHP_CodeSniffer">
+ <description>The coding standard for biom-conversion-server.</description>
+
+ <file>convert.php</file>
+ <file>src</file>
+ <file>test</file>
+
+ <exclude-pattern>config.php</exclude-pattern>
+
+ <arg name="extensions" value="php"/>
+ <arg name="report" value="full"/>
+ <arg name="report" value="summary"/>
+ <arg name="colors"/>
+ <arg value="p"/>
+
+ <rule ref="PSR2"/>
+</ruleset>

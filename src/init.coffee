@@ -16,8 +16,7 @@ class init
 			$('#GraphGallery').width(300);
 			$( "#GraphGallery .col3").width(window.screen.width - 30);
 
-		else if ( !navigator.userAgent.match(/Chrome/i) || !window.File || !window.FileReader || !window.FileList || !window.Blob )
-			# || navigator.userAgent.match(/Firefox/i) || navigator.userAgent.match(/Safari/) )  # Support only chrome now
+		else if ( !window.File || !window.FileReader || !window.FileList || !window.Blob )
 			$('#NotSupported').show();
 			$('#top_sec').height(50);
 			$('#viz_container, #bottom_sec, .pageName, hr, .orange_btn, #readFile, #recent, #graphNameCont').hide();
@@ -50,7 +49,7 @@ class init
 			$("#GraphGallery .col3").off('click')
 			$('#goBackFilter').attr("disabled", "disabled")
 
-			hostURL = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/'))
+			hostURL = '//' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/'))
 			shareURL = hostURL + "/server/getSharedData.php?shareID=" + results[1];
 			$.getJSON shareURL, (shareJSON) =>
 				console.log(shareJSON);

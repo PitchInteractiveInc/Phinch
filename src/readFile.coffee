@@ -1,6 +1,7 @@
 class readFile
 	reader = new FileReader()
 	progress = document.querySelector('.percent')
+	Biom = require('biojs-io-biom').Biom;
 
 	constructor: () ->
 		db.open(
@@ -18,15 +19,44 @@ class readFile
 				@checkFile(files)
 		false)
 
+		# Load by URL, requires CORS at remote server
+		query = window.location.search.substring(1)
+		raw_vars = query.split("&")
+		params = {}
+		for v in raw_vars
+			[key, val] = v.split("=")
+			params[key] = decodeURIComponent(val)
+		if params['biomURL']?
+			$('#loadTestFile').hide()
+			$('#fileDrag').hide()
+			$('#progress_bar').hide()
+			$('#frmUpload').hide()
+			$('#parse').html('loading URL...&nbsp;&nbsp;<i class="icon-spinner icon-spin icon-large"></i>');
+			$.get(params['biomURL'], (urlData) =>
+				if urlData.constructor != String
+					urlData = JSON.stringify( urlData )
+				biomToStore = {}
+				biomToStore.name = params['biomURL']
+				biomToStore.size = urlData.length
+				biomToStore.data = urlData
+				d = new Date();
+				biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
+				@server.biom.add(biomToStore).done () ->
+					setTimeout( "window.location.href = 'preview.html'", 1)
+			)
+
+
 		# load test file
 		document.getElementById('loadTestFile').addEventListener('click', (evt) =>
 			$('#loadTestFile').html('loading...&nbsp;&nbsp;<i class="icon-spinner icon-spin icon-large"></i>');
-			hostURL = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/'))
+			hostURL = '//' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/'))
 			testfile = hostURL + '/data/testdata.biom'  ## Dev TODO http://phinch.org/data/testdata.biom
 			$.get(testfile, (testdata) => 
+				if testdata.constructor != String
+					testdata = JSON.stringify( testdata )
 				biomToStore = {}
 				biomToStore.name = 'testdata.biom'
-				biomToStore.size = 15427024
+				biomToStore.size = testdata.length
 				biomToStore.data = testdata
 				d = new Date();
 				biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
@@ -47,12 +77,7 @@ class readFile
 		if files.length == 0
 			alert "Please select a file!"
 		else 	
-			filetype = files[0].name.split("").reverse().join("").split(".")[0].toLowerCase()
-			acceptable_filetype = ["moib",  "txt"]
-			if acceptable_filetype.indexOf(filetype) == -1
-				alert "Please upload .biom or or .txt file!"
-			else 
-				@readBlob(files[0])
+			@readBlob(files[0])
 
 	handleFileSelect: (evt) =>
 		progress.style.width = '0%'
@@ -89,23 +114,29 @@ class readFile
 
 	# store new biom file to the browser indexeddb
 	readBlob: (file) =>
-		reader.onloadend = (evt) => 
+		reader.onloadend = (evt) =>
 			if evt.target.readyState == FileReader.DONE
 				# JSON.parse(reader.result)
-				biomToStore = {}
-				biomToStore.name = file.name
-				biomToStore.size = file.size
-				biomToStore.data = evt.target.result
-				d = new Date();
-				biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
-				console.log @
-				if JSON.parse(biomToStore.data).format.indexOf("Biological Observation Matrix") != -1
-					@server.biom.add(biomToStore).done (item) => 
-						@currentData = item
-						setTimeout( "window.location.href = 'preview.html'", 2000)
-				else 
-					alert "Incorrect biom format field! Please check your file content!"
-		reader.readAsBinaryString(file)
+				Biom.parse('', {conversionServer: 'server/convert.php', arrayBuffer: evt.target.result}).then(
+					(biom) =>
+						biomToStore = {}
+						biomToStore.name = file.name
+						biomToStore.size = file.size
+						biom.matrix_type = 'sparse'
+						biom.write().then(
+							(biomData) =>
+								biomToStore.data = biomData
+								d = new Date();
+								biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
+								console.log @
+								@server.biom.add(biomToStore).done (item) =>
+									@currentData = item
+									setTimeout( "window.location.href = 'preview.html'", 2000)
+						)
+					(fail) =>
+						alert "Error loading biom file!"
+				)
+		reader.readAsArrayBuffer(file)
 
 	# list 10 most recent files uploaded to this browser
 	listRecentFiles: () => 

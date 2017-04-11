@@ -1,0 +1,2 @@
+coverage_clover: test/cover/coverage.xml
+json_path: test/cover/coveralls-upload.json

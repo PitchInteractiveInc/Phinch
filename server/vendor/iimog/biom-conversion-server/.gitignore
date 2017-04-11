@@ -1,0 +1,4 @@
+/vendor/
+.idea/
+test/cover
+bower_components
