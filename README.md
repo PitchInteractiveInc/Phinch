@@ -21,7 +21,7 @@ biom add-metadata -i otu_table_mc2_w_tax.biom -o otu_table_mc2_w_tax_and_metadat
 Phinch is written in CoffeeScript (http://coffeescript.org/), a programming language that compiles into JavaScript. To install Phinch locally, you will need to install CoffeeScript and compile the code, as follows:
 ```
 # install CoffeeScript
-sudo npm install -g coffee-script
+sudo npm install -g coffee-script@1.12.7
 
 # cd to your local phinch folder
 coffee -o scripts/ -cw src/
