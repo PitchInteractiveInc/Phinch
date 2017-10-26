@@ -1,10 +1,10 @@
 ![VizGallery](https://raw.githubusercontent.com/shujianbu/Phinch/master/viz_gallery.png)
 
-## About 
+## About
 
-[Phinch](http://phinch.org/) is an open-source framework for visualizing biological data, funded by a grant from the [Alfred P. Sloan foundation](http://www.sloan.org/). This project represents an interdisciplinary collaboration between [Pitch Interactive](http://www.pitchinteractive.com/beta/index.php), a data visualization studio in Oakland, CA, and biological researchers at [UC Davis](http://www.ucdavis.edu/). Whether it's genes, proteins, or microbial species, Phinch provides an interactive visualization tool that allows users to explore and manipulate large biological datasets. 
+[Phinch](http://phinch.org/) is an open-source framework for visualizing biological data, funded by a grant from the [Alfred P. Sloan foundation](http://www.sloan.org/). This project represents an interdisciplinary collaboration between [Pitch Interactive](http://www.pitchinteractive.com/beta/index.php), a data visualization studio in Oakland, CA, and biological researchers at [UC Davis](http://www.ucdavis.edu/). Whether it's genes, proteins, or microbial species, Phinch provides an interactive visualization tool that allows users to explore and manipulate large biological datasets.
 
-[Phinch](http://phinch.org/) is optimized for use in the Chrome browser. It currently supports downstream analyses of .biom files ([Biological Observation Matrix](http://biom-format.org/), a JSON-formatted file type typically used to represent marker gene OTUs or metagenomic data). All sample metadata and taxonomy/ontology information MUST be embedded in the .biom file before being uploaded. 
+[Phinch](http://phinch.org/) is optimized for use in the Chrome browser. It currently supports downstream analyses of .biom files ([Biological Observation Matrix](http://biom-format.org/), a JSON-formatted file type typically used to represent marker gene OTUs or metagenomic data). All sample metadata and taxonomy/ontology information MUST be embedded in the .biom file before being uploaded.
 
 ## Data
 
@@ -21,13 +21,13 @@ biom add-metadata -i otu_table_mc2_w_tax.biom -o otu_table_mc2_w_tax_and_metadat
 Phinch is written in CoffeeScript (http://coffeescript.org/), a programming language that compiles into JavaScript. To install Phinch locally, you will need to install CoffeeScript and compile the code, as follows:
 ```
 # install CoffeeScript
-sudo npm install -g coffee-script
+sudo npm install -g coffee-script@1.12.7
 
-# cd to your local phinch folder 
-coffee -o scripts/ -cw src/ 
+# cd to your local phinch folder
+coffee -o scripts/ -cw src/
 ```
 
-## Libraries 
+## Libraries
 D3: http://d3js.org/ <br>
 IndexedDB: http://aaronpowell.github.io/db.js/<br>
 FileSaver: https://github.com/eligrey/FileSaver.js/<br>
