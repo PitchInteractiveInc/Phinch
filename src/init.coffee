@@ -15,13 +15,11 @@ class init
 			$('.descPara').height('auto');
 			$('#GraphGallery').width(300);
 			$( "#GraphGallery .col3").width(window.screen.width - 30);
-
-		else if ( !navigator.userAgent.match(/Chrome/i) || !window.File || !window.FileReader || !window.FileList || !window.Blob )
-			# || navigator.userAgent.match(/Firefox/i) || navigator.userAgent.match(/Safari/) )  # Support only chrome now
+		else if ( ( !navigator.userAgent.match(/Chrome/i) && !navigator.userAgent.match(/Firefox/i) && !navigator.userAgent.match(/Safari/) ) || !window.File || !window.FileReader || !window.FileList || !window.Blob )
 			$('#NotSupported').show();
 			$('#top_sec').height(50);
 			$('#viz_container, #bottom_sec, .pageName, hr, .orange_btn, #readFile, #recent, #graphNameCont').hide();
-			alert('Chrome Browser Recommended! Your browser does not support the Phinch framework!');
+			alert('Your browser does not support the Phinch framework. We recommended using a recent version of Chrome, Firefox, or Safari');
 		else
 			@helpMenu()
 			switch page
