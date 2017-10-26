@@ -15,7 +15,8 @@ class init
 			$('.descPara').height('auto');
 			$('#GraphGallery').width(300);
 			$( "#GraphGallery .col3").width(window.screen.width - 30);
-		else if ( ( !navigator.userAgent.match(/Chrome/i) && !navigator.userAgent.match(/Firefox/i) && !navigator.userAgent.match(/Safari/) ) || !window.File || !window.FileReader || !window.FileList || !window.Blob )
+		else if ( !window.File || !window.FileReader || !window.FileList || !window.Blob )
+			# ( !navigator.userAgent.match(/Chrome/i) && !navigator.userAgent.match(/Firefox/i) && !navigator.userAgent.match(/Safari/) )
 			$('#NotSupported').show();
 			$('#top_sec').height(50);
 			$('#viz_container, #bottom_sec, .pageName, hr, .orange_btn, #readFile, #recent, #graphNameCont').hide();
