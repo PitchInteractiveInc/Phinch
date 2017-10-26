@@ -112,7 +112,7 @@ class readFile
 		@server.biom.query().all().execute().done (results) =>
 			if results.length > 0
 				for p in [0..results.length-1]
-					if results[p].name == "testdata.biom"
+					if p < results.length and results[p].name == "testdata.biom"
 						@server.biom.remove(results[p].id).done # () -> console.log 'remove '
 						results.splice(p,1)
 

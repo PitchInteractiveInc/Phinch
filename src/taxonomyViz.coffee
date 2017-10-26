@@ -1732,43 +1732,22 @@ class taxonomyViz
 
 		)
 		w.postMessage({"o1": JSON.stringify(biom), "o2": JSON.stringify(obj_log), "filename": filename})
-
 	shareViz: () =>
 		biomData = JSON.stringify(biom)
-		# console.log 'share'
-		# console.log CryptoJS.SHA1(biomData).toString()
 		$('#sharingInfo').show()
-		if shareFlag
-			$('#sharingInfo .shareForm input, #sharingInfo .shareForm label, #sharingInfo .shareForm textarea').show();
-			$('#sharingInfo #shareToEmail').val("")
-			$('#sharingInfo #shareToName').val("")
-			$('#sharingInfo .results').hide();
-		else
-			$('#sharingInfo .loadingText').text('Preparing data ... ')
+		$('#sharingInfo .shareForm input, #sharingInfo .shareForm label, #sharingInfo .shareForm textarea').show();
+		$('#sharingInfo #shareToEmail').val("")
+		$('#sharingInfo #shareToName').val("")
+		#$('#sharingInfo #shareFromEmail').val("")
+		#$('#sharingInfo #shareFromName').val("")
 
-		w = new Worker('scripts/hashWorker.js')
-		w.addEventListener('message', (e) =>
-			console.log 'worker message'
-			# console.log e
-			hashValue = e.data
-			@shareHashExists(hashValue)
-		)
-		w.postMessage(biomData)
-	
-	shareHashExists: (hash) ->
-		@shareHash = hash
-		hashExistsEndpoint = backendServer + "hashExists.php"
-		$.get(hashExistsEndpoint, {hash: hash}, @shareHashExistsCallback)
-	
-	shareHashExistsCallback: (data, textStatus, xhr) =>
-		# console.log data
-		@shareHashExists = data
+		$('#sharingInfo .results').hide();
+
 		$('#sharingInfo .loading').hide()
 		$('#sharingInfo .shareForm').show()
 		hideShare = (e) -> $('#sharingInfo').fadeOut(200);
 		$('#sharingInfo .icon-remove').off('click', hideShare).on('click', hideShare) 
 		$('#sharingInfo .shareButton').off('click', @submitShare).on('click', @submitShare)
-	
 	submitShare: () =>
 		console.log 'submit share'
 		console.log @shareHash
@@ -1782,46 +1761,51 @@ class taxonomyViz
 			$('#sharingInfo .results').remove();
 			$('#sharingInfo .results').show();			
 			results = d3.select('#sharingInfo').append('div').attr('class','results')
-			results.append('div').html('Your visualization has been shared. <br/> Wait until the link is generated below: ')
+			results.append('div').html('Your visualization has been shared.')
 			@shareData = {
 				from_email: $('#sharingInfo #shareFromEmail').val(),
 				to_email: $('#sharingInfo #shareToEmail').val(),
 				from_name: $('#sharingInfo #shareFromName').val(),
 				to_name: $('#sharingInfo #shareToName').val(),
 				notes: $('#sharingInfo #shareNotes').val(),
-				biom_file_hash: @shareHash,
 				layer_name: layerName,
 				filter_options_json: JSON.stringify(filterOptionJSON),
-				viz_name: vizName
+				viz_name: vizName,
+				biomFile: JSON.stringify(biom)
+
 			}
-			if @shareHashExists is 'true'
-				@shareRequest()
-			else
-				@generateBiomZip()
+			@shareRequest()
 		else
 			alert("Invalid email address ... ")
 
-	generateBiomZip: () =>
-		biomData = JSON.stringify(biom)
-		console.log biomData.length
-		w = new Worker('scripts/zipWorker.js')
-		w.addEventListener('message', (e) =>
-			# console.log e.data
-			@shareData.biomFile = e.data
-			@shareRequest()
-		)
-		w.postMessage(biomData)
 	
 	shareRequest: () =>
-		shareEndpoint = backendServer + "shareViz.php"
-		$.post(shareEndpoint, @shareData, @shareCallback, 'json')
+		shareEndpoint = backendServer + "shareViz2.php"
+#		dataToSend = new FormData();
+#		dataToSend.append('data', new Blob([ @shareData ], { type: 'text/json' }))
+		console.log @shareData
+		$.ajax({
+			url: shareEndpoint,
+			#data: dataToSend,
+			data: JSON.stringify(@shareData)
+			processData: false,
+			contentType: 'multipart/form-data', 
+			mimeType: 'multipart/form-data',
+			type: 'POST',
+			dataType: 'json'
+			success: @shareCallback,
+			error: () ->
+				console.log 'error'
+				console.log arguments
+		})
+		#$.post(shareEndpoint, @shareData, @shareCallback, 'json')
 
 	shareCallback: (data, textStatus, xhr) =>
 		console.log(data)
 		if data.status is 'ok'
 			src = document.location.origin + document.location.pathname + "?shareID=" + data.urlHash
 			d3.select('#sharingInfo .results').append('a').attr('href',src).attr('target','_blank').text(src)
-
+	
 	validateEmail: (email) ->
 		re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 		return re.test(email);

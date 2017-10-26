@@ -63,11 +63,14 @@ class init
 				$('#share_box .info').eq(4).find('span').html(shareJSON.LayerName)
 
 				$.get(shareFile, (data) =>
-					w = new Worker('scripts/unzipWorker.js')
-					w.addEventListener('message', (e) =>
-						@saveIndexedDb(e.data, shareJSON, optionJSON)
-					)
-					w.postMessage(data)
+					if shareJSON.biom_file_hash is null
+						@saveIndexedDb(data, shareJSON, optionJSON)
+					else
+						w = new Worker('scripts/unzipWorker.js')
+						w.addEventListener('message', (e) =>
+							@saveIndexedDb(e.data, shareJSON, optionJSON)
+						)
+						w.postMessage(data)
 				).fail () ->
 					alert( "This shared link no long exists ..." )
 
