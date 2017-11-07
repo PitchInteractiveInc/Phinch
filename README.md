@@ -17,6 +17,15 @@ Second, add your sample metadata to your .biom file. Where your input file (-i) 
 ```Python
 biom add-metadata -i otu_table_mc2_w_tax.biom -o otu_table_mc2_w_tax_and_metadata.biom -m sample_metadata_mapping_file.txt
 ```
+
+### BIOM File Format
+
+Currently Phinch works with BIOM file type 1.0, which is formatted as JSON. If you're using QIIME 1.9 or newer, it will produce BIOM file type 2.1, which is formatted as HDF5. The following command, availible with the [biom-format](http://biom-format.org/) package will create a new JSON-formatted BIOM file from a HDF5-formatted BIOM file: 
+
+```
+biom convert -i otu_table.biom -o otu_table_json.biom --table-type="OTU table" --to-json
+```
+
 ## Run the repo locally
 Phinch is written in CoffeeScript (http://coffeescript.org/), a programming language that compiles into JavaScript. To install Phinch locally, you will need to install CoffeeScript and compile the code, as follows:
 ```
