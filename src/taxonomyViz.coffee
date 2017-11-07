@@ -666,7 +666,7 @@ class taxonomyViz
 						searchList.push(ui.content[i].value)
 					content = '<i class="icon-remove icon-large" style="float:right; margin: 5px 10px 0 0;" id = "iconRemover"></i><ul>'
 					for i in [0..searchList.length-1]
-						if deleteOTUArr.indexOf(i) != -1 
+						if deleteOTUArr.indexOf(availableTags.indexOf(searchList[i])) != -1
 							content += '<li><span style = "display:block; background-color:#aaa; height: 12px; width: 12px; float: left; margin: 2px 0px;" ></span>&nbsp;&nbsp;'
 							content += searchList[i] + '&nbsp;&nbsp;<em id="search_' + i + '">show</em></li>'
 						else
@@ -675,18 +675,18 @@ class taxonomyViz
 					content += '</ul>'
 					$('#autoCompleteList').append(content)
 					$('#autoCompleteList ul li').each (index) ->
-						$(this).mouseout () -> d3.selectAll('g.taxonomy').filter((d,i) -> (i is index) ).style('fill', fillCol[index%20] )							
-						$(this).mouseover () -> d3.selectAll('g.taxonomy').filter((d,i) -> (i is index) ).style('fill', d3.rgb( fillCol[index%20] ).darker() )
+						$(this).mouseout () -> d3.selectAll('g.taxonomy').filter((d,i) -> (i is availableTags.indexOf(searchList[index])) ).style('fill', fillCol[availableTags.indexOf(searchList[index])%20] )
+						$(this).mouseover () -> d3.selectAll('g.taxonomy').filter((d,i) -> (i is availableTags.indexOf(searchList[index])) ).style('fill', d3.rgb( fillCol[availableTags.indexOf(searchList[index])%20] ).darker() )
 
 						$(this).click () ->
 							if $('#search_' + index).html() == 'hide'
 								$('#search_' + index).html('show') 
 								$(this).find('span').css('background-color', '#aaa').css('color', '#aaa')
-								deleteOTUArr.push( index )
+								deleteOTUArr.push( availableTags.indexOf(searchList[index]) )
 							else
 								$('#search_' + index).html('hide') 
-								$(this).find('span').css('background-color', fillCol[index%20] ).css('color', '#000')
-								deleteOTUArr.splice( deleteOTUArr.indexOf(index), 1)
+								$(this).find('span').css('background-color', fillCol[availableTags.indexOf(searchList[index])%20] ).css('color', '#000')
+								deleteOTUArr.splice( deleteOTUArr.indexOf(availableTags.indexOf(searchList[index])), 1)
 							that.drawTaxonomyBar()
 
 					$('#iconRemover').click () -> $('#autoCompleteList').fadeOut(200)
@@ -1224,7 +1224,7 @@ class taxonomyViz
 	drawBasicDonut: ( donutID, donutName, donutData, donutContainedSamp, posID ) -> 
 
 		radius = 100
-		yScale = d3.scale.pow().exponent(.4).domain([0, d3.max(donutData)]).range([0, 100]) # linear 
+		yScale = d3.scale.linear().domain([0, d3.max(donutData)]).range([0, 100]) # linear
 		arc = d3.svg.arc().innerRadius(50).outerRadius(radius)
 		pie = d3.layout.pie().sort(null).value( (d) -> return yScale(d) )
 
@@ -1453,7 +1453,7 @@ class taxonomyViz
 					content += 'no samples'
 				else if count[i].length == 1
 					content += count[i][0]
-				else if count[i].length > 2	
+				else if count[i].length >= 2
 					for j in [0..count[i].length-2]
 						content += count[i][j] + ', '
 					content += count[i][count[i].length - 1]
@@ -1526,7 +1526,7 @@ class taxonomyViz
 						content += '<b>' + attributes_array[i] + '</b>:&nbsp;&nbsp;' 
 						if count[i].length == 1
 							content += selected_phinchID_array[count[i][0]] + ' (<i>' + count[i][0] + '</i>)'
-						else if count[i].length > 2	
+						else if count[i].length >= 2
 							for j in [0..count[i].length-2]
 								content += selected_phinchID_array[count[i][j]] + ' (<i>' + count[i][j] + '</i>), '
 							content += selected_phinchID_array[count[i][count[i].length - 1]] + ' (<i>' + count[i][count[i].length - 1] + '</i>)'
