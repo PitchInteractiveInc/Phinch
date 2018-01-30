@@ -1692,31 +1692,31 @@ class taxonomyViz
 					$('#PercentValue,#legend_header,#count_header').fadeIn(fadeInSpeed)
 		})
 
-	exportCallback: (data, textStatus, xhr) ->
-		convertResult = JSON.parse(data)
-		# console.log 'exportCallback!'
-		# console.log convertResult
-		if convertResult['code'] is 0 and convertResult['err'] is ''
-			$('#downloadPreview img').attr('src', 'data:image/png;base64,' + convertResult['out']);
-			$('#downloadPreview a').attr('href', 'data:image/png;base64,' + convertResult['out']);
-			$('#exportHeader').html('Preview Image, click to download!')
+	exportCallback: (url) ->
+		$('#downloadPreview img').attr('src', url);
+		$('#downloadPreview a').attr('href', url);
+		$('#exportHeader').html('Preview Image, click to download!')
+		$('#exportLoading').hide();
 
-		else
-			$('#exportHeader').html('unable to download image!')
-		$('#exportLoading').fadeOut(500);
-	
+
 	downloadChart: () =>
-		$('#exportShareDiv, #exportLoading').fadeIn(500);
+		$('#exportShareDiv').fadeIn(500);
 		$('#downloadPreview img').attr('src', '');
 		$('#downloadPreview a').attr('href', '');
 		$('#exportHeader').html('Generating Image')
-		$('#exportShareDiv .icon-remove').click( (e) -> $('#exportShareDiv').fadeOut(500); ) 
+		$('#exportShareDiv .icon-remove').click( (e) -> $('#exportShareDiv').fadeOut(500); )
 
 		svg = $('svg')
-		svgStringData = svg.wrap('<p>').parent().html()
-		postData = {svg: svgStringData}
-		exportEndpoint = backendServer + 'export.php'
-		$.post(exportEndpoint, postData, @exportCallback)
+		serializer = new XMLSerializer()
+		source = serializer.serializeToString(svg[0])
+		if !source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)
+			source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+		if !source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)
+			source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+		source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+		url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
+
+		@exportCallback(url)
 
 	doZip: () ->
 
