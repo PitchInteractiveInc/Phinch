@@ -56,7 +56,7 @@
                 Where your input file (-i) is your OTU Map (defining clusters of raw sequences reads), and taxonomy file (-t) contains the taxonomy or gene ontology strings that correspond to each OTU.</br></br>
                 Second, add your sample metadata to your .biom file. In QIIME version 1.8 this can be done using the following command:</br></br>
                     <code>biom add-metadata -i otu_table_mc2_w_tax.biom -o otu_table_mc2_w_tax_and_metadata.biom -m sample_metadata_mapping_file.txt</code></br></br>
-                In QIIME version 1.7 or below, you can add metadata with the following command:</br></br> 
+                In QIIME version 1.7 or below, you can add metadata with the following command:</br></br>
                     <code>add_metadata.py -i otu_table_mc2_w_tax.biom -o otu_table_mc2_w_tax_and_metadata.biom -m sample_metadata_mapping_file.txt</code></br></br>
                 Where your input file (-i) is your .biom file from the previous step, and your mapping file (-m) is a tab-delimited file containing sample metadata (<a href="http://qiime.org/documentation/file_formats.html#metadata-mapping-files" target="_blank">formatted according to these QIIME instructions</a>).</br></br>
                 After these two steps, you're ready to upload.</br></br>
@@ -69,7 +69,7 @@
                 Similarly, any geographic coordinates or GPS data must be entered as <a href="http://en.wikipedia.org/wiki/Decimal_degrees" target="_blank"></a>decimal degrees (the format used by GoogleMaps, e.g. -90.017926).  We recommend using separate columns labeled “Latitude” and “Longitude” in your original sample metadata mapping file, to ensure that GPS metadata is correctly detected.</br></br>
 
                 To label your samples in Phinch and export graphics with human-readable IDs, include a column in your metadata mapping file with the header labelled as “phinchID” (these entries can be the same or different as the first SampleID column). The phinchID values will be pulled through into the visualizations to populate graph axes. If this column is not included, an arbitrary numerical ID will be assigned to each sample.</br></br>
-                
+
             </p>
         </div>
     </section>
@@ -79,12 +79,12 @@
         <button class="orange_btn" id="export">EXPORT&nbsp;&nbsp;<i class="icon-chart icon-large"></i></button>
         <button class="orange_btn" id="downloadFile">FILES&nbsp;&nbsp;<i class="icon-download icon-large"></i></button>
         <a href="viz.html"><button id="goBackGallery" class="orange_btn">BACK TO GALLERY</button></a>
-            
+
         <p id = "file_details"></p>
-        <select id = "attributes_dropdown" style="display: none;"></select>  
+        <select id = "attributes_dropdown" style="display: none;"></select>
 
     </section>
-    
+
     <section id = "NotSupported">
         <br /> <br />
         <h1>NOT SUPPORTED</h1>
@@ -134,7 +134,7 @@
     </section>
 
     <section id = "viz_container">
-        
+
         <div id="layerSwitch">
 
             <div class="rectLayer selectedLayer" id="layer_1">Kingdom</div>
@@ -165,7 +165,7 @@
                 <button id = "bubbleBtn" class="clicked">BUBBLE</button>
                 <button id = "listBtn">LIST</button>
             </div>
-        
+
             <div id="MsgBox"></div>
         </div>
 
@@ -175,7 +175,7 @@
                 <i class="icon-circle icon-large "></i>
                 <i class="icon-circle icon-large icon-15x"></i>
             </div>
-    
+
             <div id="bubbleSliderLeft"></div>
             <div id="bubbleSliderRight"></div>
             <div id="bubbleSlider"></div>
@@ -187,7 +187,7 @@
         <input type="text" name="search" placeholder="  search..." id = 'tags'>
         <div id = "autoCompleteList"></div>
         <div id="fake_taxonomy_container"></div>
-        
+
         <div id="legend_header">TOP SEQS</div>
         <div id="legend_container"></div>
 
@@ -237,7 +237,7 @@
     <script src="lib/lodash.min.js"></script>
     <script src="lib/FileSaver.js"></script>
     <script src="lib/naturalSort.js"></script>
-    
+
     <script src="scripts/taxonomyViz.js"></script>
     <script src="scripts/init.js"></script>
     <script> var app; window.onload = function() { app = new init('viz');} </script>
