@@ -2,6 +2,18 @@
 #header { height: 80px; background: #f0f0f0;}
 #top_sec { height: 480px; background-color: #babcbe;}
 
+#headsup {
+	background: #fea027;
+	padding: 1rem 2rem;
+	margin: auto;
+	text-align: center
+}
+
+#headsup a {
+	text-decoration: none;
+	color: #241f20;
+}
+
 #menu { font-size: 16px; float: right; margin: 30px 0 0 0;}
 #menu li { list-style: none; float: left; margin: 0 20px 0 0;}
 #menu li a { text-decoration: none; color: #000;}
@@ -23,7 +35,8 @@
 	        transition:background 0.2s;
 }
 .file_btn:hover { background: #babcbe; color: #241f20;}
-#readFile { width: 800px; margin: 120px auto 0 auto;}
+/*#readFile { width: 800px; margin: 120px auto 0 auto;}*/
+#readFile { width: 800px; margin: 80px auto 0 auto;}
 #frmUpload { width: 797px; height: 60px; border-bottom: none; display: inline-block;}
 #fakeBrowse { width: 200px; height: 60px;  float: right; border: none; font-size: 20px;}
 #txtFakeText { width: 585px; height: 58px; font-size: 18px;  text-align: center; border: none;}

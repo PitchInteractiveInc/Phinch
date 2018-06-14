@@ -87,7 +87,6 @@ class filter
 					if $('#unit_' + (i+1) ).val() != @selected_attributes_units_array[i] and $('#unit_' + (i+1) ).val() != ''
 						selected_attributes_units_array[i] = $('#unit_' + (i+1) ).val()
 			sampleToStore.selected_attributes_units_array = @selected_attributes_units_array
-
 			s.biomSample.add( sampleToStore ).done (item) ->
 				setTimeout( "window.location.href = 'viz.html'" )
 
