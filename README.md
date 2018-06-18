@@ -1,5 +1,8 @@
 ![VizGallery](https://raw.githubusercontent.com/shujianbu/Phinch/master/viz_gallery.png)
 
+## Heads Up
+A new version of Phinch is in the works! Watch this space. We'll share more about our new look, bug fixes, and new features later this year. 
+
 ## About
 
 [Phinch](http://phinch.org/) is an open-source framework for visualizing biological data, funded by a grant from the [Alfred P. Sloan foundation](http://www.sloan.org/). This project represents an interdisciplinary collaboration between [Pitch Interactive](http://www.pitchinteractive.com/beta/index.php), a data visualization studio in Oakland, CA, and biological researchers at [UC Davis](http://www.ucdavis.edu/). Whether it's genes, proteins, or microbial species, Phinch provides an interactive visualization tool that allows users to explore and manipulate large biological datasets.
