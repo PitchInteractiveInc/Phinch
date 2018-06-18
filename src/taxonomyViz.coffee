@@ -12,7 +12,7 @@ class taxonomyViz
 	bubbleView = true
 	shareFlag = false
 	sortIdFlag = false
-	sortDescFlag = false 
+	sortDescFlag = false
 	standardizedValue = 0
 	format = d3.format(',d')
 
@@ -29,7 +29,7 @@ class taxonomyViz
 	vizdata = []
 	sumEachCol = []
 	sumEachTax = []
-	
+
 	deleteOTUArr = []
 	deleteSampleArr = []
 	selected_phinchID_array = []
@@ -58,7 +58,7 @@ class taxonomyViz
 			server: "BiomSample", version: 1,
 			schema:
 				"biomSample": key: keyPath: 'id', autoIncrement: true,
-		).done (s) => 
+		).done (s) =>
 			s.biomSample.query().all().execute().done (results) =>
 
 				filterOptionJSON = results[results.length-1]
@@ -71,12 +71,12 @@ class taxonomyViz
 				selected_attributes_units_array = filterOptionJSON.selected_attributes_units_array
 				selected_phinchID_array = filterOptionJSON.selected_phinchID_array
 
-				# 2 open the biom file 
+				# 2 open the biom file
 				db.open(
 					server: "BiomData", version: 1,
 					schema:
 						"biom": key: keyPath: 'id', autoIncrement: true,
-				).done (s) => 
+				).done (s) =>
 					s.biom.query().all().execute().done (results) =>
 						currentData = results[results.length-1]
 						biom = JSON.parse(currentData.data)
@@ -87,7 +87,7 @@ class taxonomyViz
 						$("#file_details").append( "ANALYZING &nbsp;<span>" + currentData.name.substring(0,30) + "</span> &nbsp;&nbsp;&nbsp;" + (parseFloat(currentData.size.valueOf() / 1000000)).toFixed(1) + " MB <br/><br />OBSERVATION &nbsp;&nbsp;&nbsp;<span>" + format(biom.shape[0]) + "</span> &nbsp;&nbsp;&nbsp; SELECTED SAMPLES &nbsp;&nbsp;&nbsp;<span>" + format(selected_samples.length) + "</span>")
 
 						# 3 handle slider click events
-						if (LayerID != 2) # if this is from a shared link, change the slider 
+						if (LayerID != 2) # if this is from a shared link, change the slider
 							$('.rectLayer').removeClass('selectedLayer');
 							$('.cntline').removeClass('selectedLine')
 							for i in [1..LayerID]
@@ -95,7 +95,7 @@ class taxonomyViz
 							if LayerID > 1
 								for i in [1..LayerID-1]
 									$('.cntline:eq(' + (i-1) + ')').addClass('selectedLine');
-									
+
 
 						$('.rectLayer').click (evt) => # sliders selection
 							that = this
@@ -103,7 +103,7 @@ class taxonomyViz
 
 							if (VizID == 3 and LayerID == 1)
 								alert('Sankey diagram has at least two layers!')
-							else if (VizID == 3 and (LayerID == 6 || LayerID == 7)) 
+							else if (VizID == 3 and (LayerID == 6 || LayerID == 7))
 								alert('Cannot go deeper to the 6th or 7th layer!')
 							else
 								$('.rectLayer').removeClass('selectedLayer');
@@ -113,17 +113,17 @@ class taxonomyViz
 								if LayerID > 1
 									for i in [1..LayerID-1]
 										$('.cntline:eq(' + (i-1) + ')').addClass('selectedLine');
-												
+
 								if $('#valueBtn').hasClass('clicked')
 									percentView = false
-								else 
+								else
 									percentView = true
 								that.generateVizData()
 
-						# 4 percentView 
+						# 4 percentView
 						$('#valueBtn').click (evt) =>
 							if percentView
-								percentView = false 
+								percentView = false
 								LayerID = parseInt($('.selectedLayer').length)
 								$('#valueBtn').addClass('clicked')
 								$('#percentBtn').removeClass('clicked')
@@ -134,11 +134,11 @@ class taxonomyViz
 								LayerID = parseInt($('.selectedLayer').length)
 								$('#valueBtn').removeClass('clicked')
 								$('#percentBtn').addClass('clicked')
-								@generateVizData()								
+								@generateVizData()
 
-						# 4 - 5 sort by ID or PhinchName 
-						$('#idBtn').click (evt) => # sort by ID 
-							if sortIdFlag 
+						# 4 - 5 sort by ID or PhinchName
+						$('#idBtn').click (evt) => # sort by ID
+							if sortIdFlag
 								if ($('#idBtn').html() == 'ID  <i class="icon-sort-amount-asc"></i>')
 									$('#idBtn').html('ID  <i class="icon-sort-amount-desc"></i>')
 									sortDescFlag = true
@@ -166,13 +166,13 @@ class taxonomyViz
 								sortDescFlag = false
 								$('#nameBtn').html('Name  <i class="icon-sort-amount-asc"></i>')
 								$('#nameBtn').addClass('clicked')
-								$('#idBtn').removeClass('clicked')			 
+								$('#idBtn').removeClass('clicked')
 							@drawTaxonomyBar()
-								
+
 						# 5 listView
 						$('#bubbleBtn').click (evt) =>
 							if !bubbleView
-								bubbleView = true 
+								bubbleView = true
 								LayerID = parseInt($('.selectedLayer').length)
 								$('#bubbleBtn').addClass('clicked')
 								$('#listBtn').removeClass('clicked')
@@ -186,51 +186,51 @@ class taxonomyViz
 								@generateVizData()
 
 
-						# 6 legends  
-						$('#legend_header').click () => 
+						# 6 legends
+						$('#legend_header').click () =>
 							if $('#legend_header').html() == 'TOP SEQS'
 								$('#outline').hide()
-								$('#legend_header').animate( {width: ( $('#legend_container').width() + 1) + 'px'}, {duration: 250, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
+								$('#legend_header').animate( {width: ( $('#legend_container').width() + 1) + 'px'}, {duration: 250, specialEasing: {width: "easeInOutQuad"}, complete: () ->
 									$('#legend_container').animate( {opacity: 1}, {duration: 250} )
 									$('#legend_header').html('TOP SEQUENCES')
 									$('#legend_header').css({'background': '#241f20 url("css/images/collapse.png") no-repeat', 'color': '#fff'})
 								})
 							else
-								$('#legend_container').animate( {opacity: '0'}, {duration: 250, specialEasing: {opacity: "easeInOutQuad"}, complete: () -> 
+								$('#legend_container').animate( {opacity: '0'}, {duration: 250, specialEasing: {opacity: "easeInOutQuad"}, complete: () ->
 									$('#legend_header').animate( {width: '180px'}, {duration: 250} )
 									$('#legend_header').html('TOP SEQS')
 									$('#legend_header').css({'background':'#f0f0f0', 'color':'#241f20'})
 									$('#outline').show()
 								})
 
-						$('#count_header').click () => 
+						$('#count_header').click () =>
 							if $('#count_header').html() == 'SAMPLE DIST'
-								$('#count_header').animate( {width: '401px'}, {duration: 250, specialEasing: {width: "easeInOutQuad"}, complete: () -> 
+								$('#count_header').animate( {width: '401px'}, {duration: 250, specialEasing: {width: "easeInOutQuad"}, complete: () ->
 									$('#count_container').animate( {opacity: 1}, {duration: 250} )
 									$('#count_header').html('SAMPLE DISTRIRBUTION')
 									$('#count_header').css({'background':'#241f20 url("css/images/collapse.png") no-repeat', 'color':'#fff'})
 								})
 							else
-								$('#count_container').animate( {opacity: '0'}, {duration: 250, specialEasing: {opacity: "easeInOutQuad"}, complete: () -> 
+								$('#count_container').animate( {opacity: '0'}, {duration: 250, specialEasing: {opacity: "easeInOutQuad"}, complete: () ->
 									$('#count_header').animate( {width: '180px'}, {duration: 250} )
 									$('#count_header').html('SAMPLE DIST')
 									$('#count_header').css({'background':'#f0f0f0','color':'#241f20'})
-								})		
+								})
 
-						# 7 download 
-						$('#downloadFile').click( () => 
+						# 7 download
+						$('#downloadFile').click( () =>
 							$('#downloadFile i').removeClass('icon-download')
 							$('#downloadFile i').addClass('icon-spinner icon-spin')
 							setTimeout(@doZip, 250)
 						)
 
-						# 8 export  
+						# 8 export
 						$('#export').click( @downloadChart )
 
 						# 9 share
 						$('#share').click( @shareViz )
 
-						# 10 generate 
+						# 10 generate
 						@prepareData()
 						@generateVizData()
 
@@ -244,7 +244,7 @@ class taxonomyViz
 
 			if biom.rows[i].metadata.taxonomy.indexOf(';') != -1
 				comp_i = biom.rows[i].metadata.taxonomy.replace(/\s+/g, '').replace(/;/g,',').split(',')
-			else 
+			else
 				comp_i = biom.rows[i].metadata.taxonomy
 
 			if comp_i[0].indexOf('k__') == -1 # "Unclassified" - some taxonomy seqs are marked as "Unclassified"
@@ -265,13 +265,13 @@ class taxonomyViz
 						unique_taxonomy_comb_count[j]++
 						map_array[i] = j
 						flag = false
-						break 
-			if flag 
+						break
+			if flag
 				map_array[i] = comb_len
 				unique_taxonomy_comb_count[comb_len] = 1
 				unique_taxonomy_comb[comb_len] = comp_i
 
-		# 2 create new data matrix 		
+		# 2 create new data matrix
 		for i in [0..unique_taxonomy_comb.length-1]
 			new_data_matrix[i] = []
 			for j in [0..biom.shape[1]-1]
@@ -281,7 +281,7 @@ class taxonomyViz
 
 		for i in [0..biom.shape[1]-1]
 			columns_sample_name_array.push(biom.columns[i].id)
-		
+
 	generateVizData: () ->
 		viz_map_array = []
 		new_data_matrix_onLayer = []
@@ -305,8 +305,8 @@ class taxonomyViz
 
 
 				if flag
-					viz_map_array[i] = unique_taxonomy_comb_onLayer.length 
-					switch LayerID 
+					viz_map_array[i] = unique_taxonomy_comb_onLayer.length
+					switch LayerID
 						when 6 then comp_i = [comp_i[0], comp_i[1], comp_i[2], comp_i[3], comp_i[4], comp_i[5], 's__']
 						when 5 then comp_i = [comp_i[0], comp_i[1], comp_i[2], comp_i[3], comp_i[4], 'g__', 's__']
 						when 4 then comp_i = [comp_i[0], comp_i[1], comp_i[2], comp_i[3], 'f__', 'g__', 's__']
@@ -317,7 +317,7 @@ class taxonomyViz
 					unique_taxonomy_comb_onLayer[unique_taxonomy_comb_onLayer.length] = comp_i
 
 			for i in [0..unique_taxonomy_comb_onLayer.length-1]
-				new_data_matrix_onLayer[i] = [] 
+				new_data_matrix_onLayer[i] = []
 				for j in [0..new_data_matrix[0].length-1]
 					new_data_matrix_onLayer[i][j] = 0
 			for i in [0..new_data_matrix.length-1]
@@ -327,12 +327,12 @@ class taxonomyViz
 			unique_taxonomy_comb_onLayer = unique_taxonomy_comb
 			new_data_matrix_onLayer = new_data_matrix
 
-		
+
 
 		# 2 VizID
 		@fadeInOutCtrl()
 		switch VizID
-			when 1 
+			when 1
 				@barFilterControl()
 				@drawTaxonomyBar()
 			when 2
@@ -342,10 +342,10 @@ class taxonomyViz
 			when 3
 				@drawTaxonomySankey()
 			when 4
-				if groupable.length > 1 
+				if groupable.length > 1
 					for i in [0..groupable.length-1]
 						$('#attributes_dropdown').append('<option>' + groupable[i] + '</option>');
-					if $('#attributes_dropdown option:first').text() != undefined 
+					if $('#attributes_dropdown option:first').text() != undefined
 						@drawTaxonomyDonuts( $('#attributes_dropdown').find(":selected").text() )
 					else
 						@drawTaxonomyDonuts( groupable[0] )
@@ -355,34 +355,34 @@ class taxonomyViz
 				else if groupable.length == 1
 					$('#attributes_dropdown').hide()
 					@drawTaxonomyDonuts( groupable[0] )
-				else 
+				else
 					alert("Donut partition chart not available for this dataset!")
 			when 5
 				if selected_attributes_array.length > 0
 					$('#attributes_dropdown').html("")
 					for i in [0..selected_attributes_array.length-1]
 						$('#attributes_dropdown').append('<option>' + selected_attributes_array[i] + '</option>');
-					if $('#attributes_dropdown option:first').text() != undefined 
+					if $('#attributes_dropdown option:first').text() != undefined
 						@drawTaxonomyByAttributes($('#attributes_dropdown').find(":selected").text() )
 					else
 						@drawTaxonomyByAttributes(selected_attributes_array[0] )
 					$('#attributes_dropdown').change (evt) =>
 						@drawTaxonomyByAttributes(evt.currentTarget.value)
-				else 
+				else
 					alert("Attributes column chart not available for this dataset!")
 			else
 				alert('Data is not loading correctly! ...')
 
-	#####################################################################################################################         
-	##############################################  Bar Chart & Filter ##################################################  
-	#####################################################################################################################  
+	#####################################################################################################################
+	##############################################  Bar Chart & Filter ##################################################
+	#####################################################################################################################
 
 	drawTaxonomyBar: () ->
 
 		@fadeInOutCtrl()
 		that = this
 
-		# clone the @selected_sample array, in case delete elements from selected samples, from preview page  
+		# clone the @selected_sample array, in case delete elements from selected samples, from preview page
 		selected_samples_clone = selected_samples.slice(0);
 		selected_phinchID_array_clone = selected_phinchID_array.slice(0);
 		sorted_selected_phinchID_array = new Array(selected_phinchID_array_clone.length - deleteSampleArr.length);
@@ -416,10 +416,10 @@ class taxonomyViz
 					updateContent = ''
 					for k in [0..deleteSampleArr.length-1]
 						updateContent += '<li>Sample ' + deleteSampleArr[k] + ', ' + selected_phinchID_array[selected_samples.indexOf(deleteSampleArr[k])] + '<span id = "delete_' + deleteSampleArr[k] + '">show</span></li>'
-					d3.select('#deleteSampleArr ul').html(updateContent)					
+					d3.select('#deleteSampleArr ul').html(updateContent)
 					that.drawTaxonomyBar()
 
-					
+
 		# 2 sort the selected phinchID array
 		phinchID_map = []
 		numericFlag = true
@@ -434,7 +434,7 @@ class taxonomyViz
 			for i in [0..selected_phinchID_array_clone.length-1]
 				sorted_selected_phinchID_array[i] = phinchID_map[i].index
 
-		# 1 data preparation, get the sum of each row, i.e. one taxonomy total over all samples 
+		# 1 data preparation, get the sum of each row, i.e. one taxonomy total over all samples
 		vizdata = new Array(new_data_matrix_onLayer.length)
 		sumEachTax = new Array(new_data_matrix_onLayer.length)
 		sumEachCol = new Array(selected_samples_clone.length)
@@ -443,20 +443,20 @@ class taxonomyViz
 			vizdata[i] = new Array(selected_samples_clone.length)
 			sumEachTax[i] = 0
 			for j in [0..selected_samples_clone.length-1]
-				order = selected_samples.indexOf(selected_samples_clone[j]) # in the selected sample index 
+				order = selected_samples.indexOf(selected_samples_clone[j]) # in the selected sample index
 				vizdata[i][j] = {}
-				vizdata[i][j].taxID = i 
+				vizdata[i][j].taxID = i
 				vizdata[i][j].taxName = unique_taxonomy_comb_onLayer[i].join(",")
-				vizdata[i][j].vizColInd = j 							# in the viz cols index 
+				vizdata[i][j].vizColInd = j 							# in the viz cols index
 				vizdata[i][j].bioColInd = selected_samples_clone[j]		# in the original biom sample index
 				vizdata[i][j].sampleName = columns_sample_name_array[order]
-				
-				# 1 sort 
+
+				# 1 sort
 				if sortIdFlag
-					vizdata[i][j].phinchName = String(selected_samples_clone[j]) # display the original sample ID 
+					vizdata[i][j].phinchName = String(selected_samples_clone[j]) # display the original sample ID
 					if sortDescFlag
-						vizdata[i][j].sortColInd = selected_samples_clone.length - 1 - j 
-					else 		
+						vizdata[i][j].sortColInd = selected_samples_clone.length - 1 - j
+					else
 						vizdata[i][j].sortColInd = j 	 						# by default, sort by cols index []
 				else
 					vizdata[i][j].sortColInd = sorted_selected_phinchID_array.indexOf(j)
@@ -470,7 +470,7 @@ class taxonomyViz
 					vizdata[i][j].y = 0
 
 		if selected_samples_clone.length > 0
-			for i in [0..selected_samples_clone.length-1] 
+			for i in [0..selected_samples_clone.length-1]
 				sumEachCol[i] = 0
 				order = selected_samples.indexOf(selected_samples_clone[i])
 				for j in [0..new_data_matrix_onLayer.length-1]
@@ -502,13 +502,13 @@ class taxonomyViz
 				d3.selectAll('g.taxonomy')
 					.style('fill', (d,i) -> if i == index then return fillCol[index%20] else return d3.rgb(fillCol[i%20]).darker())
 					.style('opacity', (d,i) -> if i != index then return 0.4 )
-			.on 'mouseout', (d,i) -> 
+			.on 'mouseout', (d,i) ->
 				d3.selectAll('g.taxonomy').style('fill', (d,i) -> return fillCol[i%20]).style('opacity', 1)
 
 		# 4 add each bar
 		rect = taxonomy.selectAll('rect')
 			.data(Object)
-		.enter().append('rect') 
+		.enter().append('rect')
 			.attr('class', (d,i) -> return 'sample_' + d.bioColInd)
 			.attr('height', 12)
 			.attr('y', (d,i) -> return 14 * d.sortColInd)
@@ -525,7 +525,7 @@ class taxonomyViz
 				else if !percentView
 					return y(d.y)
 				else
-					return y(d.y) / sumEachCol[i] * max_single 
+					return y(d.y) / sumEachCol[i] * max_single
 			.on 'mouseover', (d,i) ->
 				content = ''
 				content += '<img class="PanelImg" src="css/images/tooltip.png">'
@@ -538,7 +538,7 @@ class taxonomyViz
 				infoPanel.html(content)
 				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 20) + "px", left: (d3.event.pageX + 25) + "px" })
 				delePanel.style( { "visibility": "hidden"})
-			.on 'mouseout', (d,i) -> 
+			.on 'mouseout', (d,i) ->
 				infoPanel.style( { "visibility": "hidden"})
 			.on 'contextmenu', (d,i) ->
 				infoPanel.style( { "visibility": "hidden"})
@@ -559,11 +559,11 @@ class taxonomyViz
 			.attr("font-size", "10px")
 			.attr('fill', '#444')
 			.on 'mouseout', (d,i) ->
-				d3.select('.sampleTxt_' + d.bioColInd).text(d.phinchName.substring(0,12)) 
+				d3.select('.sampleTxt_' + d.bioColInd).text(d.phinchName.substring(0,12))
 			.on 'mouseover', (d,i) ->
 				d3.select('.sampleTxt_' + d.bioColInd).text(d.phinchName)
 
-		# 7 add title & x-axis 
+		# 7 add title & x-axis
 		svg.append("text").attr('y', -35)
 			.attr("font-size", "11px")
 			.text('Sequence Reads')
@@ -573,7 +573,7 @@ class taxonomyViz
 			.data(y.ticks(10))
 		.enter().append('g')
 			.attr('class','rule')
-			.attr('transform', (d) -> return "translate(" + y(d) + ", 0)" )	
+			.attr('transform', (d) -> return "translate(" + y(d) + ", 0)" )
 
 		rule.append('line')
 			.attr('y2', height - 180)
@@ -588,7 +588,7 @@ class taxonomyViz
 			.text (d,i) -> if !percentView then return format(d) else return Math.round( i / (y.ticks(10).length - 1) * 100 ) + '%'
 
 		# 8 add legend
-		legendArr = [] 
+		legendArr = []
 		for i in [0..sumEachTax.length-1]
 			temp = {'originalID': i, 'value': sumEachTax[i], 'name': unique_taxonomy_comb_onLayer[i].join(",")}
 			legendArr.push(temp)
@@ -630,7 +630,7 @@ class taxonomyViz
 		$('#viz_container').append('<canvas id="outline" width="180" height="' + (window.innerHeight - 280) + '"></canvas>')
 
 		# 10 create a minimap
-		if selected_samples.length > 80 
+		if selected_samples.length > 80
 			$('#outline').fracs('outline', {
 				crop: true,
 				styles: [{ selector: 'section', fillStyle: 'rgb(230,230,230)'}, {selector:'#header, #file_details, #autoCompleteList', fillStyle: 'rgb(68,68,68)'}, { selector: '.fake', fillStyle: 'rgb(36,36,36)'}],
@@ -642,11 +642,11 @@ class taxonomyViz
 		if (document.addEventListener)
 			document.addEventListener('contextmenu', (e) -> e.preventDefault()
 			false)
-		else 
+		else
 			document.addEventListener('oncontextmenu', (e) -> window.event.returnValue = false
 			false)
 
-		that = this 
+		that = this
 		searchList = []
 		availableTags = new Array(unique_taxonomy_comb_onLayer.length)
 		for i in [0..unique_taxonomy_comb_onLayer.length-1]
@@ -655,7 +655,7 @@ class taxonomyViz
 		$('#tags').keydown () -> if $('#tags').val().length < 4 then $('#autoCompleteList').fadeOut(200)
 		$('#autoCompleteList').fadeOut(200);
 
-		$( "#tags" ).autocomplete({ 
+		$( "#tags" ).autocomplete({
 			source: availableTags,
 			minLength: 3,
 			response: (evt, ui) ->
@@ -680,11 +680,11 @@ class taxonomyViz
 
 						$(this).click () ->
 							if $('#search_' + index).html() == 'hide'
-								$('#search_' + index).html('show') 
+								$('#search_' + index).html('show')
 								$(this).find('span').css('background-color', '#aaa').css('color', '#aaa')
 								deleteOTUArr.push( availableTags.indexOf(searchList[index]) )
 							else
-								$('#search_' + index).html('hide') 
+								$('#search_' + index).html('hide')
 								$(this).find('span').css('background-color', fillCol[availableTags.indexOf(searchList[index])%20] ).css('color', '#000')
 								deleteOTUArr.splice( deleteOTUArr.indexOf(availableTags.indexOf(searchList[index])), 1)
 							that.drawTaxonomyBar()
@@ -696,9 +696,9 @@ class taxonomyViz
 					$('#autoCompleteList').hide()
 		})
 
-	#####################################################################################################################         
-	##############################################  Bubble Chart  #######################################################         
-	#####################################################################################################################  
+	#####################################################################################################################
+	##############################################  Bubble Chart  #######################################################
+	#####################################################################################################################
 
 	drawTaxonomyBubble: () ->
 
@@ -712,12 +712,12 @@ class taxonomyViz
 			vizdata[i] = 0 # 1 add up only selected samples
 			viz_series[i] = new Array(selected_samples.length)
 			comb_name_list[i] = unique_taxonomy_comb_onLayer[i].join(",")
-			
+
 			for j in [0..selected_samples.length-1]
 				if new_data_matrix_onLayer[i][ selected_samples[j] ]?
 					vizdata[i] += new_data_matrix_onLayer[i][ selected_samples[j] ]
 					viz_series[i][j] = new_data_matrix_onLayer[i][ selected_samples[j] ]
-					if viz_series[i][j] > max_single 
+					if viz_series[i][j] > max_single
 						max_single = viz_series[i][j]
 
 		# 2 clean the canvas
@@ -741,7 +741,7 @@ class taxonomyViz
 			.style("visibility", "hidden")
 			.html('<i class="icon-remove icon-large"></i>')
 
-		# 3 create a min max slider 
+		# 3 create a min max slider
 		$('#bubbleSliderLeft').html( Math.max(1, d3.min(vizdata)) );
 		$('#bubbleSliderRight').html(d3.max(vizdata));
 		$('#bubbleSlider').slider({
@@ -754,7 +754,7 @@ class taxonomyViz
 				$('#bubbleSliderRight').html(ui.values[1]);
 				d3.selectAll('.node').transition().duration(250).ease("quad").style('opacity', (d,i) -> if d.value < ui.values[0] or d.value > ui.values[1] then return 0 else return 0.6)
 		})
-		
+
 		adjust_min = 1
 		adjust_max = d3.max(vizdata) + 1
 		radius_scale = d3.scale.pow().exponent(0.25).domain([adjust_min, adjust_max]).range([2, 50])
@@ -780,8 +780,8 @@ class taxonomyViz
 			for i in [1..nodes.length-1]
 				nodes[i].x = nodes[i-1].x + nodes[i-1].radius + nodes[i].radius + 20
 				nodes[i].y = nodes[i-1].y
-				if nodes[i].x > 850 
-					nodes[i].x = 50 + nodes[i].radius 
+				if nodes[i].x > 850
+					nodes[i].x = 50 + nodes[i].radius
 					nodes[i].y += 40 + nodes[i].radius + maxRowHeight
 					maxRowHeight = nodes[i].radius
 			svg.attr("height", nodes[nodes.length-1].y + 50 ) # update canvas size
@@ -802,14 +802,14 @@ class taxonomyViz
 			.on 'mouseout', (d) ->
 				d3.select(this).style({opacity:'0.6',stroke: 'none'})
 				tooltip.style("visibility", "hidden")
-			.on 'click', (d,i) -> 
+			.on 'click', (d,i) ->
 				tooltip.style("display","none")
-				if bubbleView then force.stop() # in case interrupt the mouse movement 
+				if bubbleView then force.stop() # in case interrupt the mouse movement
 				circleUnderMouse = this
 				d3.select(this).transition().attr('cx', '100').attr('cy', '100').duration(250).ease("quad-in-out")
 				d3.selectAll(".node").filter((d,i) -> (this isnt circleUnderMouse) ).transition().attr('r', '0').duration(250).delay(250).ease("quad-in-out")
 
-				y = d3.scale.linear().domain([0, d3.max(viz_series[d.id])]).range([1,85]) # max_single # standardized 
+				y = d3.scale.linear().domain([0, d3.max(viz_series[d.id])]).range([1,85]) # max_single # standardized
 				infoPanel.style("visibility", "visible")
 				bubbleRemover.style("visibility",'visible')
 				curColor = d3.select(this).style("fill")
@@ -854,7 +854,7 @@ class taxonomyViz
 			tooltip.style("display", "block")
 			infoPanel.style("visibility", "hidden")
 			bubbleRemover.style("visibility",'hidden')
-			if bubbleView then force.resume() 
+			if bubbleView then force.resume()
 			d3.selectAll(".node").transition().style({opacity:'0.7',stroke: 'none'}).attr("cx", (d) -> return d.x).attr("cy", (d) -> return d.y).attr('r', (d) -> return d.radius ).duration(250).ease("quad")
 
 	calculateOTUonLayer: () ->
@@ -864,14 +864,14 @@ class taxonomyViz
 		for i in [0..unique_taxonomy_comb_onLayer.length-1]
 			comb_name_list[i] = ""
 			for j in [0..LayerID-2]
-				comb_name_list[i] += unique_taxonomy_comb_onLayer[i][j] + "," 
+				comb_name_list[i] += unique_taxonomy_comb_onLayer[i][j] + ","
 			comb_name_list[i] += unique_taxonomy_comb_onLayer[i][LayerID-1]
 			taxonomy_comb_count_onLayer[i] = 0
 
 		for i in [0..unique_taxonomy_comb.length-1] # 1476
 			matchStr = ""
 			for j in [0..LayerID-2]
-				matchStr += unique_taxonomy_comb[i][j] + "," 
+				matchStr += unique_taxonomy_comb[i][j] + ","
 			matchStr += unique_taxonomy_comb[i][LayerID-1]
 			matchInd = comb_name_list.indexOf(matchStr)
 			if matchInd != -1
@@ -879,16 +879,16 @@ class taxonomyViz
 
 	bubbleFilterControl: () ->
 
-		that = this  # important!! to call the functions 
+		that = this  # important!! to call the functions
 		searchList = []
 		availableTags = new Array(unique_taxonomy_comb_onLayer.length)
-		for i in [0..unique_taxonomy_comb_onLayer.length-1]  # layer 2 - 68 
+		for i in [0..unique_taxonomy_comb_onLayer.length-1]  # layer 2 - 68
 			availableTags[i] = unique_taxonomy_comb_onLayer[i].join(",")
 
 		$('#tags').keydown () -> if $('#tags').val().length < 4 then $('#autoCompleteList').fadeOut(200)
 		$('#autoCompleteList').fadeOut(800);
 
-		$( "#tags" ).autocomplete({ 
+		$( "#tags" ).autocomplete({
 			source: availableTags,
 			minLength: 3,
 			response: (evt, ui) ->
@@ -903,10 +903,10 @@ class taxonomyViz
 					content += '</ul>'
 					$('#autoCompleteList').append(content)
 					$('#autoCompleteList ul li').each (index) ->
-						$(this).mouseout () -> 
+						$(this).mouseout () ->
 							newIndex = availableTags.indexOf($(this)[0].innerText.replace(/\s+/g, '')) # find the correct index
 							d3.select('#bub_' + newIndex).style({opacity:'0.6',stroke: 'none'})
-						$(this).mouseover () -> 
+						$(this).mouseover () ->
 							newIndex = availableTags.indexOf($(this)[0].innerText.replace(/\s+/g, ''))
 							d3.select('#bub_' + newIndex).style({opacity:'1', stroke: '#000', 'stroke-width': '3' })
 					$('#iconRemover').click () -> $('#autoCompleteList').fadeOut(200)
@@ -916,35 +916,35 @@ class taxonomyViz
 					$('#autoCompleteList').hide()
 		})
 
-	#####################################################################################################################         
-	#############################################  Sankey Diagram   #####################################################         
-	##################################################################################################################### 
+	#####################################################################################################################
+	#############################################  Sankey Diagram   #####################################################
+	#####################################################################################################################
 
-	drawTaxonomySankey: () -> 
+	drawTaxonomySankey: () ->
 
-		# 1 prepare data 
+		# 1 prepare data
 		nodesArr = []
 		taxonomySankey = {'nodes':[], 'links':[]}
 		sumEachTax = new Array(unique_taxonomy_comb_onLayer.length)
 
 		if unique_taxonomy_comb_onLayer.length > 0
 			for i in [0..unique_taxonomy_comb_onLayer.length-1]
-				sumEachTax[i] = 0 
+				sumEachTax[i] = 0
 				for j in [0..selected_samples.length-1]
 					if new_data_matrix_onLayer[i][selected_samples[j]]?
 						sumEachTax[i] += new_data_matrix_onLayer[i][selected_samples[j]]
-			
+
 			for i in [0..unique_taxonomy_comb_onLayer.length-1]
 				for j in [0..LayerID-1]
 					if nodesArr.indexOf( unique_taxonomy_comb_onLayer[i][j] ) == -1
 						nodesArr.push( unique_taxonomy_comb_onLayer[i][j] )
 						taxonomySankey.nodes.push( {'name': unique_taxonomy_comb_onLayer[i][j]} ) # step 1: push nodes
-					
-					if j > 0 
+
+					if j > 0
 						linkExist = false
 						tempLink = {'source': nodesArr.indexOf(unique_taxonomy_comb_onLayer[i][j-1]), 'target': nodesArr.indexOf(unique_taxonomy_comb_onLayer[i][j]), 'absValue': sumEachTax[i]}
 
-						for link in taxonomySankey.links 
+						for link in taxonomySankey.links
 							if link.source == tempLink.source and link.target == tempLink.target
 								link.absValue += sumEachTax[i]
 								linkExist = true
@@ -959,9 +959,9 @@ class taxonomyViz
 
 		# 2 clean canvas
 		width = 1200
-		height = 20 * unique_taxonomy_comb_onLayer.length 
-		margin = {top: 40, right: 10, bottom: 20, left: 20}		
-		
+		height = 20 * unique_taxonomy_comb_onLayer.length
+		margin = {top: 40, right: 10, bottom: 20, left: 20}
+
 		svg = d3.select("#taxonomy_container").append("svg").attr("width", width ).attr("height", height)
 			.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 		infoPanel = d3.select("#taxonomy_container").append("div").attr("id", "sankeyInfo")
@@ -974,7 +974,7 @@ class taxonomyViz
 			.nodePadding(10)
 			.nodes(taxonomySankey.nodes)
 			.links(taxonomySankey.links)
-			.layout(32, width - 200)  # modify the sankey.js diagram 
+			.layout(32, width - 200)  # modify the sankey.js diagram
 
 		path = sankey.link()
 		link = svg.append("g").selectAll(".link")
@@ -985,7 +985,7 @@ class taxonomyViz
 			.style('fill', (d,i) -> return globalColoring(d.target.name) )
 			.style("opacity", 0.3)
 			.sort( (a, b) -> return b.dy - a.dy )
-						
+
 		node = svg.append("g").selectAll(".node")
 			.data(taxonomySankey.nodes)
 		.enter().append("g")
@@ -1016,17 +1016,17 @@ class taxonomyViz
 		# 4 sankey click and filter control
 		@sankeyFilterControl(nodesArr, taxonomySankey, svg)
 
-	clickLargeSnakeyNode: (d,i,taxonomySankey,svg) => # set up the click events for each sankey diagram nodes 
+	clickLargeSnakeyNode: (d,i,taxonomySankey,svg) => # set up the click events for each sankey diagram nodes
 		infoPanel = d3.select("#taxonomy_container #sankeyInfo")
 		content = "<div class='sankeyInfobox'><div id='sankeyRemover'><i class='icon-remove icon-large'></i></div>"
 		if d.targetLinks.length == 0
 			content += "<p><b>" + d.name + "</b> is a source node. It has <b>" + format(d.sourceLinks.length) + "</b> branches.</p><p>Their distributions are: </p>"
 		else if d.sourceLinks.length == 0
 			content += "<p><b>" + d.name + "</b> is an end node. Its absolute reads is <b>" + format(d.targetLinks[0].absValue) + "</b>.</p></div>"
-		else 
+		else
 			sourceTotal = 0
-			for k in [0..d.sourceLinks.length-1] 
-				sourceTotal += d.sourceLinks[k].absValue					
+			for k in [0..d.sourceLinks.length-1]
+				sourceTotal += d.sourceLinks[k].absValue
 			content += "<p><b>" + d.name + "</b> has <b>" + format(d.sourceLinks.length) + "</b> branches. Its total reads is <b>" + format(sourceTotal) + "</b>.</p><p>Their distributions are: </p>"
 		content += "</div>"
 		infoPanel.html(content)
@@ -1039,7 +1039,7 @@ class taxonomyViz
 			svg.transition().duration(250).ease("quad-in-out").style({"opacity": 1, "z-index":1})
 
 	drawSmallSankey: (div,targetNode,originalSankey,originalSVG) -> # generate each small sankey diagram when clicked on each flow
-		
+
 		smlTaxonomySankey = {'nodes':[], 'links':[]}
 		smlTaxonomySankey.nodes.push(_.clone(targetNode))
 
@@ -1108,7 +1108,7 @@ class taxonomyViz
 				ratio = 1 - d.value / originalNode.value
 				if d.dy < 2 then d.fillHeight = 2 else d.fillHeight = d.dy * ratio
 				return d.fillHeight
-			
+
 		node.append('text')
 			.attr("x", -6)
 			.attr("y",  (d) -> return d.dy / 2)
@@ -1144,7 +1144,7 @@ class taxonomyViz
 		$('#tags').keydown () -> if $('#tags').val().length < 4 then $('#autoCompleteList').fadeOut(200)
 		$('#autoCompleteList').fadeOut(200);
 
-		$( "#tags" ).autocomplete({ 
+		$( "#tags" ).autocomplete({
 			source: availableTags,
 			minLength: 3,
 			response: (evt, ui) ->
@@ -1172,11 +1172,11 @@ class taxonomyViz
 					$('#autoCompleteList').hide()
 		})
 
-	#####################################################################################################################			 
-	############################################# Level Donut Chart #####################################################  
-	#####################################################################################################################  
+	#####################################################################################################################
+	############################################# Level Donut Chart #####################################################
+	#####################################################################################################################
 
-	drawTaxonomyDonuts: (cur_attribute) -> 
+	drawTaxonomyDonuts: (cur_attribute) ->
 
 		# 0 Clear the canvas
 		d3.select('#taxonomy_container').html("")
@@ -1184,28 +1184,28 @@ class taxonomyViz
 		# 1 prepare data - find different categories under this groupable attr
 		groupable_array = []
 		for i in [0..selected_samples.length-1]
-			if groupable_array.indexOf( biom.columns[i].metadata[cur_attribute] ) == -1 
+			if groupable_array.indexOf( biom.columns[i].metadata[cur_attribute] ) == -1
 				groupable_array.push( biom.columns[i].metadata[cur_attribute] )
 
 		count = new Array( groupable_array.length)
 		for i in [0..groupable_array.length-1]
 			count[i] = []
 
-		selected_new_data_matrix_onLayer = new Array(new_data_matrix_onLayer.length) # only contains selected samples 
-		for i in [0..new_data_matrix_onLayer.length-1]  # layer 2 - 68 
+		selected_new_data_matrix_onLayer = new Array(new_data_matrix_onLayer.length) # only contains selected samples
+		for i in [0..new_data_matrix_onLayer.length-1]  # layer 2 - 68
 			# 1 store only selected data
 			selected_new_data_matrix_onLayer[i] = new Array(groupable_array.length)
 			for j in [0..groupable_array.length-1]
 				selected_new_data_matrix_onLayer[i][j] = 0
 			for j in [0..selected_samples.length-1]
 				arr_id = groupable_array.indexOf( biom.columns[j].metadata[ cur_attribute ] )
-				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][j] 
+				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][j]
 
-		# 2 store the sample IDs in the count 2D array 
+		# 2 store the sample IDs in the count 2D array
 		for i in [0..selected_samples.length-1]
 			count[ groupable_array.indexOf( biom.columns[i].metadata[ cur_attribute ] ) ].push( i )
 
-		# 3 plot Pie for each category 
+		# 3 plot Pie for each category
 		maxCount = 0
 		for i in [0..count.length-1]
 			if count[i].length > maxCount
@@ -1220,8 +1220,8 @@ class taxonomyViz
 			for j in [0..selected_new_data_matrix_onLayer.length-1]
 				donutArr.push( selected_new_data_matrix_onLayer[j][i] )
 			@drawBasicDonut( i, groupable_array[i], donutArr, count[i], alphagroupble_array.indexOf(groupable_array[i]))
-		
-	drawBasicDonut: ( donutID, donutName, donutData, donutContainedSamp, posID ) -> 
+
+	drawBasicDonut: ( donutID, donutName, donutData, donutContainedSamp, posID ) ->
 
 		radius = 100
 		yScale = d3.scale.linear().domain([0, d3.max(donutData)]).range([0, 100]) # linear
@@ -1266,18 +1266,18 @@ class taxonomyViz
 			.attr('class','arc_' + donutID)
 		g.append("path")
 			.attr('d', arc)
-			.style('fill', (d,i) -> return fillCol[i%20] ) 
+			.style('fill', (d,i) -> return fillCol[i%20] )
 			.on 'mouseover', (d,i) ->
 				index = i
 				d3.selectAll('g.arc_' + donutID).style 'opacity', (d,i) -> if i != index then return 0.5
 				content = ''
 				content += '<img class="PanelImg" src="css/images/tooltip.png">'
-				content += '<div class="PanelHead">TAXONOMY: </br><em>' + unique_taxonomy_comb_onLayer[index].join(",") + '</em><br/>' 
+				content += '<div class="PanelHead">TAXONOMY: </br><em>' + unique_taxonomy_comb_onLayer[index].join(",") + '</em><br/>'
 				content += '<div class= "PanelHalf">TOTAL READS:<br/><span>' + format(d.data) + '</span></div><div class= "PanelHalf">PERCENTAGE:<br/><span>' + ((d.endAngle - d.startAngle) / 2 / Math.PI * 100).toFixed(1) + '%</span></div></div>'
 				content += '<br/><br/>'
 				infoPanel.html(content)
 				infoPanel.style( { "visibility": "visible", top: (d3.event.pageY - 20) + "px", left: (d3.event.pageX + 25) + "px" })
-			.on 'mouseout', (d,i) -> 
+			.on 'mouseout', (d,i) ->
 				d3.selectAll('g.arc_' + donutID).style('opacity', 1)
 				infoPanel.style( { "visibility": "hidden"})
 			.on 'click', (d,i) ->
@@ -1306,29 +1306,29 @@ class taxonomyViz
 			.attr('id', 'selectedColumn_' + donutID)
 			.attr("transform", "translate(150,-100)")
 
-		d3.select('#donut_' + donutID).append("text")	
+		d3.select('#donut_' + donutID).append("text")
 			.attr("id", "containedTaxonomy_" + donutID)
 			.style("font-size", "11px")
 			.style("text-anchor", "start")
 			.style("font-style","italic")
 			.attr("x", -100)
 			.attr("y", 130)
-		
+
 		@drawBasicRect(true, donutContainedSamp, donutID, null, 'dynamic')
 
 	drawBasicRect: (totalFlag, containedSamp, donutID, selectedTaxnomy, toggleStandard) ->
 
-		# 1 calculate data 
+		# 1 calculate data
 		rectArr = new Array(containedSamp.length)
 		for i in [0..containedSamp.length-1]
 			rectArr[i] = 0
-			if totalFlag # draw total 
+			if totalFlag # draw total
 				for j in [0..new_data_matrix_onLayer.length-1]
 					rectArr[i] += new_data_matrix_onLayer[j][containedSamp[i]]
-			else # draw one taxonomy 
+			else # draw one taxonomy
 				rectArr[i] += new_data_matrix_onLayer[selectedTaxnomy][containedSamp[i]]
 
-		# 2 add info 
+		# 2 add info
 		if totalFlag
 			d3.select('#containedTaxonomy_' + donutID).html( unique_taxonomy_comb_onLayer.length + ' Taxonomy in Total')
 		else
@@ -1338,14 +1338,14 @@ class taxonomyViz
 				content += '<tspan x="-100" dy="1.2em">' + thisTaxonomyName.substring(i * 35, (i + 1) * 35 )+ '</tspan>'
 			d3.select('#containedTaxonomy_' + donutID).html(content)
 
-		# 3 find the max standardized value of all 
+		# 3 find the max standardized value of all
 		if d3.max(rectArr) > standardizedValue
 			standardizedValue = d3.max(rectArr)
 
 		# 4 draw each column chart
 		if toggleStandard == 'dynamic'
 			yScale = d3.scale.pow().exponent(.5).domain([0, d3.max(rectArr)]).range([2, 160])
-		else 
+		else
 			yScale = d3.scale.pow().exponent(.5).domain([0, standardizedValue]).range([2, 160])
 
 		eachBarWidth = 20
@@ -1373,7 +1373,7 @@ class taxonomyViz
 			.data(yScale.ticks(10))
 		.enter().append('g')
 			.attr('class','rule')
-			.attr('transform', (d) -> return "translate(0," + ( 172 - yScale(d) ) + ")" )	
+			.attr('transform', (d) -> return "translate(0," + ( 172 - yScale(d) ) + ")" )
 		rule.append('line')
 			.attr('x1', 45)
 			.attr('x2', 55 + containedSamp.length * 20)
@@ -1386,11 +1386,11 @@ class taxonomyViz
 			.attr('fill', '#444')
 			.text( (d,i) -> return format(d) )
 
-	#####################################################################################################################  
-	#############################################  Bars By Attributes  ##################################################  
-	#####################################################################################################################  
-	
-	drawTaxonomyByAttributes : (cur_attribute) -> 
+	#####################################################################################################################
+	#############################################  Bars By Attributes  ##################################################
+	#####################################################################################################################
+
+	drawTaxonomyByAttributes : (cur_attribute) ->
 
 		$('#taxonomy_container').html("")
 		$('#attributes_dropdown').fadeIn(200)
@@ -1407,27 +1407,27 @@ class taxonomyViz
 		count = new Array( attributes_array.length)
 		for i in [0..attributes_array.length-1]
 			count[i] = []
-		
-		for i in [0..new_data_matrix_onLayer.length-1]  # layer 2 - 68 
+
+		for i in [0..new_data_matrix_onLayer.length-1]  # layer 2 - 68
 			# 1 store only selected data
 			selected_new_data_matrix_onLayer[i] = new Array(attributes_array.length)
 			for j in [0..attributes_array.length-1]
 				selected_new_data_matrix_onLayer[i][j] = 0.0
 			for j in [0..selected_samples.length-1]
 				arr_id = attributes_array.indexOf( parseFloat( biom.columns[j].metadata[cur_attribute].split(" ")[0]) )
-				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][j] 
+				selected_new_data_matrix_onLayer[i][arr_id] += new_data_matrix_onLayer[i][j]
 
 		for i in [0..selected_samples.length-1]
 			if ! isNaN( parseFloat( biom.columns[ i ].metadata[cur_attribute].split(" ")[0]) )
 				count[ attributes_array.indexOf( parseFloat( biom.columns[ i ].metadata[cur_attribute].split(" ")[0]) ) ].push(i)
-			else 
+			else
 				countEmpty.push(i)
 
-		# 2 Build the viz data 		
+		# 2 Build the viz data
 		vizdata = new Array(selected_new_data_matrix_onLayer.length)
 		sumEachCol = new Array(attributes_array.length)
 
-		for i in [0..selected_new_data_matrix_onLayer.length-1] # # layer 2 - 68 
+		for i in [0..selected_new_data_matrix_onLayer.length-1] # # layer 2 - 68
 			vizdata[i] = new Array(attributes_array.length)
 			for j in [0..attributes_array.length-1]
 				vizdata[i][j] = {x: j, y: selected_new_data_matrix_onLayer[i][j], name: unique_taxonomy_comb_onLayer[i].join(","), y0: 0}
@@ -1440,15 +1440,15 @@ class taxonomyViz
 
 		@drawBasicColumns(attributes_array, cur_attribute, count)
 
-		$('#count_container').html("") 
+		$('#count_container').html("")
 		content = ''
-		if selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] is undefined or selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] == null # Unit 
+		if selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] is undefined or selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] == null # Unit
 			content += '<span>' + cur_attribute + '</span>'
 		else
 			content += '<span>' + cur_attribute + ', ' + selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] + '</span>'
 		if attributes_array.length > 0
 			for i in [0..attributes_array.length-1]
-				content += '<p><b>' + attributes_array[i] + '</b>:&nbsp;&nbsp;' 
+				content += '<p><b>' + attributes_array[i] + '</b>:&nbsp;&nbsp;'
 				if count[i].length == 0
 					content += 'no samples'
 				else if count[i].length == 1
@@ -1465,7 +1465,7 @@ class taxonomyViz
 			content += '</i></p>'
 		$('#count_container').html(content)
 
-		# create legend 
+		# create legend
 		legendArr = []
 		for i in [0..selected_new_data_matrix_onLayer.length-1]
 			temp = {'originalID': i, 'value': 0, 'name': unique_taxonomy_comb_onLayer[i].join(",")}
@@ -1474,9 +1474,9 @@ class taxonomyViz
 			legendArr.push(temp)
 		@createLegend(legendArr)
 
-	drawBasicColumns: (attributes_array, cur_attribute, count) -> 
+	drawBasicColumns: (attributes_array, cur_attribute, count) ->
 
-		# 1 Plot     
+		# 1 Plot
 		height = 800
 		width = 200 + sumEachCol.length * 18
 		max_single = d3.max(sumEachCol)
@@ -1493,8 +1493,8 @@ class taxonomyViz
 			.attr("height", height + 100 )
 		.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-		
-		# add tooltip 
+
+		# add tooltip
 		tooltip = d3.select("#taxonomy_container")
 			.append("div")
 			.attr("class", "basicTooltip")
@@ -1506,9 +1506,9 @@ class taxonomyViz
 		.enter().append('g')
 			.attr('class', 'taxonomy')
 			.style('fill', (d,i) -> return fillCol[i%20]  )
-			.on 'mouseover', (d,i) -> 
+			.on 'mouseover', (d,i) ->
 				d3.select(this).style({ 'fill': d3.rgb(fillCol[i%20]).darker() })
-			.on 'mouseout', (d,i) -> 
+			.on 'mouseout', (d,i) ->
 				d3.select(this).style({ 'fill': fillCol[i%20] })
 
 		# add each bar
@@ -1523,7 +1523,7 @@ class taxonomyViz
 				content = ""
 				if attributes_array.length > 0
 					for i in [0..attributes_array.length-1]
-						content += '<b>' + attributes_array[i] + '</b>:&nbsp;&nbsp;' 
+						content += '<b>' + attributes_array[i] + '</b>:&nbsp;&nbsp;'
 						if count[i].length == 1
 							content += selected_phinchID_array[count[i][0]] + ' (<i>' + count[i][0] + '</i>)'
 						else if count[i].length >= 2
@@ -1533,7 +1533,7 @@ class taxonomyViz
 						content += '</br>'
 				tooltip.html( "<img class='PanelImg' src='css/images/tooltip.png'><div class='PanelHead'>TAXONOMY:</br><em>" + d.name + "</em><br/>TOTAL READS:</br><span> " + format(d.y) + "</span></div><div class='PanelBody'>" + content + "</div>")
 				tooltip.style( { "visibility": "visible", top: (d3.event.pageY - 20) + "px", left: (d3.event.pageX + 30) + "px" })
-			.on 'mouseout', (d,i) -> 
+			.on 'mouseout', (d,i) ->
 				tooltip.style("visibility", "hidden")
 
 		# add x-axis
@@ -1553,7 +1553,7 @@ class taxonomyViz
 			.data(y.ticks(10))
 		.enter().append('g')
 			.attr('class','rule')
-			.attr('transform', (d) -> return "translate(0," + ( height - y(d) ) + ")" )	
+			.attr('transform', (d) -> return "translate(0," + ( height - y(d) ) + ")" )
 
 		rule.append('line')
 			.attr('x2', (d,i) -> return width )
@@ -1568,33 +1568,33 @@ class taxonomyViz
 			.text (d,i) -> if !percentView then return format(d) else return Math.round( i / (y.ticks(10).length ) * 100 ) + '%'
 
 		# add text legend on the bottom
-		attr_n_unit = cur_attribute 
+		attr_n_unit = cur_attribute
 		if selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] isnt undefined and selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] isnt null
-			attr_n_unit += ', ' + selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)] 
+			attr_n_unit += ', ' + selected_attributes_units_array[selected_attributes_array.indexOf(cur_attribute)]
 		svg.append('text')
 			.attr('x', width / 2 - 80)
 			.attr('y', height + 40)
 			.attr('font-size', '11px')
 			.text(attr_n_unit)
 
-	#####################################################################################################################         
-	############################################### Bubble by OTU #######################################################  
-	#####################################################################################################################  
+	#####################################################################################################################
+	############################################### Bubble by OTU #######################################################
+	#####################################################################################################################
 
 	drawOTUBubble: () -> # not in use right now
-		
-		# 0 Prepare the data 
+
+		# 0 Prepare the data
 		data = {name: 'BIOM', children: new Array(unique_taxonomy_comb_onLayer.length)}
 		for i in [0..unique_taxonomy_comb_onLayer.length-1]
 			data.children[i] = {}
-			data.children[i].name = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6]  
+			data.children[i].name = unique_taxonomy_comb_onLayer[i][0] + ',' + unique_taxonomy_comb_onLayer[i][1] + ',' + unique_taxonomy_comb_onLayer[i][2] + ',' + unique_taxonomy_comb_onLayer[i][3] + ',' + unique_taxonomy_comb_onLayer[i][4] + ',' + unique_taxonomy_comb_onLayer[i][5] + ',' + unique_taxonomy_comb_onLayer[i][6]
 			data.children[i].children = new Array(unique_taxonomy_comb_count[i])
 			data.children[i].counter = 0
 			for j in [0..unique_taxonomy_comb_count[i]-1]
 				data.children[i].children[j] = {}
 				data.children[i].children[j].id = undefined
 				data.children[i].children[j].size = 0
-		
+
 		for i in [0..biom.data.length-1]
 			flag = true
 			rowID = map_array[biom.data[i][0]]
@@ -1614,15 +1614,15 @@ class taxonomyViz
 		x = d3.scale.linear().range([5, r])
 		y = d3.scale.linear().range([5, r])
 		fontScale = d3.scale.linear().domain([0, 0.5]).range([10, 20])
-		pack = d3.layout.pack().size([r, r]).value( (d) -> return Math.sqrt(d.size) )  ## return d.size ## but too many small ones 
- 
+		pack = d3.layout.pack().size([r, r]).value( (d) -> return Math.sqrt(d.size) )  ## return d.size ## but too many small ones
+
 		svg = d3.select("#taxonomy_container").append("svg:svg")
 			.attr("width", width)
 			.attr("height", height)
 			.append('svg:g')
 			.attr("transform", "translate(" + (width - r) / 2 + ", 10)")
 
-		# 2 Filter 
+		# 2 Filter
 		threshold = 2000 # if the threshold is too high, there's no point in doing this bubble chart
 		filteredData = {name: 'BIOM', children: []}
 		for i in [0..data.children.length-1]
@@ -1634,7 +1634,7 @@ class taxonomyViz
 		nodes = pack.nodes(filteredData);
 		svg.selectAll("circle").data(nodes)
 			.enter().append("svg:circle")
-			.attr("class", (d) -> if d.children != null then return 'parent' else return 'child' )		
+			.attr("class", (d) -> if d.children != null then return 'parent' else return 'child' )
 			.attr("cx", (d) -> if isNaN(d.x) then return 0 else return d.x )
 			.attr("cy", (d) -> if isNaN(d.y) then return 0 else return d.y)
 			.attr("r", (d) -> return d.r)
@@ -1651,26 +1651,26 @@ class taxonomyViz
 			.style("opacity", (d) -> if d.r > 50 then return 0.8 else return 0 )
 			.text((d) -> return d.name )
 
-	#####################################################################################################################         
-	###############################################   UTILITIES   #######################################################  
-	#####################################################################################################################  
+	#####################################################################################################################
+	###############################################   UTILITIES   #######################################################
+	#####################################################################################################################
 
 	createLegend: (legendArr) ->
 		legendArr.sort( (a,b) -> return b.value - a.value ) # specify the sorting order
 		$('#legend_container').html('')
 		content = '<ul>' # <p>The Top 10 Sequence Reads: </p>
 		if legendArr.length < 10
-			legendLen = legendArr.length - 1 
+			legendLen = legendArr.length - 1
 		else
 			legendLen = 9
 		for i in [0..legendLen]
 			content += '<li><span style = "display:block; background-color:' + fillCol[ legendArr[i].originalID % 20] + '; height: 12px; width: 12px; float: left; margin: 2px 0px;" ></span>&nbsp;&nbsp;&nbsp;' + legendArr[i].name + '&nbsp;&nbsp;<em>' + format(legendArr[i].value) + '</em></li>'
 		content += '</ul>'
-		$('#legend_container').append(content)  
+		$('#legend_container').append(content)
 		if $('#legend_header').html() == 'TOP SEQUENCES'
 			$('#legend_header').css('width', $('#legend_container').width() - 1 )
 
-	fadeInOutCtrl: () -> 
+	fadeInOutCtrl: () ->
 		fadeInSpeed = 250
 		$('#taxonomy_container').html("")
 		$('#loadingIcon').css('opacity','1')
@@ -1688,35 +1688,35 @@ class taxonomyViz
 				when 3
 					$('#tags').fadeIn(fadeInSpeed)
 					$('#MsgBox').html( "* " + unique_taxonomy_comb_count.length + " unique paths, cannot go deeper to the 6th or 7th layer.")
-				when 5 
+				when 5
 					$('#PercentValue,#legend_header,#count_header').fadeIn(fadeInSpeed)
 		})
 
-	exportCallback: (data, textStatus, xhr) ->
-		convertResult = JSON.parse(data)
-		# console.log 'exportCallback!'
-		# console.log convertResult
-		if convertResult['code'] is 0 and convertResult['err'] is ''
-			$('#downloadPreview img').attr('src', 'data:image/png;base64,' + convertResult['out']);
-			$('#downloadPreview a').attr('href', 'data:image/png;base64,' + convertResult['out']);
-			$('#exportHeader').html('Preview Image, click to download!')
+	exportCallback: (url) ->
+		$('#downloadPreview img').attr('src', url);
+		$('#downloadPreview a').attr('href', url);
+		$('#exportHeader').html('Preview Image, click to download!')
+		$('#exportLoading').hide();
 
-		else
-			$('#exportHeader').html('unable to download image!')
-		$('#exportLoading').fadeOut(500);
-	
+
 	downloadChart: () =>
-		$('#exportShareDiv, #exportLoading').fadeIn(500);
+		$('#exportShareDiv').fadeIn(500);
 		$('#downloadPreview img').attr('src', '');
 		$('#downloadPreview a').attr('href', '');
 		$('#exportHeader').html('Generating Image')
-		$('#exportShareDiv .icon-remove').click( (e) -> $('#exportShareDiv').fadeOut(500); ) 
+		$('#exportShareDiv .icon-remove').click( (e) -> $('#exportShareDiv').fadeOut(500); )
 
 		svg = $('svg')
-		svgStringData = svg.wrap('<p>').parent().html()
-		postData = {svg: svgStringData}
-		exportEndpoint = backendServer + 'export.php'
-		$.post(exportEndpoint, postData, @exportCallback)
+		serializer = new XMLSerializer()
+		source = serializer.serializeToString(svg[0])
+		if !source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)
+			source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+		if !source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)
+			source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+		source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+		url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
+
+		@exportCallback(url)
 
 	doZip: () ->
 
@@ -1746,12 +1746,9 @@ class taxonomyViz
 		$('#sharingInfo .loading').hide()
 		$('#sharingInfo .shareForm').show()
 		hideShare = (e) -> $('#sharingInfo').fadeOut(200);
-		$('#sharingInfo .icon-remove').off('click', hideShare).on('click', hideShare) 
+		$('#sharingInfo .icon-remove').off('click', hideShare).on('click', hideShare)
 		$('#sharingInfo .shareButton').off('click', @submitShare).on('click', @submitShare)
 	submitShare: () =>
-		console.log 'submit share'
-		console.log @shareHash
-		console.log LayerID + " " + VizID
 		layerName = layerNameArr[LayerID - 1]
 		vizName = vizNameArr[VizID-1]
 
@@ -1759,7 +1756,7 @@ class taxonomyViz
 			shareFlag = true
 			$('#sharingInfo .shareForm input, #sharingInfo .shareForm label, #sharingInfo .shareForm textarea').hide();
 			$('#sharingInfo .results').remove();
-			$('#sharingInfo .results').show();			
+			$('#sharingInfo .results').show();
 			results = d3.select('#sharingInfo').append('div').attr('class','results')
 			results.append('div').html('Your visualization has been shared.')
 			@shareData = {
@@ -1778,18 +1775,17 @@ class taxonomyViz
 		else
 			alert("Invalid email address ... ")
 
-	
+
 	shareRequest: () =>
 		shareEndpoint = backendServer + "shareViz2.php"
 #		dataToSend = new FormData();
 #		dataToSend.append('data', new Blob([ @shareData ], { type: 'text/json' }))
-		console.log @shareData
 		$.ajax({
 			url: shareEndpoint,
 			#data: dataToSend,
 			data: JSON.stringify(@shareData)
 			processData: false,
-			contentType: 'multipart/form-data', 
+			contentType: 'multipart/form-data',
 			mimeType: 'multipart/form-data',
 			type: 'POST',
 			dataType: 'json'
@@ -1801,11 +1797,10 @@ class taxonomyViz
 		#$.post(shareEndpoint, @shareData, @shareCallback, 'json')
 
 	shareCallback: (data, textStatus, xhr) =>
-		console.log(data)
 		if data.status is 'ok'
 			src = document.location.origin + document.location.pathname + "?shareID=" + data.urlHash
 			d3.select('#sharingInfo .results').append('a').attr('href',src).attr('target','_blank').text(src)
-	
+
 	validateEmail: (email) ->
 		re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 		return re.test(email);
