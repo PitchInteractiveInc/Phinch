@@ -1,7 +1,7 @@
 ![VizGallery](https://raw.githubusercontent.com/shujianbu/Phinch/master/viz_gallery.png)
 
 ## Heads Up
-🐦 [Phinch 2.0](https://github.com/PhinchApp/Phinch) is launching as a desktop app for macOS and Windows on May 10th! <br />
+🐦 [Phinch 2.0](https://github.com/PhinchApp/Phinch) is launching as a desktop app for macOS, Windows, and Linux on May 10th! <br />
 🔬 New features include support for HDF5 and JSON BIOM files, retooled visualizations, improved image export and sharing, and the ability to work offline.
 
 ## About
