@@ -12,7 +12,7 @@ class readFile
 			@listRecentFiles()
 		)
 
-		document.querySelector('#parse').addEventListener('click', (evt) => 
+		document.querySelector('#parse').addEventListener('click', (evt) =>
 			if evt.target.tagName.toLowerCase() == 'button'
 				files = document.getElementById('files').files
 				@checkFile(files)
@@ -21,9 +21,9 @@ class readFile
 		# load test file
 		document.getElementById('loadTestFile').addEventListener('click', (evt) =>
 			$('#loadTestFile').html('loading...&nbsp;&nbsp;<i class="icon-spinner icon-spin icon-large"></i>');
-			hostURL = 'http://' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/'))
+			hostURL = window.location.protocol + '//' + window.location.host + window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/'))
 			testfile = hostURL + '/data/testdata.biom'  ## Dev TODO http://phinch.org/data/testdata.biom
-			$.get(testfile, (testdata) => 
+			$.get(testfile, (testdata) =>
 				biomToStore = {}
 				biomToStore.name = 'testdata.biom'
 				biomToStore.size = 15427024
@@ -46,37 +46,37 @@ class readFile
 	checkFile: (files) ->
 		if files.length == 0
 			alert "Please select a file!"
-		else 	
+		else
 			filetype = files[0].name.split("").reverse().join("").split(".")[0].toLowerCase()
 			acceptable_filetype = ["moib",  "txt"]
 			if acceptable_filetype.indexOf(filetype) == -1
 				alert "Please upload .biom or or .txt file!"
-			else 
+			else
 				@readBlob(files[0])
 
 	handleFileSelect: (evt) =>
 		progress.style.width = '0%'
 		reader.onerror = @errorHandler
 		reader.onprogress = @updateProgress
-		reader.onabort = (e) -> alert "File loading cancelled!" 
+		reader.onabort = (e) -> alert "File loading cancelled!"
 		reader.onloadstart = (e) -> document.getElementById('progress_bar').className = 'loading'
-		reader.onload = (e) -> 
+		reader.onload = (e) ->
 			progress.style.width = '100%'
-			setTimeout("document.getElementById('progress_bar').className='';", 8000) 
+			setTimeout("document.getElementById('progress_bar').className='';", 8000)
 
-	errorHandler: (evt) -> 
-		switch evt.target.error.code 
-			when evt.target.error.NOT_FOUND_ERR then alert "File Not Found!" 
-			when evt.target.error.NOT_READABLE_ERR then alert "File Not Readable!" 
+	errorHandler: (evt) ->
+		switch evt.target.error.code
+			when evt.target.error.NOT_FOUND_ERR then alert "File Not Found!"
+			when evt.target.error.NOT_READABLE_ERR then alert "File Not Readable!"
 			else alert "File Not Readable!"
 
-	updateProgress: (evt) -> 
+	updateProgress: (evt) ->
 		if evt.lengthComputable
 			percentLoaded = Math.round((evt.loaded / evt.total) * 100)
-			if percentLoaded < 100 
+			if percentLoaded < 100
 				progress.style.width = percentLoaded + '%'
 
-	dragFileProc: (evt) => 
+	dragFileProc: (evt) =>
 		evt.stopPropagation()
 		evt.preventDefault()
 		switch evt.type
@@ -89,7 +89,7 @@ class readFile
 
 	# store new biom file to the browser indexeddb
 	readBlob: (file) =>
-		reader.onloadend = (evt) => 
+		reader.onloadend = (evt) =>
 			if evt.target.readyState == FileReader.DONE
 				# JSON.parse(reader.result)
 				biomToStore = {}
@@ -100,15 +100,15 @@ class readFile
 				biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
 				console.log @
 				if JSON.parse(biomToStore.data).format.indexOf("Biological Observation Matrix") != -1
-					@server.biom.add(biomToStore).done (item) => 
+					@server.biom.add(biomToStore).done (item) =>
 						@currentData = item
 						setTimeout( "window.location.href = 'preview.html'", 2000)
-				else 
+				else
 					alert "Incorrect biom format field! Please check your file content!"
 		reader.readAsBinaryString(file)
 
 	# list 10 most recent files uploaded to this browser
-	listRecentFiles: () => 
+	listRecentFiles: () =>
 		@server.biom.query().all().execute().done (results) =>
 			if results.length > 0
 				for p in [0..results.length-1]
@@ -118,14 +118,14 @@ class readFile
 
 				if results.length > 10
 					@clearOldEntries(results)
-						
+
 				if results.length > 0
 					$('#recent').show()
 					@currentData = results
 					content = "<table id='recent_data'>"
 					for k in [0..results.length-1]
 						tk = results.length - 1 - k
-						content += '<tr><td class="reload" id="reload_' + k + '">LOAD' + '</td><td>' 
+						content += '<tr><td class="reload" id="reload_' + k + '">LOAD' + '</td><td>'
 						content += results[tk].name.substring(0,55) + '</td><td>' + (results[tk].size / 1000000).toFixed(1) + " MB" + '</td><td>' + results[tk].date
 						content += '</td><td class="del" id="del_' + k + '"><i class="icon-fa-times icon-large"></i></td></tr>'
 					content += "</table>"
@@ -134,16 +134,16 @@ class readFile
 						$('#reload_' + k).click( @reloadRow )
 						$('#del_' + k).click( @removeRow )
 
-	# allows users to reload old files 
+	# allows users to reload old files
 	reloadRow: (evt) =>
-		i = @currentData.length - 1 - evt.currentTarget.id.replace("reload_","") # reverse order id 
+		i = @currentData.length - 1 - evt.currentTarget.id.replace("reload_","") # reverse order id
 		biomToStore = {}
 		biomToStore.name = @currentData[i].name
 		biomToStore.size = @currentData[i].size
 		biomToStore.data = @currentData[i].data
 		d = new Date();
 		biomToStore.date = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate() + "T" + d.getUTCHours() + ":" + d.getUTCMinutes() + ":" + d.getUTCSeconds() + " UTC"
-		@server.biom.add(biomToStore).done (item) -> 
+		@server.biom.add(biomToStore).done (item) ->
 			@currentData = item
 			setTimeout( "window.location.href = 'preview.html'", 1000)
 
@@ -151,12 +151,12 @@ class readFile
 	removeRow: (evt) =>
 		i = evt.currentTarget.id
 		totalrows = $('#recent_data tr .del').length
-		for k in [0..totalrows-1] 
+		for k in [0..totalrows-1]
 			if i == $('#recent_data tr .del')[k].id
 				console.log @currentData[totalrows - k - 1].id
-				@server.biom.remove( @currentData[totalrows - k - 1].id ).done () -> 
+				@server.biom.remove( @currentData[totalrows - k - 1].id ).done () ->
 					location.reload(true);
-	
+
 	# leave only 10 files, remove older files
 	clearOldEntries: (results) =>
 		console.log results.length
@@ -164,5 +164,5 @@ class readFile
 			@server.biom.remove(results[0].id).done () =>
 				results.splice(0,1)
 				location.reload(true);
-				
+
 window.readFile = readFile
